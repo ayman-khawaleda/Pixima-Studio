@@ -78,13 +78,17 @@ WSGI_APPLICATION = 'PiximaStudio.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': configrations.DB_CONFIG['NAME'],
+        'USER': configrations.DB_CONFIG['USER'],
+        'PASSWORD': configrations.DB_CONFIG['PASSWORD'],
+        'HOST': configrations.DB_CONFIG['HOST'],
+        'PORT': configrations.DB_CONFIG['PORT'],
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
