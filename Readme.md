@@ -3,4 +3,4 @@
 <p align='center'> Personal Photo Editor Writen In Python(Django)&JS(React).
 <\STILL UNDER DEVELOPMENT\></p>
 
-![Logo](MEDIA-SOURCE/Readme/Pixima-Logo.png)
+<img src='MEDIA-SOURCE/Readme/Pixima-Logo.png' alt='Pixima-Logo' style='display:block;width:50%;margin-left:auto;margin-right:auto;'>
