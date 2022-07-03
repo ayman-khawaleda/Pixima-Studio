@@ -29,7 +29,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+#Rest FrameWork Configrations
+REST_FRAMWORK = {
+    'DEFULAT_RENDERER_CLASSES':(
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
+MEDIA_ROOT = os.path.join(PROJECT_DIR,'pixima_media')
+MEDIA_URL = '/pixima_media/'
 # Application definition
 
 INSTALLED_APPS = [
