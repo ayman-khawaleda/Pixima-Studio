@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
-from . import serializers
+from . import serializers,models
 
 # Create your views here.
 
@@ -25,9 +25,9 @@ class UploadImage(APIView):
     def post(self, request, format=None):
         image_serializer = serializers.UploadImageSerializer(data=request.data)
         if image_serializer.is_valid():
-            image_serializer.save()
+            ins = image_serializer.save()
             return JsonResponse(
-                {"code": HTTP_200_OK, "status": "OK", **image_serializer.data}
+                {"code": HTTP_200_OK, "status": "OK",'id':str(ins.id), **image_serializer.data}
             )
         return JsonResponse(
             {
