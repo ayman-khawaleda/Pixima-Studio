@@ -4,7 +4,9 @@ from django.http import JsonResponse
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
-from . import serializers,models
+from . import serializers, models
+from PiximaStudio.settings import MEDIA_ROOT, PROJECT_DIR, MEDIA_URL
+import os
 
 # Create your views here.
 
@@ -27,12 +29,58 @@ class UploadImage(APIView):
         if image_serializer.is_valid():
             ins = image_serializer.save()
             return JsonResponse(
-                {"code": HTTP_200_OK, "status": "OK",'id':str(ins.id), **image_serializer.data}
+                {
+                    "code": HTTP_200_OK,
+                    "status": "OK",
+                    "id": str(ins.id),
+                    **image_serializer.data,
+                }
             )
         return JsonResponse(
             {
                 "code": HTTP_400_BAD_REQUEST,
                 "status": "BAD REQUEST",
                 **image_serializer.errors,
+            }
+        )
+
+
+class GetImagesDirectoryId(APIView):
+
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get(self, request, format=None):
+        id_serializer = serializers.GetImageSerializer(data=request.data)
+        if id_serializer.is_valid():
+            path = os.path.join(
+                PROJECT_DIR, MEDIA_ROOT, "Images", id_serializer["id"].value
+            )
+            if os.path.exists(path):
+                return JsonResponse(
+                    {
+                        "code": HTTP_200_OK,
+                        "status": "OK",
+                        "id": str(id_serializer["id"].value),
+                        "images": {
+                            i: os.path.join(
+                                MEDIA_URL, "Images", id_serializer["id"].value, x
+                            )
+                            for i, x in enumerate(os.listdir(path))
+                        },
+                    }
+                )
+            else:
+                return JsonResponse(
+                    {
+                        "code": HTTP_400_BAD_REQUEST,
+                        "status": "BAD REQUEST",
+                        "id": ["NOT FOUND"],
+                    }
+                )
+        return JsonResponse(
+            {
+                "code": HTTP_400_BAD_REQUEST,
+                "status": "BAD REQUEST",
+                **id_serializer.errors,
             }
         )
