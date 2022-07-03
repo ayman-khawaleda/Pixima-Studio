@@ -8,6 +8,8 @@ db.sqlite3
 media
 *env
 *Config.py
+#Media Directory
+*pixima-media
 # Backup files # 
 *.bak
 
