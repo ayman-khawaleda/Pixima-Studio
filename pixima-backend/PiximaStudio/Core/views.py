@@ -65,7 +65,9 @@ class GetImagesDirectoryId(APIView):
                             i: os.path.join(
                                 MEDIA_URL, "Images", id_serializer["id"].value, x
                             )
-                            for i, x in enumerate(os.listdir(path))
+                            for i, x in enumerate(
+                                sorted(os.listdir(path), key=lambda x: x)
+                            )
                         },
                     }
                 )
