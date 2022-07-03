@@ -9,7 +9,7 @@ media
 *env
 *Config.py
 #Media Directory
-*pixima-media
+*pixima_media
 # Backup files # 
 *.bak
 
