@@ -52,9 +52,7 @@ class ImageSerializerHandler(SerializerHandler):
                 self.errors = {"Message": "ImageIndex Less Than 0"}
                 return False
             if not self.__image_index_exists() and self.serializer.data["id"]:
-                self.errors = {
-                    "Message":"ImageIndex Not Found"
-                }
+                self.errors = {"Message": "ImageIndex Not Found"}
                 return False
             if self.serializer.data["Preview"] not in self.preview_options:
                 self.errors = {
@@ -71,6 +69,8 @@ class ImageSerializerHandler(SerializerHandler):
         if not res:
             self.errors = self.serializer.errors
         return res
+
+
 class CropImageSerializerHandler(ImageSerializerHandler):
     def __init__(
         self,
@@ -124,5 +124,32 @@ class CropImageSerializerHandler(ImageSerializerHandler):
                 return False
             if not self.correct_sort_cords() and self.serializer.data["Ratio"] is None:
                 self.errors = {"Message": "Error In [X1,X2,Y1,Y2] Values"}
+                return False
+        return res
+
+
+class FlipImageSerializerHandler(ImageSerializerHandler):
+    def __init__(
+        self,
+        serializer: serializer.ImageHandlerSerializer,
+        preview_optinos: list = None,
+        direction_options: list = None,
+    ) -> None:
+        super().__init__(serializer, preview_optinos)
+        if direction_options is None:
+            self.direction_options = ["Hor", "Ver"]
+
+    def handle(self) -> bool:
+        res = super().handle()
+        if res:
+            if self.serializer.data["Direction"] is None:
+                self.errors = {
+                    "Message": "Direction Can't Be Empty"
+                }
+                return False
+            if self.serializer.data["Direction"] not in self.direction_options:
+                self.errors = {
+                    "Message": f"Direction Should Be One of The Values {self.direction_options}"
+                }
                 return False
         return res

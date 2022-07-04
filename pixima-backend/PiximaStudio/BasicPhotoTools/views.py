@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from django.http import JsonResponse
 from .serializer import CropImageSerializer, FlipImageSerializer
-from .serializerHandler import ImageSerializerHandler, CropImageSerializerHandler
+from .serializerHandler import ImageSerializerHandler, CropImageSerializerHandler,FlipImageSerializerHandler
 
 
 def bad_request(errors: dict):
@@ -25,7 +25,7 @@ class CropToolView(APIView):
 class FlipToolView(APIView):
     def post(self, request, format=None):
         flip_serializer = FlipImageSerializer(data=request.data)
-        im_handler = ImageSerializerHandler(flip_serializer)
+        im_handler = FlipImageSerializerHandler(flip_serializer)
         if im_handler.handle():
             return JsonResponse(
                 data={"code": HTTP_200_OK, "status": "OK", **flip_serializer.data}
