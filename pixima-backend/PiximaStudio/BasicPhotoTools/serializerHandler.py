@@ -237,3 +237,39 @@ class ContrastImageSerializerHandler(ImageSerializerHandler):
                 self.errors = {"Message": "Brightness Should Be In Range [-100,100]"}
                 return False
         return res
+
+class SaturationImageSerializerHandler(ImageSerializerHandler):
+    def __init__(
+        self,
+        serializer: serializer.ImageHandlerSerializer,
+        preview_optinos: list = None,
+    ) -> None:
+        super().__init__(serializer, preview_optinos)
+    def check_saturation_range(self):
+        saturation = self.serializer.data['Saturation']
+        if -100 > saturation or saturation > 100:
+            return False
+        return True
+
+    def check_hue_range(self):
+        hue = self.serializer.data['Hue']
+        if -100 > hue or hue > 100:
+            return False
+        return True
+
+    def handle(self) -> bool:
+        res = super().handle()
+        if res:
+            if (
+                self.serializer.data["Hue"] is None
+                or self.serializer.data["Saturation"] is None
+            ):
+                self.errors = {"Message": "Saturation And Hue Can't be Empty"}
+                return False
+            if not self.check_saturation_range() :
+                self.errors = {"Message": "Saturation Should Be In Range [-100,100]"}
+                return False
+            if not self.check_hue_range() :
+                self.errors = {"Message": "Hue Should Be In Range [-100,100]"}
+                return False
+        return res
