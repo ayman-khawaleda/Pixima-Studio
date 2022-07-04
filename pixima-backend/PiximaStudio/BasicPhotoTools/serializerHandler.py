@@ -43,7 +43,7 @@ class ImageSerializerHandler(SerializerHandler):
                 return False
             try:
                 query_set = UploadImageModel.objects.get(
-                    id=self.serializer.data["data"]
+                    id=self.serializer.data["id"]
                 )
                 if not query_set:
                     raise UploadImageModel.DoesNotExist()
