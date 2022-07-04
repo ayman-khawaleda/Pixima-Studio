@@ -11,6 +11,7 @@ from .serializerHandler import (
     ImageSerializerHandler,
     CropImageSerializerHandler,
     FlipImageSerializerHandler,
+    ResizeImageSerializerHandler,
     RotateImageSerializerHandler,
 )
 
@@ -57,7 +58,7 @@ class RotateToolView(APIView):
 class ResizeToolView(APIView):
     def post(self, request, format=None):
         rotate_serializer = ResizeImageSerializer(data=request.data)
-        im_handler = ImageSerializerHandler(rotate_serializer)
+        im_handler = ResizeImageSerializerHandler(rotate_serializer)
         if im_handler.handle():
             return JsonResponse(
                 data={"code": HTTP_200_OK, "status": "OK", **rotate_serializer.data}

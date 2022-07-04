@@ -180,3 +180,25 @@ class RotateImageSerializerHandler(ImageSerializerHandler):
                 self.errors = {"Message": "Angle Should Be In Rnage [0:360]"}
                 return False
         return res
+
+class ResizeImageSerializerHandler(ImageSerializerHandler):
+    def __init__(
+        self,
+        serializer: serializer.ImageHandlerSerializer,
+        preview_optinos: list = None,
+    ) -> None:
+        super().__init__(serializer, preview_optinos)
+
+    def handle(self) -> bool:
+        res = super().handle()
+        if res:
+            if (
+                self.serializer.data["Width"] is None
+                or self.serializer.data["High"] is None
+            ):
+                self.errors = {"Message": "Width And High Can't be Empty"}
+                return False
+            if self.serializer.data["Width"] < 25 or self.serializer.data["High"]<25 :
+                self.errors = {"Message": "Width And High Shouldn't Be Less Than 25px"}
+                return False
+        return res
