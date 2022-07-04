@@ -3,6 +3,7 @@ from rest_framework.serializers import Serializer,UUIDField,ImageField,CharField
 
 class ImageHandlerSerializer(Serializer):
     id = UUIDField(default='',required=False,allow_null=True,format='hex_verbose')
+    ImageIndex = IntegerField(default=0,required=False,allow_null=True)
     Image = ImageField(default='',required=False,allow_null=True)
     Preview = CharField(default='None',required=False)
 
