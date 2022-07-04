@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from django.http import JsonResponse
 from .serializer import (
+    ContrastImageSerializer,
     CropImageSerializer,
     FlipImageSerializer,
     ResizeImageSerializer,
@@ -57,10 +58,10 @@ class RotateToolView(APIView):
 
 class ResizeToolView(APIView):
     def post(self, request, format=None):
-        rotate_serializer = ResizeImageSerializer(data=request.data)
-        im_handler = ResizeImageSerializerHandler(rotate_serializer)
+        resize_serializer = ResizeImageSerializer(data=request.data)
+        im_handler = ResizeImageSerializerHandler(resize_serializer)
         if im_handler.handle():
             return JsonResponse(
-                data={"code": HTTP_200_OK, "status": "OK", **rotate_serializer.data}
+                data={"code": HTTP_200_OK, "status": "OK", **resize_serializer.data}
             )
         return bad_request(im_handler.errors)
