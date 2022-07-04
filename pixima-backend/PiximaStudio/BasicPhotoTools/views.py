@@ -14,6 +14,7 @@ from .serializerHandler import (
     FlipImageSerializerHandler,
     ResizeImageSerializerHandler,
     RotateImageSerializerHandler,
+    ContrastImageSerializerHandler,
 )
 
 
@@ -69,7 +70,7 @@ class ResizeToolView(APIView):
 class ContrastToolView(APIView):
     def post(self, request, format=None):
         contrast_serializer = ContrastImageSerializer(data=request.data)
-        im_handler = ImageSerializerHandler(contrast_serializer)
+        im_handler = ContrastImageSerializerHandler(contrast_serializer)
         if im_handler.handle():
             return JsonResponse(
                 data={"code": HTTP_200_OK, "status": "OK", **contrast_serializer.data}

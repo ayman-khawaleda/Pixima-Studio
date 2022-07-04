@@ -202,3 +202,38 @@ class ResizeImageSerializerHandler(ImageSerializerHandler):
                 self.errors = {"Message": "Width And High Shouldn't Be Less Than 25px"}
                 return False
         return res
+
+class ContrastImageSerializerHandler(ImageSerializerHandler):
+    def __init__(
+        self,
+        serializer: serializer.ImageHandlerSerializer,
+        preview_optinos: list = None,
+    ) -> None:
+        super().__init__(serializer, preview_optinos)
+    def check_contrast_range(self):
+        contrast = self.serializer.data['Contrast']
+        if -100 > contrast or contrast > 100:
+            return False
+        return True
+    def check_brightness_range(self):
+        brightness = self.serializer.data['Brightness']
+        if -100 > brightness or brightness > 100:
+            return False
+        return True
+
+    def handle(self) -> bool:
+        res = super().handle()
+        if res:
+            if (
+                self.serializer.data["Contrast"] is None
+                or self.serializer.data["Brightness"] is None
+            ):
+                self.errors = {"Message": "Contrast And Brightness Can't be Empty"}
+                return False
+            if not self.check_contrast_range() :
+                self.errors = {"Message": "Contrast Should Be In Range [-100,100]"}
+                return False
+            if not self.check_brightness_range() :
+                self.errors = {"Message": "Brightness Should Be In Range [-100,100]"}
+                return False
+        return res
