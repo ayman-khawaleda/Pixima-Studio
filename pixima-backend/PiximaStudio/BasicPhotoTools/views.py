@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.status import HTTP_200_OK,HTTP_400_BAD_REQUEST
 from django.http import JsonResponse
 from .serializer import CropImageSerializer
-from .serializerHandler import ImageSerializerHandler
+from .serializerHandler import ImageSerializerHandler,CropImageSerializerHandler
 
 def bad_request(errors:dict):
     return JsonResponse(
@@ -17,7 +17,7 @@ class CropToolView(APIView):
 
     def post(self,request,format=None):
         crop_serializer = CropImageSerializer(data=request.data)
-        im_handler = ImageSerializerHandler(crop_serializer)
+        im_handler = CropImageSerializerHandler(crop_serializer)
         if im_handler.handle():
             return JsonResponse(
                 data={

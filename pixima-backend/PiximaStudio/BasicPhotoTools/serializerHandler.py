@@ -71,3 +71,58 @@ class ImageSerializerHandler(SerializerHandler):
         if not res:
             self.errors = self.serializer.errors
         return res
+class CropImageSerializerHandler(ImageSerializerHandler):
+    def __init__(
+        self,
+        serializer: serializer.CropImageSerializer,
+        preview_optinos: list = None,
+        ratio_options: list = None,
+    ) -> None:
+        super().__init__(serializer, preview_optinos)
+        if ratio_options is None:
+            self.ratio_options = ["1:1", "4:3", "5:4", "9:16", "16:9"]
+
+    def all_cords(self):
+        return (
+            True
+            if (
+                self.serializer.data["X1"] == -1
+                and self.serializer.data["X2"] == -1
+                and self.serializer.data["Y1"] == -1
+                and self.serializer.data["Y2"] == -1
+            )
+            else False
+        )
+
+    def correct_sort_cords(self):
+        cords = [
+            self.serializer.data["X1"],
+            self.serializer.data["X2"],
+            self.serializer.data["Y1"],
+            self.serializer.data["Y2"],
+        ]
+        for i, val in enumerate(cords):
+            if val is None:
+                return False
+            if val < 0:
+                cords[i] = 0
+        return True if cords[0] < cords[1] and cords[2] < cords[3] else False
+
+    def handle(self) -> bool:
+        res = super().handle()
+        if res:
+            if self.all_cords() and self.serializer.data["Ratio"] is None:
+                self.errors = {"Message": "Provide Either [X1,X2,Y1,Y2] Or Ratio"}
+                return False
+            if (
+                self.serializer.data["Ratio"] not in self.ratio_options
+                and self.serializer.data["Ratio"] is not None
+            ):
+                self.errors = {
+                    "Message": f"Ratio Should Be One Of The Values {self.ratio_options}"
+                }
+                return False
+            if not self.correct_sort_cords() and self.serializer.data["Ratio"] is None:
+                self.errors = {"Message": "Error In [X1,X2,Y1,Y2] Values"}
+                return False
+        return res
