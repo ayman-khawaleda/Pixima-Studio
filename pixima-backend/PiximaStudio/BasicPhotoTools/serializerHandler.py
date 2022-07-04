@@ -143,13 +143,40 @@ class FlipImageSerializerHandler(ImageSerializerHandler):
         res = super().handle()
         if res:
             if self.serializer.data["Direction"] is None:
-                self.errors = {
-                    "Message": "Direction Can't Be Empty"
-                }
+                self.errors = {"Message": "Direction Can't Be Empty"}
                 return False
             if self.serializer.data["Direction"] not in self.direction_options:
                 self.errors = {
                     "Message": f"Direction Should Be One of The Values {self.direction_options}"
                 }
+                return False
+        return res
+
+
+class RotateImageSerializerHandler(ImageSerializerHandler):
+    def __init__(
+        self,
+        serializer: serializer.ImageHandlerSerializer,
+        preview_optinos: list = None,
+    ) -> None:
+        super().__init__(serializer, preview_optinos)
+
+    def angle_range_check(self):
+        angle = self.serializer.data["Angle"]
+        if 0 > angle or angle > 360:
+            return False
+        return True
+
+    def handle(self) -> bool:
+        res = super().handle()
+        if res:
+            if (
+                self.serializer.data["Angle"] is None
+                or self.serializer.data["ClockWise"] is None
+            ):
+                self.errors = {"Message": "Angle And ClockWise Can't be Empty"}
+                return False
+            if not self.angle_range_check():
+                self.errors = {"Message": "Angle Should Be In Rnage [0:360]"}
                 return False
         return res
