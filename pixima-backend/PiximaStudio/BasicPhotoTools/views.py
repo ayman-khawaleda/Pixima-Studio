@@ -7,6 +7,7 @@ from .serializer import (
     FlipImageSerializer,
     ResizeImageSerializer,
     RotateImageSerializer,
+    SaturationImageSerializer,
 )
 from .serializerHandler import (
     ImageSerializerHandler,
@@ -74,5 +75,15 @@ class ContrastToolView(APIView):
         if im_handler.handle():
             return JsonResponse(
                 data={"code": HTTP_200_OK, "status": "OK", **contrast_serializer.data}
+            )
+        return bad_request(im_handler.errors)
+
+class SaturationToolView(APIView):
+    def post(self, request, format=None):
+        saturation_serializer = SaturationImageSerializer(data=request.data)
+        im_handler = ImageSerializerHandler(saturation_serializer)
+        if im_handler.handle():
+            return JsonResponse(
+                data={"code": HTTP_200_OK, "status": "OK", **saturation_serializer.data}
             )
         return bad_request(im_handler.errors)
