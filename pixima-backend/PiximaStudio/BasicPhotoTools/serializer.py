@@ -29,3 +29,7 @@ class ResizeImageSerializer(ImageHandlerSerializer):
 class ContrastImageSerializer(ImageHandlerSerializer):
     Contrast = IntegerField(default=1,required=False,allow_null=True)
     Brightness = IntegerField(default=0,required=False,allow_null=True)
+
+class SaturationImageSerializer(ImageHandlerSerializer):
+    Saturation = IntegerField(default=0,required=False,allow_null=True)
+    Hue = IntegerField(default=0,required=False,allow_null=True)
