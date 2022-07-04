@@ -24,7 +24,7 @@ class RotateImageSerializer(ImageHandlerSerializer):
 
 class ResizeImageSerializer(ImageHandlerSerializer):
     Width = IntegerField(default=720,required=False,allow_null=True)
-    High = IntegerField(default=-480,required=False,allow_null=True)
+    High = IntegerField(default=480,required=False,allow_null=True)
 
 
 class ContrastImageSerializer(ImageHandlerSerializer):
