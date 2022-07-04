@@ -11,11 +11,11 @@ class CropImageSerializer(ImageHandlerSerializer):
     X2 = IntegerField(default=-1,required=False,allow_null=True)
     Y1 = IntegerField(default=-1,required=False,allow_null=True)
     Y2 = IntegerField(default=-1,required=False,allow_null=True)
-    Ratio = CharField(defualt='1:1',required=False,allow_null=True)
+    Ratio = CharField(default='1:1',required=False,allow_null=True)
 
 
 class FlipImageSerializer(ImageHandlerSerializer):
-    Direction = CharField(defualt='Hor',required=False,allow_null=True)
+    Direction = CharField(default='Hor',required=False,allow_null=True)
 
 class RotateImageSerializer(ImageHandlerSerializer):
     Angle = IntegerField(default=90,required=False,allow_null=True)
