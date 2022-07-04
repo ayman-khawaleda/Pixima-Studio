@@ -16,3 +16,7 @@ class CropImageSerializer(ImageHandlerSerializer):
 
 class FlipImageSerializer(ImageHandlerSerializer):
     Direction = CharField(defualt='Hor',required=False,allow_null=True)
+
+class RotateImageSerializer(ImageHandlerSerializer):
+    Angle = IntegerField(default=90,required=False,allow_null=True)
+    ClockWise = BooleanField(default=True,required=False,allow_null=True)
