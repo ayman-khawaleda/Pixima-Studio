@@ -51,7 +51,11 @@ class CropTool(PhotoTool):
 
     def apply(self, *args, **kwargs):
         if self.check_cords():
-            print("Cords: ", self.cords)
+            x1,x2,y1,y2 = self.cords
+            croped_img = self.Image.copy()
+            croped_img = croped_img[x1:x2,y1:y2,:]
+            self.Image = croped_img
+            
         else:
             value = self.ratio
             aspect_ratio = 1
