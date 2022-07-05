@@ -254,7 +254,7 @@ class SaturationImageSerializerHandler(ImageSerializerHandler):
         super().__init__(serializer, preview_optinos)
     def check_saturation_range(self):
         saturation = self.serializer.data['Saturation']
-        if -100 > saturation or saturation > 100:
+        if 0 > saturation or saturation > 100:
             return False
         return True
 
@@ -268,6 +268,6 @@ class SaturationImageSerializerHandler(ImageSerializerHandler):
                 self.errors = {"Message": "Saturation Can't be Empty"}
                 return False
             if not self.check_saturation_range() :
-                self.errors = {"Message": "Saturation Should Be In Range [-100,100]"}
+                self.errors = {"Message": "Saturation Should Be In Range [0,100]"}
                 return False
         return res
