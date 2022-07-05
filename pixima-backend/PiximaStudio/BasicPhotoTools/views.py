@@ -266,6 +266,21 @@ class SaturationToolView(APIView):
         saturation_serializer = SaturationImageSerializer(data=request.data)
         im_handler = SaturationImageSerializerHandler(saturation_serializer)
         try:
+            if "Image" in request.data.keys() and request.data["Image"] != "":
+                file = request.data["Image"].file
+                saturation_tool.file2image(file).add_quality_dict().add_preview(
+                    request.data["Preview"]
+                ).add_saturation(request.data["Saturation"])()
+                image_path = saturation_tool.save_image()
+                imagepreview_path = saturation_tool.get_preview()
+                return JsonResponse(
+                    data={
+                        "code": HTTP_200_OK,
+                        "status": "OK",
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                    }
+                )
             if im_handler.handle():
                 image_path = (
                     saturation_tool.serializer2data(saturation_serializer)
