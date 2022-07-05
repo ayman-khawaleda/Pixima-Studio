@@ -92,7 +92,7 @@ class FlipTool(PhotoTool):
     def __call__(self, *args, **kwargs):
         return self.apply(*args, **kwargs)
 
-    def add_direction(self, dir: str = None, serializer=None):
+    def add_direction(self, dir: str = "Hor", serializer=None):
         if serializer is not None:
             dir = serializer.data["Direction"]
         self.direction = dir
@@ -107,3 +107,35 @@ class FlipTool(PhotoTool):
         elif self.direction == "Ver":
             self.Image = cv2.flip(self.Image, 1)
         return self
+
+
+class RotatTool(PhotoTool):
+    def __init__(self, angle: int = 90, clock_wise: bool = False) -> None:
+        self.angle = angle
+        self.clock_wise = clock_wise
+
+    def __call__(self, *args, **kwargs):
+        return self.apply()
+
+    def add_angle(self, angle: str = 90, serializer=None):
+        if serializer is not None:
+            angle = serializer.data["Angle"]
+        self.angle = angle
+        return self
+
+    def add_clock_wise(self, clock_wise: bool = False, serializer=None):
+        if serializer is not None:
+            clock_wise = serializer.data["ClockWise"]
+        self.clock_wise = clock_wise
+        return self
+
+    def serializer2data(self, serializer):
+        return (
+            super()
+            .serializer2data(serializer)
+            .add_angle(serializer=serializer)
+            .add_clock_wise(serializer=serializer)
+        )
+
+    def apply(self, *args, **kwargs):
+        pass
