@@ -208,6 +208,7 @@ class Resize(PhotoTool):
         return super().serializer2data(serializer)\
             .add_high(serializer=serializer)\
             .add_width(serializer=serializer)
-            
+
     def apply(self, *args, **kwargs):
+        self.Image = cv2.resize(self.Image,(self.high,self.width),interpolation=cv2.INTER_CUBIC)
         return self
