@@ -18,6 +18,23 @@ class CropToolView(APIView):
         crop_tool = CropTool()
         crop_serializer = CropImageSerializer(data=request.data)
         im_handler = CropImageSerializerHandler(crop_serializer)
+        if "Image" in request.data.keys() and request.data["Image"] != "":
+                file = request.data["Image"].file
+                crop_tool.file2image(file)\
+                    .add_preview(request.data["Preview"])\
+                    .add_ratio(request.data["Ratio"])\
+                    .add_cords(serializer=request)\
+                    .apply()
+                image_path = crop_tool.save_image()
+                imagepreview_path = crop_tool.get_preview()
+                return JsonResponse(
+                        data={
+                            "code": HTTP_200_OK,
+                            "status": "OK",
+                            "Image": image_path,
+                            "ImagePreview": imagepreview_path,
+                        }
+                    )
         if im_handler.handle():
             try:
                 image_path = (
