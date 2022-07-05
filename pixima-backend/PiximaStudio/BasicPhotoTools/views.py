@@ -209,6 +209,23 @@ class ContrastToolView(APIView):
         contrast_serializer = ContrastImageSerializer(data=request.data)
         im_handler = ContrastImageSerializerHandler(contrast_serializer)
         try:
+            if "Image" in request.data.keys() and request.data["Image"] != "":
+                file = request.data["Image"].file
+                contrast_tool.file2image(file)\
+                .add_quality_dict()\
+                    .add_preview(request.data["Preview"])\
+                        .add_brightness(request.data["Brightness"])\
+                            .add_contrast(request.data["Contrast"])()
+                image_path = contrast_tool.save_image()
+                imagepreview_path = contrast_tool.get_preview()
+                return JsonResponse(
+                    data={
+                        "code": HTTP_200_OK,
+                        "status": "OK",
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                    }
+                )
             if im_handler.handle():
                 image_path = (
                     contrast_tool.serializer2data(contrast_serializer)
