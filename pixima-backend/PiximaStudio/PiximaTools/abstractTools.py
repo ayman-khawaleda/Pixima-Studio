@@ -6,13 +6,19 @@ from PIL import Image
 import os
 import numpy as np
 from uuid import uuid4
+
+
 class Tool(ABC):
     @classmethod
     @abstractmethod
     def apply(self, *args, **kwargs):
         pass
 
-    def file2image(self,file):
+    def add_quality_dict(self, quality_dict: dict = {"High": 90, "Mid": 60, "Low": 30}):
+        self.quality = quality_dict
+        return self
+
+    def file2image(self, file):
         img = Image.open(file)
         self.Image = np.array(img)
         self.add_id(uuid4())
@@ -84,11 +90,11 @@ class Tool(ABC):
             raise Exception("Error In Saving Image")
 
     def get_preview(self):
-        quality = 90
+        quality = self.quality["High"]
         if self.preview == "Low":
-            quality = 40
+            quality = self.quality["Low"]
         elif self.preview == "Mid":
-            quality = 70
+            quality = self.quality["Mid"]
 
         if quality == 90:
             return os.path.join(
@@ -101,7 +107,10 @@ class Tool(ABC):
         if not os.path.exists(dir_path):
             os.mkdir(dir_path)
         image_path = os.path.join(
-            MEDIA_ROOT, "Temp", str(self.directory_id), f"{self.lastidx}_{self.preview}.jpg"
+            MEDIA_ROOT,
+            "Temp",
+            str(self.directory_id),
+            f"{self.lastidx}_{self.preview}.jpg",
         )
         Image.fromarray(self.Image).save(image_path, optimize=True, quality=quality)
         return os.path.join(

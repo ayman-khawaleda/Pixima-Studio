@@ -26,7 +26,7 @@ class CropToolView(APIView):
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
                 file = request.data["Image"].file
-                crop_tool.file2image(file).add_preview(
+                crop_tool.file2image(file).add_quality_dict().add_preview(
                     request.data["Preview"]
                 ).add_ratio(request.data["Ratio"]).add_cords(serializer=request).apply()
                 image_path = crop_tool.save_image()
@@ -42,6 +42,7 @@ class CropToolView(APIView):
             if im_handler.handle():
                 image_path = (
                     crop_tool.serializer2data(serializer=crop_serializer)
+                    .add_quality_dict()
                     .read_image()
                     .apply()
                     .save_image()
@@ -68,7 +69,7 @@ class FlipToolView(APIView):
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
                 file = request.data["Image"].file
-                flip_tool.file2image(file).add_preview(
+                flip_tool.file2image(file).add_quality_dict().add_preview(
                     request.data["Preview"]
                 ).add_direction(request.data["Direction"]).apply()
                 image_path = flip_tool.save_image()
@@ -84,6 +85,7 @@ class FlipToolView(APIView):
             if im_handler.handle():
                 image_path = (
                     flip_tool.serializer2data(flip_serializer)
+                    .add_quality_dict()
                     .read_image()()
                     .save_image()
                 )
