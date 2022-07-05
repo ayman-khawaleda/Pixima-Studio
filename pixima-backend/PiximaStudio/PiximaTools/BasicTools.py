@@ -99,3 +99,9 @@ class FlipTool(PhotoTool):
 
     def serializer2data(self, serializer):
         return super().serializer2data(serializer).add_direction(serializer)
+
+    def apply(self,*args,**kwargs):
+        if dir == 'Hor':
+            self.Image = cv2.flip(self.Image, 0)
+        elif dir == 'Ver':
+            self.Image = cv2.flip(self.Image, 1)
