@@ -221,3 +221,46 @@ class ResizeTool(PhotoTool):
             self.Image, (self.high, self.width), interpolation=cv2.INTER_CUBIC
         )
         return self
+
+class ContrastTool(PhotoTool):
+    def __init__(self, contrast=0, brightness=0) -> None:
+        self.contrast = contrast
+        self.brightness = brightness
+
+    def __call__(self, *args, **kwargs):
+        return self.apply(*args, **kwargs)
+
+    def add_brightness(self, brightness=0, serializer=None):
+        if serializer is not None:
+            brightness = serializer.data["Brightness"]
+        if type(brightness) == str and brightness == "":
+            brightness = 0
+        if type(brightness) != int:
+            brightness = int(brightness)
+        if brightness < -100 or brightness > 100:
+            brightness = 0
+        self.brightness = brightness
+        return self
+
+    def add_contrast(self, contrast=0, serializer=None):
+        if serializer is not None:
+            contrast = serializer.data["Contrast"]
+        if type(contrast) == str and contrast == "":
+            contrast = 0
+        if type(contrast) != int:
+            contrast = int(contrast)
+        if contrast < -100 or contrast > 100:
+            contrast = 0
+        self.contrast = contrast
+        return self
+
+    def serializer2data(self, serializer):
+        return (
+            super()
+            .serializer2data(serializer)
+            .add_brightness(serializer=serializer)
+            .add_contrast(serializer=serializer)
+        )
+
+    def apply(self, *args, **kwargs):
+        return self
