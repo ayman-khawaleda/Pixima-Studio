@@ -19,7 +19,14 @@ from .serializerHandler import (
     ContrastImageSerializerHandler,
     SaturationImageSerializerHandler,
 )
-from PiximaTools.BasicTools import ContrastTool, CropTool, FlipTool, ResizeTool, RotatTool
+from PiximaTools.BasicTools import (
+    ContrastTool,
+    CropTool,
+    FlipTool,
+    ResizeTool,
+    RotatTool,
+    SaturationTool,
+)
 
 
 def bad_request(errors: dict):
@@ -121,13 +128,13 @@ class RotateToolView(APIView):
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
                 file = request.data["Image"].file
-                rotate_tool.file2image(file)\
-                .add_quality_dict()\
-                .add_preview(request.data["Preview"])\
-                .add_angle(request.data["Angle"])\
-                .add_clock_wise(request.data["ClockWise"])\
-                .add_area_mode(request.data["AreaMode"])\
-                .apply()
+                rotate_tool.file2image(file).add_quality_dict().add_preview(
+                    request.data["Preview"]
+                ).add_angle(request.data["Angle"]).add_clock_wise(
+                    request.data["ClockWise"]
+                ).add_area_mode(
+                    request.data["AreaMode"]
+                ).apply()
                 image_path = rotate_tool.save_image()
                 imagepreview_path = rotate_tool.get_preview()
                 return JsonResponse(
@@ -168,12 +175,11 @@ class ResizeToolView(APIView):
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
                 file = request.data["Image"].file
-                resize_tool.file2image(file)\
-                .add_quality_dict()\
-                .add_preview(request.data["Preview"])\
-                .add_high(request.data["High"])\
-                .add_width(request.data["Width"])\
-                .apply()
+                resize_tool.file2image(file).add_quality_dict().add_preview(
+                    request.data["Preview"]
+                ).add_high(request.data["High"]).add_width(
+                    request.data["Width"]
+                ).apply()
                 image_path = resize_tool.save_image()
                 imagepreview_path = resize_tool.get_preview()
                 return JsonResponse(
@@ -205,6 +211,7 @@ class ResizeToolView(APIView):
 
         return bad_request(im_handler.errors)
 
+
 class ContrastToolView(APIView):
     def post(self, request, format=None):
         contrast_tool = ContrastTool()
@@ -213,11 +220,11 @@ class ContrastToolView(APIView):
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
                 file = request.data["Image"].file
-                contrast_tool.file2image(file)\
-                .add_quality_dict()\
-                    .add_preview(request.data["Preview"])\
-                        .add_brightness(request.data["Brightness"])\
-                            .add_contrast(request.data["Contrast"])()
+                contrast_tool.file2image(file).add_quality_dict().add_preview(
+                    request.data["Preview"]
+                ).add_brightness(request.data["Brightness"]).add_contrast(
+                    request.data["Contrast"]
+                )()
                 image_path = contrast_tool.save_image()
                 imagepreview_path = contrast_tool.get_preview()
                 return JsonResponse(
@@ -246,17 +253,38 @@ class ContrastToolView(APIView):
                     }
                 )
         except Exception as e:
-            print(e)
-            return bad_request({"Message": "Error During Contrast&Brightness Adjustment Process"})
-        
+            return bad_request(
+                {"Message": "Error During Contrast&Brightness Adjustment Process"}
+            )
+
         return bad_request(im_handler.errors)
+
 
 class SaturationToolView(APIView):
     def post(self, request, format=None):
+        saturation_tool = SaturationTool()
         saturation_serializer = SaturationImageSerializer(data=request.data)
         im_handler = SaturationImageSerializerHandler(saturation_serializer)
-        if im_handler.handle():
-            return JsonResponse(
-                data={"code": HTTP_200_OK, "status": "OK", **saturation_serializer.data}
+        try:
+            if im_handler.handle():
+                image_path = (
+                    saturation_tool.serializer2data(saturation_serializer)
+                    .add_quality_dict()
+                    .read_image()
+                    .apply()
+                    .save_image()
+                )
+                imagepreview_path = saturation_tool.get_preview()
+                return JsonResponse(
+                    data={
+                        "code": HTTP_200_OK,
+                        "status": "OK",
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                    }
+                )
+        except Exception as e:
+            return bad_request(
+                {"Message": "Error During Saturation&Hue Adjustment Process"}
             )
         return bad_request(im_handler.errors)
