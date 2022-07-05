@@ -2,7 +2,7 @@ from abc import abstractmethod
 from PiximaTools.abstractTools import Tool
 import numpy as np
 import cv2
-
+from skimage.transform import rotate
 
 class PhotoTool(Tool):
     @classmethod
@@ -129,13 +129,24 @@ class RotatTool(PhotoTool):
         self.clock_wise = clock_wise
         return self
 
+    def add_area_mode(self,mode:str="constant",serializer=None):
+        if serializer is not None:
+            mode = serializer.data["AreaMode"]
+        self.add_area_mode = mode
+        return self
+
     def serializer2data(self, serializer):
         return (
             super()
             .serializer2data(serializer)
             .add_angle(serializer=serializer)
             .add_clock_wise(serializer=serializer)
+            .add_area_mode(serializer=serializer)
         )
 
     def apply(self, *args, **kwargs):
-        pass
+        angle = self.add_angle
+        if self.clock_wise:
+            angle *=-1
+        self.Image = rotate(self.Image,angle=angle,resize=True,mode=self.add_area_mode)
+        return self
