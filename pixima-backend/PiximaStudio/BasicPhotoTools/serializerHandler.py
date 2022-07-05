@@ -158,8 +158,12 @@ class RotateImageSerializerHandler(ImageSerializerHandler):
         self,
         serializer: serializer.ImageHandlerSerializer,
         preview_optinos: list = None,
+        area_mode:list = None
     ) -> None:
         super().__init__(serializer, preview_optinos)
+        if area_mode is None:
+            area_mode = ['constant', 'edge', 'symmetric', 'reflect', 'wrap']
+        self.area_mode = area_mode
 
     def angle_range_check(self):
         angle = self.serializer.data["Angle"]
@@ -179,6 +183,9 @@ class RotateImageSerializerHandler(ImageSerializerHandler):
             if not self.angle_range_check():
                 self.errors = {"Message": "Angle Should Be In Rnage [0:360]"}
                 return False
+            if not self.serializer.data["AreaMode"] in self.area_mode:
+                self.errors = {"Message": f"AreaMode Should Be one Of The Values {self.area_mode}"}
+                return False                
         return res
 
 class ResizeImageSerializerHandler(ImageSerializerHandler):
@@ -212,7 +219,7 @@ class ContrastImageSerializerHandler(ImageSerializerHandler):
         super().__init__(serializer, preview_optinos)
     def check_contrast_range(self):
         contrast = self.serializer.data['Contrast']
-        if -100 > contrast or contrast > 100:
+        if 0 > contrast or contrast > 100:
             return False
         return True
     def check_brightness_range(self):
@@ -231,7 +238,7 @@ class ContrastImageSerializerHandler(ImageSerializerHandler):
                 self.errors = {"Message": "Contrast And Brightness Can't be Empty"}
                 return False
             if not self.check_contrast_range() :
-                self.errors = {"Message": "Contrast Should Be In Range [-100,100]"}
+                self.errors = {"Message": "Contrast Should Be In Range [0,100]"}
                 return False
             if not self.check_brightness_range() :
                 self.errors = {"Message": "Brightness Should Be In Range [-100,100]"}

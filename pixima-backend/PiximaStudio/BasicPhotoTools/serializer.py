@@ -1,11 +1,14 @@
 from rest_framework.serializers import Serializer,UUIDField,ImageField,CharField,IntegerField,BooleanField
-
+from Core.models import UploadImageModel
 
 class ImageHandlerSerializer(Serializer):
-    id = UUIDField(default='',required=False,allow_null=True,format='hex_verbose')
+
+    id = UUIDField(required=False,allow_null=True,format='hex_verbose')
     ImageIndex = IntegerField(default=0,required=False,allow_null=True)
     Image = ImageField(default='',required=False,allow_null=True)
     Preview = CharField(default='None',required=False)
+
+
 
 class CropImageSerializer(ImageHandlerSerializer):
     X1 = IntegerField(default=-1,required=False,allow_null=True)
@@ -21,6 +24,7 @@ class FlipImageSerializer(ImageHandlerSerializer):
 class RotateImageSerializer(ImageHandlerSerializer):
     Angle = IntegerField(default=90,required=False,allow_null=True)
     ClockWise = BooleanField(default=True,required=False,allow_null=True)
+    AreaMode = CharField(default='constant',required=False,allow_null=True)
 
 class ResizeImageSerializer(ImageHandlerSerializer):
     Width = IntegerField(default=720,required=False,allow_null=True)
@@ -28,7 +32,7 @@ class ResizeImageSerializer(ImageHandlerSerializer):
 
 
 class ContrastImageSerializer(ImageHandlerSerializer):
-    Contrast = IntegerField(default=1,required=False,allow_null=True)
+    Contrast = IntegerField(default=50,required=False,allow_null=True)
     Brightness = IntegerField(default=0,required=False,allow_null=True)
 
 class SaturationImageSerializer(ImageHandlerSerializer):
