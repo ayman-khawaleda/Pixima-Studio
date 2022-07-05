@@ -175,7 +175,7 @@ class RotatTool(PhotoTool):
             self.Image = self.normalize8(self.Image)
         return self
 
-class Resize(PhotoTool):
+class ResizeTool(PhotoTool):
     
     def __init__(self,width=720,high=480) -> None:
         self.width = width

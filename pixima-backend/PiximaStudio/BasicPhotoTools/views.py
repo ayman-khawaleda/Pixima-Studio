@@ -16,7 +16,7 @@ from .serializerHandler import (
     ResizeImageSerializerHandler,
     RotateImageSerializerHandler,
 )
-from PiximaTools.BasicTools import CropTool, FlipTool, RotatTool
+from PiximaTools.BasicTools import CropTool, FlipTool, ResizeTool, RotatTool
 
 
 def bad_request(errors: dict):
@@ -159,10 +159,27 @@ class RotateToolView(APIView):
 
 class ResizeToolView(APIView):
     def post(self, request, format=None):
+        resize_tool = ResizeTool()
         resize_serializer = ResizeImageSerializer(data=request.data)
         im_handler = ResizeImageSerializerHandler(resize_serializer)
-        if im_handler.handle():
-            return JsonResponse(
-                data={"code": HTTP_200_OK, "status": "OK", **resize_serializer.data}
-            )
+        try:
+            if im_handler.handle():
+                image_path = (
+                    resize_tool.serializer2data(resize_serializer)
+                    .add_quality_dict()
+                    .read_image()()
+                    .save_image()
+                )
+                imagepreview_path = resize_tool.get_preview()
+                return JsonResponse(
+                    data={
+                        "code": HTTP_200_OK,
+                        "status": "OK",
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                    }
+                )
+        except Exception as e:
+            return bad_request({"Message": "Error During Resize Process"})
+
         return bad_request(im_handler.errors)
