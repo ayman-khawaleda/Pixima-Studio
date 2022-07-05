@@ -14,7 +14,7 @@ class Tool(ABC):
     def apply(self, *args, **kwargs):
         pass
 
-    def add_quality_dict(self, quality_dict: dict = {"High": 90, "Mid": 60, "Low": 30}):
+    def add_quality_dict(self, quality_dict: dict = {"High": 70, "Mid": 40, "Low": 15}):
         self.quality = quality_dict
         return self
 

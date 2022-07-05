@@ -5,6 +5,7 @@ import cv2
 from skimage.transform import rotate
 import PIL
 
+
 class PhotoTool(Tool):
     @classmethod
     @abstractmethod
@@ -118,21 +119,27 @@ class RotatTool(PhotoTool):
     def __call__(self, *args, **kwargs):
         return self.apply()
 
-    def add_angle(self, angle: str = 90, serializer=None):
+    def add_angle(self, angle=90, serializer=None):
         if serializer is not None:
             angle = serializer.data["Angle"]
+        if angle == "":
+            angle = 90
+        if type(angle) == str:
+            angle = int(angle)
         self.angle = angle
         return self
 
-    def add_clock_wise(self, clock_wise: bool = False, serializer=None):
+    def add_clock_wise(self, clock_wise=False, serializer=None):
         if serializer is not None:
             clock_wise = serializer.data["ClockWise"]
-        self.clock_wise = clock_wise
+        self.clock_wise = bool(clock_wise)
         return self
 
-    def add_area_mode(self,mode:str="constant",serializer=None):
+    def add_area_mode(self, mode: str = "constant", serializer=None):
         if serializer is not None:
             mode = serializer.data["AreaMode"]
+        if mode == "":
+            mode = "constant"
         self.add_area_mode = mode
         return self
 
@@ -145,21 +152,25 @@ class RotatTool(PhotoTool):
             .add_area_mode(serializer=serializer)
         )
 
-    def normalize8(self,I):
+    def normalize8(self, I):
         mn = I.min()
         mx = I.max()
         mx -= mn
-        I = ((I - mn)/mx) * 255
+        I = ((I - mn) / mx) * 255
         return I.astype(np.uint8)
 
     def apply(self, *args, **kwargs):
         angle = self.angle
         if self.clock_wise:
-            angle *=-1
+            angle *= -1
         if self.add_area_mode == "constant":
-            img = PIL.Image.fromarray(self.Image).rotate(angle,PIL.Image.BILINEAR,expand=True)
+            img = PIL.Image.fromarray(self.Image).rotate(
+                angle, PIL.Image.BILINEAR, expand=True
+            )
             self.Image = np.array(img)
         else:
-            self.Image = rotate(self.Image,angle=angle,resize=True,mode=self.add_area_mode)
+            self.Image = rotate(
+                self.Image, angle=angle, resize=True, mode=self.add_area_mode
+            )
             self.Image = self.normalize8(self.Image)
         return self
