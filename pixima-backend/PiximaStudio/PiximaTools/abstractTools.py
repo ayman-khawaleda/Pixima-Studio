@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import math
 from PiximaStudio.settings import MEDIA_ROOT, MEDIA_URL
 from skimage.io import imsave, imread
+from PIL import Image
 import os
 
 
@@ -14,7 +15,11 @@ class Tool(ABC):
     def serializer2data(self, serializer):
         self.add_id(serializer.data["id"]).add_image_index(
             serializer.data["ImageIndex"]
-        )
+        ).add_preview(serializer.data["Preview"])
+        return self
+
+    def add_preview(self, preview):
+        self.preview = preview
         return self
 
     def add_id(self, id):
@@ -60,15 +65,43 @@ class Tool(ABC):
             self.quality = 90
         try:
             sub_path = os.path.join(MEDIA_ROOT, "Images", str(self.directory_id))
-            lastidx = len(os.listdir(sub_path))
-            full_path = os.path.join(sub_path, f"{lastidx}.jpg")
+            self.lastidx = len(os.listdir(sub_path))
+            full_path = os.path.join(sub_path, f"{self.lastidx}.jpg")
             imsave(full_path, self.Image, quality=self.quality)
             image_path = os.path.join(
-                MEDIA_URL, "Images", str(self.directory_id), f"{lastidx}.jpg"
+                MEDIA_URL, "Images", str(self.directory_id), f"{self.lastidx}.jpg"
             )
             return image_path
         except Exception as e:
             raise Exception("Error In Saving Image")
+
+    def get_preview(self):
+        quality = 90
+        if self.preview == "Low":
+            quality = 40
+        elif self.preview == "Mid":
+            quality = 70
+
+        if quality == 90:
+            return os.path.join(
+                MEDIA_URL, "Images", str(self.directory_id), f"{self.lastidx}.jpg"
+            )
+        if self.lastidx is None:
+            raise Exception("Please Call Save Image First!!")
+
+        dir_path = os.path.join(MEDIA_ROOT, "Temp", str(self.directory_id))
+        if not os.path.exists(dir_path):
+            os.mkdir(dir_path)
+        image_path = os.path.join(
+            MEDIA_ROOT, "Temp", str(self.directory_id), f"{self.lastidx}_{self.preview}.jpg"
+        )
+        Image.fromarray(self.Image).save(image_path, optimize=True, quality=quality)
+        return os.path.join(
+            MEDIA_URL,
+            "Temp",
+            str(self.directory_id),
+            f"{self.lastidx}_{self.preview}.jpg",
+        )
 
     def normaliz_pixel(self, normalized_x, normalized_y, image_width, image_height):
         def is_valid_normalized_value(value: float):

@@ -19,13 +19,21 @@ class CropToolView(APIView):
         if im_handler.handle():
             crop_tool = CropTool()
             try:
-                image_path = crop_tool\
-                    .serializer2data(serializer=crop_serializer)\
-                    .read_image()().save_image()
-                print(image_path)
+                image_path = (
+                    crop_tool.serializer2data(serializer=crop_serializer)
+                    .read_image()
+                    .apply()
+                    .save_image()
+                )
+                imagepreview_path = crop_tool.get_preview()
                 return JsonResponse(
-                    data={"code": HTTP_200_OK, "status": "OK", "Image":image_path}
+                    data={
+                        "code": HTTP_200_OK,
+                        "status": "OK",
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                    }
                 )
             except Exception as e:
-                return bad_request({"Message":"Error During Crop Process"})
+                return bad_request({"Message": "Error During Crop Process"})
         return bad_request(im_handler.errors)
