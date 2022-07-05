@@ -1,3 +1,4 @@
+from django.forms import ImageField
 from rest_framework.views import APIView
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from django.http import JsonResponse
@@ -14,10 +15,10 @@ def bad_request(errors: dict):
 
 class CropToolView(APIView):
     def post(self, request, format=None):
+        crop_tool = CropTool()
         crop_serializer = CropImageSerializer(data=request.data)
         im_handler = CropImageSerializerHandler(crop_serializer)
         if im_handler.handle():
-            crop_tool = CropTool()
             try:
                 image_path = (
                     crop_tool.serializer2data(serializer=crop_serializer)

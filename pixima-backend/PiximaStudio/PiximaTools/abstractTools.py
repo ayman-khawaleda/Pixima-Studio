@@ -4,13 +4,19 @@ from PiximaStudio.settings import MEDIA_ROOT, MEDIA_URL
 from skimage.io import imsave, imread
 from PIL import Image
 import os
-
-
+import numpy as np
+from uuid import uuid4
 class Tool(ABC):
     @classmethod
     @abstractmethod
     def apply(self, *args, **kwargs):
         pass
+
+    def file2image(self,file):
+        img = Image.open(file)
+        self.Image = np.array(img)
+        self.add_id(uuid4())
+        return self
 
     def serializer2data(self, serializer):
         self.add_id(serializer.data["id"]).add_image_index(
@@ -65,6 +71,8 @@ class Tool(ABC):
             self.quality = 90
         try:
             sub_path = os.path.join(MEDIA_ROOT, "Images", str(self.directory_id))
+            if not os.path.exists(sub_path):
+                os.mkdir(sub_path)
             self.lastidx = len(os.listdir(sub_path))
             full_path = os.path.join(sub_path, f"{self.lastidx}.jpg")
             imsave(full_path, self.Image, quality=self.quality)

@@ -22,10 +22,10 @@ class CropTool(PhotoTool):
     def add_cords(self, X1=-1, X2=-1, Y1=-1, Y2=-1, serializer=None):
         if serializer is not None:
             X1, X2, Y1, Y2 = (
-                serializer.data["X1"],
-                serializer.data["X2"],
-                serializer.data["Y1"],
-                serializer.data["Y2"],
+                int(serializer.data["X1"]),
+                int(serializer.data["X2"]),
+                int(serializer.data["Y1"]),
+                int(serializer.data["Y2"]),
             )
         self.cords = [X1, X2, Y1, Y2]
         return self
