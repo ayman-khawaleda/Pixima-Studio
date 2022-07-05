@@ -152,12 +152,6 @@ class RotatTool(PhotoTool):
             .add_area_mode(serializer=serializer)
         )
 
-    def normalize8(self, I):
-        mn = I.min()
-        mx = I.max()
-        mx -= mn
-        I = ((I - mn) / mx) * 255
-        return I.astype(np.uint8)
 
     def apply(self, *args, **kwargs):
         angle = self.angle

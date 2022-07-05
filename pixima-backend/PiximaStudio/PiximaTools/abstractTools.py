@@ -119,7 +119,13 @@ class Tool(ABC):
             str(self.directory_id),
             f"{self.lastidx}_{self.preview}.jpg",
         )
-
+    def normalize8(self, I):
+        mn = I.min()
+        mx = I.max()
+        mx -= mn
+        I = ((I - mn) / mx) * 255
+        return I.astype(np.uint8)
+        
     def normaliz_pixel(self, normalized_x, normalized_y, image_width, image_height):
         def is_valid_normalized_value(value: float):
             return (value > 0 or math.isclose(0, value)) and (
