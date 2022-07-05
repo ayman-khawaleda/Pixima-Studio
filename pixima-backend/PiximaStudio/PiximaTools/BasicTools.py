@@ -263,4 +263,7 @@ class ContrastTool(PhotoTool):
         )
 
     def apply(self, *args, **kwargs):
+        alpha = self.contrast / 50
+        beta = int(self.brightness)
+        self.Image = cv2.convertScaleAbs(self.Image,alpha=alpha,beta=beta)
         return self

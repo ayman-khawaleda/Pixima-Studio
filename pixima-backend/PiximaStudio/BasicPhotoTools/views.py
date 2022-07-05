@@ -227,6 +227,7 @@ class ContrastToolView(APIView):
                     }
                 )
         except Exception as e:
+            print(e)
             return bad_request({"Message": "Error During Contrast&Brightness Adjustment Process"})
         
         return bad_request(im_handler.errors)
