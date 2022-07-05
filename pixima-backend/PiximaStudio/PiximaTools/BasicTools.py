@@ -3,6 +3,7 @@ from PiximaTools.abstractTools import Tool
 import numpy as np
 import cv2
 from skimage.transform import rotate
+import PIL
 
 class PhotoTool(Tool):
     @classmethod
@@ -144,9 +145,21 @@ class RotatTool(PhotoTool):
             .add_area_mode(serializer=serializer)
         )
 
+    def normalize8(self,I):
+        mn = I.min()
+        mx = I.max()
+        mx -= mn
+        I = ((I - mn)/mx) * 255
+        return I.astype(np.uint8)
+
     def apply(self, *args, **kwargs):
-        angle = self.add_angle
+        angle = self.angle
         if self.clock_wise:
             angle *=-1
-        self.Image = rotate(self.Image,angle=angle,resize=True,mode=self.add_area_mode)
+        if self.add_area_mode == "constant":
+            img = PIL.Image.fromarray(self.Image).rotate(angle,PIL.Image.BILINEAR,expand=True)
+            self.Image = np.array(img)
+        else:
+            self.Image = rotate(self.Image,angle=angle,resize=True,mode=self.add_area_mode)
+            self.Image = self.normalize8(self.Image)
         return self

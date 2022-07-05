@@ -10,7 +10,7 @@ from .serializerHandler import (
     FlipImageSerializerHandler,
     RotateImageSerializerHandler,
 )
-from PiximaTools.BasicTools import CropTool, FlipTool
+from PiximaTools.BasicTools import CropTool, FlipTool, RotatTool
 
 
 def bad_request(errors: dict):
@@ -100,17 +100,33 @@ class FlipToolView(APIView):
                     }
                 )
         except Exception as e:
-            print(e)
             return bad_request({"Message": "Error During Flip Process"})
         return bad_request(im_handler.errors)
 
 
 class RotateToolView(APIView):
     def post(self, request, format=None):
+        rotate_tool = RotatTool()
         rotate_serializer = RotateImageSerializer(data=request.data)
         im_handler = RotateImageSerializerHandler(rotate_serializer)
-        if im_handler.handle():
-            return JsonResponse(
-                data={"code": HTTP_200_OK, "status": "OK", **rotate_serializer.data}
-            )
+        try:
+            if im_handler.handle():
+                image_path = (
+                    rotate_tool.serializer2data(rotate_serializer)
+                    .add_quality_dict()
+                    .read_image()()
+                    .save_image()
+                )
+                imagepreview_path = rotate_tool.get_preview()
+                return JsonResponse(
+                    data={
+                        "code": HTTP_200_OK,
+                        "status": "OK",
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                    }
+                )
+        except Exception as e:
+            return bad_request({"Message": "Error During Rotate Process"})
+
         return bad_request(im_handler.errors)

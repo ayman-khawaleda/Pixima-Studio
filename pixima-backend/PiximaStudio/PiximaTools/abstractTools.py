@@ -72,16 +72,16 @@ class Tool(ABC):
         if "id" in kwargs.keys():
             self.directory_id = kwargs["id"]
         if "quality" in kwargs.keys():
-            self.quality = kwargs["quality"]
+            quality = kwargs["quality"]
         else:
-            self.quality = 90
+            quality = 90
         try:
             sub_path = os.path.join(MEDIA_ROOT, "Images", str(self.directory_id))
             if not os.path.exists(sub_path):
                 os.mkdir(sub_path)
             self.lastidx = len(os.listdir(sub_path))
             full_path = os.path.join(sub_path, f"{self.lastidx}.jpg")
-            imsave(full_path, self.Image, quality=self.quality)
+            imsave(full_path, self.Image, quality=quality)
             image_path = os.path.join(
                 MEDIA_URL, "Images", str(self.directory_id), f"{self.lastidx}.jpg"
             )
