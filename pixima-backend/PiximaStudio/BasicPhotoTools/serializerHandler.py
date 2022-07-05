@@ -258,25 +258,16 @@ class SaturationImageSerializerHandler(ImageSerializerHandler):
             return False
         return True
 
-    def check_hue_range(self):
-        hue = self.serializer.data['Hue']
-        if -100 > hue or hue > 100:
-            return False
-        return True
 
     def handle(self) -> bool:
         res = super().handle()
         if res:
             if (
-                self.serializer.data["Hue"] is None
-                or self.serializer.data["Saturation"] is None
+                self.serializer.data["Saturation"] is None
             ):
-                self.errors = {"Message": "Saturation And Hue Can't be Empty"}
+                self.errors = {"Message": "Saturation Can't be Empty"}
                 return False
             if not self.check_saturation_range() :
                 self.errors = {"Message": "Saturation Should Be In Range [-100,100]"}
-                return False
-            if not self.check_hue_range() :
-                self.errors = {"Message": "Hue Should Be In Range [-100,100]"}
                 return False
         return res

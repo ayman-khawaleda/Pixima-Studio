@@ -263,9 +263,8 @@ class ContrastTool(PhotoTool):
         return self
 
 class SaturationTool(PhotoTool):
-    def __init__(self, saturation=0, hue=0) -> None:
+    def __init__(self, saturation=0) -> None:
         self.saturation = saturation
-        self.hue = hue
 
     def __call__(self, *args, **kwargs):
         return self.apply(*args, **kwargs)
@@ -282,23 +281,10 @@ class SaturationTool(PhotoTool):
         self.saturation = saturation
         return self
 
-    def add_hue(self, hue=0, serializer=None):
-        if serializer is not None:
-            hue = serializer.data["Hue"]
-        if type(hue) == str and hue == "":
-            hue = 0
-        if type(hue) != int:
-            hue = int(hue)
-        if hue < -100 or hue > 100:
-            hue = 0
-        self.hue = hue
-        return self
-
     def serializer2data(self, serializer):
         return (
             super()
             .serializer2data(serializer)
-            .add_hue(serializer=serializer)
             .add_saturation(serializer=serializer)
         )
 

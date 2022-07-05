@@ -37,4 +37,3 @@ class ContrastImageSerializer(ImageHandlerSerializer):
 
 class SaturationImageSerializer(ImageHandlerSerializer):
     Saturation = IntegerField(default=0,required=False,allow_null=True)
-    Hue = IntegerField(default=0,required=False,allow_null=True)
