@@ -9,7 +9,7 @@ from .serializerHandler import (
     CropImageSerializerHandler,
     FlipImageSerializerHandler,
 )
-from PiximaTools.BasicTools import CropTool
+from PiximaTools.BasicTools import CropTool, FlipTool
 
 
 def bad_request(errors: dict):
@@ -62,10 +62,26 @@ class CropToolView(APIView):
 
 class FlipToolView(APIView):
     def post(self, request, format=None):
+        flip_tool = FlipTool()
         flip_serializer = FlipImageSerializer(data=request.data)
         im_handler = FlipImageSerializerHandler(flip_serializer)
-        if im_handler.handle():
-            return JsonResponse(
-                data={"code": HTTP_200_OK, "status": "OK", **flip_serializer.data}
-            )
+        try:
+            if im_handler.handle():
+                image_path = (
+                    flip_tool.serializer2data(flip_serializer)
+                    .read_image()()
+                    .save_image()
+                )
+                imagepreview_path = flip_tool.get_preview()
+                return JsonResponse(
+                    data={
+                        "code": HTTP_200_OK,
+                        "status": "OK",
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                    }
+                )
+        except Exception as e:
+            print(e)
+            return bad_request({"Message": "Error During Flip Process"})
         return bad_request(im_handler.errors)

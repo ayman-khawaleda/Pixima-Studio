@@ -86,22 +86,24 @@ class FlipTool(PhotoTool):
     def __init__(self, direction: str = None) -> None:
         if direction is None:
             self.direction = "Hor"
-        self.direction = direction
+        else:
+            self.direction = direction
 
     def __call__(self, *args, **kwargs):
         return self.apply(*args, **kwargs)
 
-    def add_direction(self, dir:str =None, serializer=None):
+    def add_direction(self, dir: str = None, serializer=None):
         if serializer is not None:
             dir = serializer.data["Direction"]
         self.direction = dir
         return self
 
     def serializer2data(self, serializer):
-        return super().serializer2data(serializer).add_direction(serializer)
+        return super().serializer2data(serializer).add_direction(serializer=serializer)
 
-    def apply(self,*args,**kwargs):
-        if dir == 'Hor':
+    def apply(self, *args, **kwargs):
+        if self.direction == "Hor":
             self.Image = cv2.flip(self.Image, 0)
-        elif dir == 'Ver':
+        elif self.direction == "Ver":
             self.Image = cv2.flip(self.Image, 1)
+        return self
