@@ -17,7 +17,7 @@ from .serializerHandler import (
     RotateImageSerializerHandler,
     ContrastImageSerializerHandler,
 )
-from PiximaTools.BasicTools import CropTool, FlipTool, ResizeTool, RotatTool
+from PiximaTools.BasicTools import ContrastTool, CropTool, FlipTool, ResizeTool, RotatTool
 
 
 def bad_request(errors: dict):
@@ -205,10 +205,28 @@ class ResizeToolView(APIView):
 
 class ContrastToolView(APIView):
     def post(self, request, format=None):
+        contrast_tool = ContrastTool()
         contrast_serializer = ContrastImageSerializer(data=request.data)
         im_handler = ContrastImageSerializerHandler(contrast_serializer)
-        if im_handler.handle():
-            return JsonResponse(
-                data={"code": HTTP_200_OK, "status": "OK", **contrast_serializer.data}
-            )
+        try:
+            if im_handler.handle():
+                image_path = (
+                    contrast_tool.serializer2data(contrast_serializer)
+                    .add_quality_dict()
+                    .read_image()
+                    .apply()
+                    .save_image()
+                )
+                imagepreview_path = contrast_tool.get_preview()
+                return JsonResponse(
+                    data={
+                        "code": HTTP_200_OK,
+                        "status": "OK",
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                    }
+                )
+        except Exception as e:
+            return bad_request({"Message": "Error During Contrast&Brightness Adjustment Process"})
+        
         return bad_request(im_handler.errors)
