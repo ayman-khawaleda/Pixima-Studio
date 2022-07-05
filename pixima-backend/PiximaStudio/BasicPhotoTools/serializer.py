@@ -24,6 +24,7 @@ class FlipImageSerializer(ImageHandlerSerializer):
 class RotateImageSerializer(ImageHandlerSerializer):
     Angle = IntegerField(default=90,required=False,allow_null=True)
     ClockWise = BooleanField(default=True,required=False,allow_null=True)
+    AreaMode = CharField(default='constant',required=False,allow_null=True)
 
 class ResizeImageSerializer(ImageHandlerSerializer):
     Width = IntegerField(default=720,required=False,allow_null=True)
