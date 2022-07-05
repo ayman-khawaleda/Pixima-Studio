@@ -66,6 +66,21 @@ class FlipToolView(APIView):
         flip_serializer = FlipImageSerializer(data=request.data)
         im_handler = FlipImageSerializerHandler(flip_serializer)
         try:
+            if "Image" in request.data.keys() and request.data["Image"] != "":
+                file = request.data["Image"].file
+                flip_tool.file2image(file).add_preview(
+                    request.data["Preview"]
+                ).add_direction(request.data["Direction"]).apply()
+                image_path = flip_tool.save_image()
+                imagepreview_path = flip_tool.get_preview()
+                return JsonResponse(
+                    data={
+                        "code": HTTP_200_OK,
+                        "status": "OK",
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                    }
+                )
             if im_handler.handle():
                 image_path = (
                     flip_tool.serializer2data(flip_serializer)
