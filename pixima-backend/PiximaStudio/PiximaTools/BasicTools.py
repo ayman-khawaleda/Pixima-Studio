@@ -267,3 +267,46 @@ class ContrastTool(PhotoTool):
         beta = int(self.brightness)
         self.Image = cv2.convertScaleAbs(self.Image,alpha=alpha,beta=beta)
         return self
+
+class SaturationTool(PhotoTool):
+    def __init__(self, saturation=0, hue=0) -> None:
+        self.saturation = saturation
+        self.hue = hue
+
+    def __call__(self, *args, **kwargs):
+        return self.apply(*args, **kwargs)
+
+    def add_saturation(self, saturation=0, serializer=None):
+        if serializer is not None:
+            saturation = serializer.data["Saturation"]
+        if type(saturation) == str and saturation == "":
+            saturation = 0
+        if type(saturation) != int:
+            saturation = int(saturation)
+        if saturation < -100 or saturation > 100:
+            saturation = 0
+        self.saturation = saturation
+        return self
+
+    def add_hue(self, hue=0, serializer=None):
+        if serializer is not None:
+            hue = serializer.data["Hue"]
+        if type(hue) == str and hue == "":
+            hue = 0
+        if type(hue) != int:
+            hue = int(hue)
+        if hue < -100 or hue > 100:
+            hue = 0
+        self.hue = hue
+        return self
+
+    def serializer2data(self, serializer):
+        return (
+            super()
+            .serializer2data(serializer)
+            .add_hue(serializer=serializer)
+            .add_saturation(serializer=serializer)
+        )
+
+    def apply(self, *args, **kwargs):
+        return self
