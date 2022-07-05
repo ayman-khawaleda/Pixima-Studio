@@ -219,7 +219,7 @@ class ContrastImageSerializerHandler(ImageSerializerHandler):
         super().__init__(serializer, preview_optinos)
     def check_contrast_range(self):
         contrast = self.serializer.data['Contrast']
-        if -100 > contrast or contrast > 100:
+        if 0 > contrast or contrast > 100:
             return False
         return True
     def check_brightness_range(self):
@@ -238,7 +238,7 @@ class ContrastImageSerializerHandler(ImageSerializerHandler):
                 self.errors = {"Message": "Contrast And Brightness Can't be Empty"}
                 return False
             if not self.check_contrast_range() :
-                self.errors = {"Message": "Contrast Should Be In Range [-100,100]"}
+                self.errors = {"Message": "Contrast Should Be In Range [0,100]"}
                 return False
             if not self.check_brightness_range() :
                 self.errors = {"Message": "Brightness Should Be In Range [-100,100]"}
