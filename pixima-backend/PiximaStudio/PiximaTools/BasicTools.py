@@ -174,3 +174,40 @@ class RotatTool(PhotoTool):
             )
             self.Image = self.normalize8(self.Image)
         return self
+
+class Resize(PhotoTool):
+    
+    def __init__(self,width=720,high=480) -> None:
+        self.width = width
+        self.high = high
+    
+    def __call__(self, *args, **kwargs):
+        return self.apply(*args, **kwargs)
+
+    def add_width(self,width=720,serializer=None):
+        if serializer is not None:
+            width = serializer.data["Width"]
+        if type(width) != int:
+            width = int(width)
+        if width <= 25:
+            width = 720
+        self.width = width
+        return self
+
+    def add_high(self,high=480,serializer=None):
+        if serializer is not None:
+            high = serializer.data["High"]
+        if type(high) != int:
+            high = int(high)
+        if high <= 25:
+            high = 480
+        self.high = high
+        return self
+
+    def serializer2data(self, serializer):
+        return super().serializer2data(serializer)\
+            .add_high(serializer=serializer)\
+            .add_width(serializer=serializer)
+            
+    def apply(self, *args, **kwargs):
+        return self
