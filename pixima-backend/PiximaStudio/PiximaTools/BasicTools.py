@@ -289,4 +289,8 @@ class SaturationTool(PhotoTool):
         )
 
     def apply(self, *args, **kwargs):
+        from PIL import ImageEnhance
+        image = PIL.Image.fromarray(self.Image)
+        after_enh_image = ImageEnhance.Color(image).enhance(self.saturation/50)
+        self.Image = np.array(after_enh_image)
         return self
