@@ -1,6 +1,7 @@
 from abc import abstractmethod
 from PiximaTools.abstractTools import Tool
-
+import numpy as np
+import cv2
 
 class PhotoTool(Tool):
     @classmethod
@@ -52,6 +53,24 @@ class CropTool(PhotoTool):
         if self.check_cords():
             print("Cords: ", self.cords)
         else:
-            print("Ratio: ", self.ratio)
-        print(self.Image.shape)
+            value = self.ratio
+            aspect_ratio = 1
+            if value == '4:3':
+                aspect_ratio = 3/4
+            elif value == '16:9':
+                aspect_ratio = 9/16
+            elif value == '9:16':
+                aspect_ratio = 16/9
+            elif value == '5:4':
+                aspect_ratio = 4/5
+            
+            h, w, _ = self.Image.shape
+            width = int(np.min([w, h*aspect_ratio]))
+            high = int(np.min([w/aspect_ratio, h]))
+            left = int((w - width)/2)
+            top = int((h - high)/2)
+            croped_img = self.Image.copy()
+            croped_img = croped_img[left:left+width, top:top+high]
+            self.Image = croped_img
+            
         return self
