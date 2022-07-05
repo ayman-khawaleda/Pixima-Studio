@@ -163,6 +163,24 @@ class ResizeToolView(APIView):
         resize_serializer = ResizeImageSerializer(data=request.data)
         im_handler = ResizeImageSerializerHandler(resize_serializer)
         try:
+            if "Image" in request.data.keys() and request.data["Image"] != "":
+                file = request.data["Image"].file
+                resize_tool.file2image(file)\
+                .add_quality_dict()\
+                .add_preview(request.data["Preview"])\
+                .add_high(request.data["High"])\
+                .add_width(request.data["Width"])\
+                .apply()
+                image_path = resize_tool.save_image()
+                imagepreview_path = resize_tool.get_preview()
+                return JsonResponse(
+                    data={
+                        "code": HTTP_200_OK,
+                        "status": "OK",
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                    }
+                )
             if im_handler.handle():
                 image_path = (
                     resize_tool.serializer2data(resize_serializer)

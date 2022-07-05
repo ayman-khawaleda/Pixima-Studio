@@ -175,18 +175,20 @@ class RotatTool(PhotoTool):
             self.Image = self.normalize8(self.Image)
         return self
 
+
 class ResizeTool(PhotoTool):
-    
-    def __init__(self,width=720,high=480) -> None:
+    def __init__(self, width=720, high=480) -> None:
         self.width = width
         self.high = high
-    
+
     def __call__(self, *args, **kwargs):
         return self.apply(*args, **kwargs)
 
-    def add_width(self,width=720,serializer=None):
+    def add_width(self, width=720, serializer=None):
         if serializer is not None:
             width = serializer.data["Width"]
+        if type(width) == str and width == "":
+            width = 720
         if type(width) != int:
             width = int(width)
         if width <= 25:
@@ -194,9 +196,11 @@ class ResizeTool(PhotoTool):
         self.width = width
         return self
 
-    def add_high(self,high=480,serializer=None):
+    def add_high(self, high=480, serializer=None):
         if serializer is not None:
             high = serializer.data["High"]
+        if type(high) == str and high == "":
+            high = 480
         if type(high) != int:
             high = int(high)
         if high <= 25:
@@ -205,10 +209,15 @@ class ResizeTool(PhotoTool):
         return self
 
     def serializer2data(self, serializer):
-        return super().serializer2data(serializer)\
-            .add_high(serializer=serializer)\
+        return (
+            super()
+            .serializer2data(serializer)
+            .add_high(serializer=serializer)
             .add_width(serializer=serializer)
+        )
 
     def apply(self, *args, **kwargs):
-        self.Image = cv2.resize(self.Image,(self.high,self.width),interpolation=cv2.INTER_CUBIC)
+        self.Image = cv2.resize(
+            self.Image, (self.high, self.width), interpolation=cv2.INTER_CUBIC
+        )
         return self
