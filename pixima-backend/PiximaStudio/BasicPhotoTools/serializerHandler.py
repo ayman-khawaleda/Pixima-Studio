@@ -1,74 +1,5 @@
-from abc import abstractmethod, ABCMeta
-from rest_framework.serializers import Serializer
+from AbstractSerializer.serializerHandler import ImageSerializerHandler
 from . import serializer
-from Core.models import UploadImageModel
-from PiximaStudio.settings import MEDIA_ROOT
-import os
-
-
-class SerializerHandler(metaclass=ABCMeta):
-    def __init__(self, serializer: Serializer) -> None:
-        self.serializer = serializer
-        self.errors = {}
-
-    @abstractmethod
-    def handle(self) -> bool:
-        pass
-
-
-class ImageSerializerHandler(SerializerHandler):
-    def __init__(
-        self,
-        serializer: serializer.ImageHandlerSerializer,
-        preview_optinos: list = None,
-    ) -> None:
-        super().__init__(serializer)
-        if preview_optinos is None:
-            self.preview_options = ["None", "Low", "Mid", "High"]
-
-    def __image_index_exists(self):
-        directory_id = self.serializer.data["id"]
-        index = self.serializer.data["ImageIndex"]
-        return (
-            True
-            if os.path.exists(
-                os.path.join(
-                    MEDIA_ROOT, "Images", str(directory_id), str(index) + ".jpg"
-                )
-            )
-            else False
-        )
-
-    def handle(self) -> bool:
-        res = self.serializer.is_valid()
-        if res:
-            if (
-                self.serializer.data["id"] is None
-                and self.serializer.data["Image"] is None
-            ):
-                self.errors = {"Message": "Both id and Image Can't Be Null"}
-                return False
-            if self.serializer.data["ImageIndex"] < 0:
-                self.errors = {"Message": "ImageIndex Less Than 0"}
-                return False
-            if not self.__image_index_exists() and self.serializer.data["id"]:
-                self.errors = {"Message": "ImageIndex Not Found"}
-                return False
-            if self.serializer.data["Preview"] not in self.preview_options:
-                self.errors = {
-                    "Message": f"Preview Should Be On Of This Values {self.preview_options}"
-                }
-                return False
-            try:
-                query_set = UploadImageModel.objects.get(id=self.serializer.data["id"])
-                if not query_set:
-                    raise UploadImageModel.DoesNotExist()
-            except UploadImageModel.DoesNotExist as ex:
-                self.errors = {"Message": "Id Not Found"}
-                return False
-        if not res:
-            self.errors = self.serializer.errors
-        return res
 
 
 class CropImageSerializerHandler(ImageSerializerHandler):
@@ -131,7 +62,7 @@ class CropImageSerializerHandler(ImageSerializerHandler):
 class FlipImageSerializerHandler(ImageSerializerHandler):
     def __init__(
         self,
-        serializer: serializer.ImageHandlerSerializer,
+        serializer: serializer.ImageSerializer,
         preview_optinos: list = None,
         direction_options: list = None,
     ) -> None:
@@ -156,13 +87,13 @@ class FlipImageSerializerHandler(ImageSerializerHandler):
 class RotateImageSerializerHandler(ImageSerializerHandler):
     def __init__(
         self,
-        serializer: serializer.ImageHandlerSerializer,
+        serializer: serializer.ImageSerializer,
         preview_optinos: list = None,
-        area_mode:list = None
+        area_mode: list = None,
     ) -> None:
         super().__init__(serializer, preview_optinos)
         if area_mode is None:
-            area_mode = ['constant', 'edge', 'symmetric', 'reflect', 'wrap']
+            area_mode = ["constant", "edge", "symmetric", "reflect", "wrap"]
         self.area_mode = area_mode
 
     def angle_range_check(self):
@@ -184,14 +115,17 @@ class RotateImageSerializerHandler(ImageSerializerHandler):
                 self.errors = {"Message": "Angle Should Be In Rnage [0:360]"}
                 return False
             if not self.serializer.data["AreaMode"] in self.area_mode:
-                self.errors = {"Message": f"AreaMode Should Be one Of The Values {self.area_mode}"}
-                return False                
+                self.errors = {
+                    "Message": f"AreaMode Should Be one Of The Values {self.area_mode}"
+                }
+                return False
         return res
+
 
 class ResizeImageSerializerHandler(ImageSerializerHandler):
     def __init__(
         self,
-        serializer: serializer.ImageHandlerSerializer,
+        serializer: serializer.ImageSerializer,
         preview_optinos: list = None,
     ) -> None:
         super().__init__(serializer, preview_optinos)
@@ -205,25 +139,28 @@ class ResizeImageSerializerHandler(ImageSerializerHandler):
             ):
                 self.errors = {"Message": "Width And High Can't be Empty"}
                 return False
-            if self.serializer.data["Width"] < 25 or self.serializer.data["High"]<25 :
+            if self.serializer.data["Width"] < 25 or self.serializer.data["High"] < 25:
                 self.errors = {"Message": "Width And High Shouldn't Be Less Than 25px"}
                 return False
         return res
 
+
 class ContrastImageSerializerHandler(ImageSerializerHandler):
     def __init__(
         self,
-        serializer: serializer.ImageHandlerSerializer,
+        serializer: serializer.ImageSerializer,
         preview_optinos: list = None,
     ) -> None:
         super().__init__(serializer, preview_optinos)
+
     def check_contrast_range(self):
-        contrast = self.serializer.data['Contrast']
+        contrast = self.serializer.data["Contrast"]
         if 0 > contrast or contrast > 100:
             return False
         return True
+
     def check_brightness_range(self):
-        brightness = self.serializer.data['Brightness']
+        brightness = self.serializer.data["Brightness"]
         if -100 > brightness or brightness > 100:
             return False
         return True
@@ -237,37 +174,36 @@ class ContrastImageSerializerHandler(ImageSerializerHandler):
             ):
                 self.errors = {"Message": "Contrast And Brightness Can't be Empty"}
                 return False
-            if not self.check_contrast_range() :
+            if not self.check_contrast_range():
                 self.errors = {"Message": "Contrast Should Be In Range [0,100]"}
                 return False
-            if not self.check_brightness_range() :
+            if not self.check_brightness_range():
                 self.errors = {"Message": "Brightness Should Be In Range [-100,100]"}
                 return False
         return res
 
+
 class SaturationImageSerializerHandler(ImageSerializerHandler):
     def __init__(
         self,
-        serializer: serializer.ImageHandlerSerializer,
+        serializer: serializer.ImageSerializer,
         preview_optinos: list = None,
     ) -> None:
         super().__init__(serializer, preview_optinos)
+
     def check_saturation_range(self):
-        saturation = self.serializer.data['Saturation']
+        saturation = self.serializer.data["Saturation"]
         if 0 > saturation or saturation > 100:
             return False
         return True
 
-
     def handle(self) -> bool:
         res = super().handle()
         if res:
-            if (
-                self.serializer.data["Saturation"] is None
-            ):
+            if self.serializer.data["Saturation"] is None:
                 self.errors = {"Message": "Saturation Can't be Empty"}
                 return False
-            if not self.check_saturation_range() :
+            if not self.check_saturation_range():
                 self.errors = {"Message": "Saturation Should Be In Range [0,100]"}
                 return False
         return res
