@@ -1,12 +1,15 @@
 from abc import abstractmethod
 from random import Random
-from select import KQ_NOTE_LOWAT
-from unittest.mock import NonCallableMagicMock
-
-from sklearn.feature_selection import SelectFdr
 from PiximaTools.abstractTools import Tool
 import cv2
 import numpy as np
+from .AI_Models import face_detection_modle, mp_face_detection
+
+FaceKey_Dict = {
+    "RightEye": mp_face_detection.FaceKeyPoint.RIGHT_EYE,
+    "LeftEye": mp_face_detection.FaceKeyPoint.LEFT_EYE,
+    "Nose": mp_face_detection.FaceKeyPoint.NOSE_TIP,
+}
 
 
 class Filter(Tool):
@@ -104,7 +107,7 @@ class GlitchFilter(Filter):
 
 
 class CirclesFilter(Filter):
-    def __init__(self, facekey_options=["RightEye", "LefyEye", "Nose"]) -> None:
+    def __init__(self, facekey_options=["RightEye", "LeftEye", "Nose"]) -> None:
         self.face_key = "None"
         self.x = -1
         self.y = -1
@@ -121,6 +124,7 @@ class CirclesFilter(Filter):
             x, y = int(x), int(y)
         if x <= -1 or y <= -1:
             x, y = -1, -1
+        self.x, self.y = x, y
         return self
 
     def add_facekey(self, face_key="RightEye", serializer=None):
@@ -138,6 +142,7 @@ class CirclesFilter(Filter):
             radius = int(radius)
         if radius > 30 or radius < 5:
             radius = 15
+        self.radius = radius
         return self
 
     def serializer2data(self, serializer):
@@ -150,4 +155,32 @@ class CirclesFilter(Filter):
         )
 
     def apply(self, *args, **kwargs):
+        img = cv2.cvtColor(self.Image, cv2.COLOR_RGB2GRAY)
+        if self.x >= 0 and self.y >= 0:
+            center = (self.x, self.y)
+        else:
+            face_detection = face_detection_modle
+            results = face_detection.process(self.Image)
+            if not results.detections:
+                raise Exception("No Face Found")
+            for detection in results.detections:
+                xy = mp_face_detection.get_key_point(
+                    detection, FaceKey_Dict[self.face_key]
+                )
+                x, y = xy.x, xy.y
+                x, y = self.normaliz_pixel(x, y, img.shape[1], img.shape[0])
+            center = (x, y)
+        kernal = 255 * np.ones(img.shape, np.uint8)
+        thickness = 2
+        i_range = 255
+        if self.Image.shape[0] > 1000:
+            thickness = 3
+            i_range = 512
+        for i in range(i_range):
+            kernal = cv2.circle(
+                kernal, center, i * self.radius, (0, 0, 0), thickness, cv2.LINE_AA
+            )
+        k = 5
+        kernal = cv2.GaussianBlur(kernal, (k, k), 0)
+        self.Image = cv2.addWeighted(img, 0.6, kernal, 0.3, 0)
         return self
