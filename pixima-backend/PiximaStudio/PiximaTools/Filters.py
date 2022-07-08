@@ -33,6 +33,8 @@ class GlitchFilter(Filter):
     def add_shift(self, shift=20, serializer=None):
         if serializer is not None:
             shift = serializer.data["Shift"]
+        if type(shift) == str:
+            shift = int(shift)
         if shift > 50 or shift < 5:
             shift = 20
         self.shift = shift
@@ -41,6 +43,8 @@ class GlitchFilter(Filter):
     def add_step(self, step=15, serializer=None):
         if serializer is not None:
             step = serializer.data["Step"]
+        if type(step) == str:
+            step = int(step)
         if step > 25 or step < 5:
             step = 20
         self.step = step
@@ -49,6 +53,8 @@ class GlitchFilter(Filter):
     def add_density(self, density=5, serializer=None):
         if serializer is not None:
             density = serializer.data["Density"]
+        if type(density) == str:
+            density = int(density)
         if density > 50 or density < 0:
             density = 5
         self.density = density
