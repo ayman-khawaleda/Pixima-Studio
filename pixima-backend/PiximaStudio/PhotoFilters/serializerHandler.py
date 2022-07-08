@@ -50,13 +50,13 @@ class CirclesFilterSerializerHandler(serializerHandler.ImageSerializerHandler):
                 self.serializer.data["FaceKey"],
                 self.serializer.data["Radius"],
             )
-            if face_key == "None" and (x == -1 or y == -1):
+            if face_key == "None" and (x <= -1 or y <= -1):
                 self.errors = {
                     "Message": f"You Have To Provide Either FaceKey Values {self.facekey_options} or [X, Y]"
                 }
                 return False
 
-            if (x >= 0 and y < -1) and (x < -1 and y >= 0):
+            if (x >= 0 and y < -1) or (x < -1 and y >= 0):
                 self.errors = {"Message": "Please Provide Valid [X, Y]"}
                 return False
 
