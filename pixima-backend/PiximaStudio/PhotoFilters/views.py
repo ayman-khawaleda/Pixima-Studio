@@ -19,6 +19,25 @@ class GlitchFilterView(APIView):
             glicth_serializer
         )
         try:
+            if "Image" in request.data.keys() and request.data["Image"] != "":
+                file = request.data["Image"].file
+                glitch_filter.file2image(file).add_quality_dict().add_preview(
+                    request.data["Preview"]
+                ).add_shift(request.data["Shift"]).add_step(
+                    request.data["Step"]
+                ).add_density(
+                    request.data["Density"]
+                ).apply()
+                image_path = glitch_filter.save_image()
+                imagepreview_path = glitch_filter.get_preview()
+                return JsonResponse(
+                    data={
+                        "code": HTTP_200_OK,
+                        "status": "OK",
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                    }
+                )
             if filter_handler.handle():
                 image_path = (
                     glitch_filter.serializer2data(glicth_serializer)
@@ -36,6 +55,7 @@ class GlitchFilterView(APIView):
                     }
                 )
         except Exception as e:
+            print(e)
             return bad_request({"Message": "Error In Glitch Filter Request"})
         return bad_request(filter_handler.errors)
 
