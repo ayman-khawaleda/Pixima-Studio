@@ -8,13 +8,13 @@ class GlitchFilterSerializerHandler(serializerHandler.ImageSerializerHandler):
         res = super().handle()
         if res:
             shift = self.serializer.data["Shift"]
-            if shift > 50 or shift < 0:
-                self.errors = {"Message":"Shift Should Be In Range [0, 50]"}
+            if shift > 50 or shift < 5:
+                self.errors = {"Message":"Shift Should Be In Range [5, 50]"}
                 return False
             
             step = self.serializer.data["Step"]
-            if step > 25 or step < 0:
-                self.errors = {"Message":"Step Should Be In Range [0, 25]"}
+            if step > 25 or step < 5:
+                self.errors = {"Message":"Step Should Be In Range [5, 25]"}
                 return False
             
             density = self.serializer.data["Density"]
