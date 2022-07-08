@@ -27,7 +27,7 @@ class Tool(ABC):
     def serializer2data(self, serializer):
         self.add_id(serializer.data["id"]).add_image_index(
             serializer.data["ImageIndex"]
-        ).add_preview(serializer.data["Preview"])
+        ).add_preview(serializer.data["Preview"]).add_quality_dict()
         return self
 
     def add_preview(self, preview):
