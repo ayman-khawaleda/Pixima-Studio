@@ -10,5 +10,5 @@ class GlitchFilterSerializer(ImageSerializer):
 class CirclesFilterSerializer(ImageSerializer):
     X = IntegerField(default=-1, required=False)
     Y = IntegerField(default=-1, required=False)
-    FaceKey = CharField(defualt="None",required=False)
+    FaceKey = CharField(default="None",required=False)
     Radius = IntegerField(default=15,required=False)
