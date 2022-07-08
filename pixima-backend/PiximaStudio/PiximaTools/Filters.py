@@ -1,5 +1,9 @@
 from abc import abstractmethod
 from random import Random
+from select import KQ_NOTE_LOWAT
+from unittest.mock import NonCallableMagicMock
+
+from sklearn.feature_selection import SelectFdr
 from PiximaTools.abstractTools import Tool
 import cv2
 import numpy as np
@@ -96,4 +100,54 @@ class GlitchFilter(Filter):
                 new_img[down:upper, :, :], Random().randint(-100, 100), 1
             )
         self.Image = new_img
+        return self
+
+
+class CirclesFilter(Filter):
+    def __init__(self, facekey_options=["RightEye", "LefyEye", "Nose"]) -> None:
+        self.face_key = "None"
+        self.x = -1
+        self.y = -1
+        self.radius = 5
+        self.facekey_options = facekey_options
+
+    def __call__(self, *args, **kwargs):
+        return self.apply(*args, **kwargs)
+
+    def add_center(self, x=0, y=0, serializer=None):
+        if serializer is not None:
+            x, y = serializer.data["X"], serializer.data["Y"]
+        if type(x) == str or type(y) == str:
+            x, y = int(x), int(y)
+        if x <= -1 or y <= -1:
+            x, y = -1, -1
+        return self
+
+    def add_facekey(self, face_key="RightEye", serializer=None):
+        if serializer is not None:
+            face_key = serializer.data["FaceKey"]
+        if face_key not in self.facekey_options:
+            face_key = "RightEye"
+        self.face_key = face_key
+        return self
+
+    def add_radius(self, radius=15, serializer=None):
+        if serializer is not None:
+            radius = serializer.data["Radius"]
+        if type(radius) == str:
+            radius = int(radius)
+        if radius > 30 or radius < 5:
+            radius = 15
+        return self
+
+    def serializer2data(self, serializer):
+        return (
+            super()
+            .serializer2data(serializer)
+            .add_center(serializer=serializer)
+            .add_facekey(serializer=serializer)
+            .add_radius(serializer=serializer)
+        )
+
+    def apply(self, *args, **kwargs):
         return self
