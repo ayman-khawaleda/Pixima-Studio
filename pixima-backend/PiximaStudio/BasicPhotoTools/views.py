@@ -57,7 +57,6 @@ class CropToolView(APIView):
             if im_handler.handle():
                 image_path = (
                     crop_tool.serializer2data(serializer=crop_serializer)
-                    .add_quality_dict()
                     .read_image()
                     .apply()
                     .save_image()
@@ -100,7 +99,6 @@ class FlipToolView(APIView):
             if im_handler.handle():
                 image_path = (
                     flip_tool.serializer2data(flip_serializer)
-                    .add_quality_dict()
                     .read_image()()
                     .save_image()
                 )
@@ -146,7 +144,6 @@ class RotateToolView(APIView):
             if im_handler.handle():
                 image_path = (
                     rotate_tool.serializer2data(rotate_serializer)
-                    .add_quality_dict()
                     .read_image()()
                     .save_image()
                 )
@@ -191,7 +188,6 @@ class ResizeToolView(APIView):
             if im_handler.handle():
                 image_path = (
                     resize_tool.serializer2data(resize_serializer)
-                    .add_quality_dict()
                     .read_image()()
                     .save_image()
                 )
@@ -236,7 +232,6 @@ class ContrastToolView(APIView):
             if im_handler.handle():
                 image_path = (
                     contrast_tool.serializer2data(contrast_serializer)
-                    .add_quality_dict()
                     .read_image()
                     .apply()
                     .save_image()
@@ -282,7 +277,6 @@ class SaturationToolView(APIView):
             if im_handler.handle():
                 image_path = (
                     saturation_tool.serializer2data(saturation_serializer)
-                    .add_quality_dict()
                     .read_image()
                     .apply()
                     .save_image()
