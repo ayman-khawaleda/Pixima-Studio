@@ -24,6 +24,13 @@ class Tool(ABC):
         self.add_id(uuid4())
         return self
 
+    def request2data(self, request):
+        file = request.data["Image"].file
+        self.file2image(file).add_quality_dict().add_preview(
+            request.data.setdefault("Preview", "None")
+        )
+        return self
+
     def serializer2data(self, serializer):
         self.add_id(serializer.data["id"]).add_image_index(
             serializer.data["ImageIndex"]
