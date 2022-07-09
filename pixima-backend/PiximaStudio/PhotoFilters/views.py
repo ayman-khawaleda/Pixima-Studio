@@ -67,6 +67,27 @@ class CircleFilterView(APIView):
             circles_serializer
         )
         try:
+            if "Image" in request.data.keys() and request.data["Image"] != "":
+                file = request.data["Image"].file
+                circles_filter.file2image(file).add_quality_dict().add_preview(
+                    request.data.setdefault("Preview", "None")
+                ).add_center(
+                    request.data.setdefault("X", -1), request.data.setdefault("Y", -1)
+                ).add_facekey(
+                    request.data.setdefault("FaceKey", "RightEye")
+                ).add_radius(
+                    request.data.setdefault("Radius", 15)
+                )()
+                image_path = circles_filter.save_image()
+                imagepreview_path = circles_filter.get_preview()
+                return JsonResponse(
+                    data={
+                        "code": HTTP_200_OK,
+                        "status": "OK",
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                    }
+                )
             if filter_handler.handle():
                 circles_filter.serializer2data(
                     serializer=circles_serializer
