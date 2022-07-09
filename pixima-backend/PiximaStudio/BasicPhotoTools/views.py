@@ -156,7 +156,6 @@ class ResizeToolView(APIView):
         im_handler = ResizeImageSerializerHandler(resize_serializer)
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
-                file = request.data["Image"].file
                 resize_tool.request2data(request=request).apply()
                 image_path = resize_tool.save_image()
                 imagepreview_path = resize_tool.get_preview()
@@ -196,12 +195,7 @@ class ContrastToolView(APIView):
         im_handler = ContrastImageSerializerHandler(contrast_serializer)
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
-                file = request.data["Image"].file
-                contrast_tool.file2image(file).add_quality_dict().add_preview(
-                    request.data["Preview"]
-                ).add_brightness(request.data["Brightness"]).add_contrast(
-                    request.data["Contrast"]
-                )()
+                contrast_tool.request2data(request=request)()
                 image_path = contrast_tool.save_image()
                 imagepreview_path = contrast_tool.get_preview()
                 return JsonResponse(

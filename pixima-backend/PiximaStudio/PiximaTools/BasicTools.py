@@ -234,8 +234,8 @@ class ResizeTool(PhotoTool):
         return (
             super()
             .request2data(request)
-            .add_high(request.data.setdefault("High",480))
-            .add_width(request.data.setdefault("Width",720))
+            .add_high(request.data.setdefault("High", 480))
+            .add_width(request.data.setdefault("Width", 720))
         )
 
     def serializer2data(self, serializer):
@@ -284,6 +284,14 @@ class ContrastTool(PhotoTool):
             contrast = 0
         self.contrast = contrast
         return self
+
+    def request2data(self, request):
+        return (
+            super()
+            .request2data(request)
+            .add_brightness(request.data.setdefault("Brightness",0))
+            .add_contrast(request.data.setdefault("Contrast",50))
+        )
 
     def serializer2data(self, serializer):
         return (
