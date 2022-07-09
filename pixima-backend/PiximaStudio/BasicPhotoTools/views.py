@@ -1,3 +1,4 @@
+import re
 from rest_framework.views import APIView
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from django.http import JsonResponse
@@ -237,10 +238,7 @@ class SaturationToolView(APIView):
         im_handler = SaturationImageSerializerHandler(saturation_serializer)
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
-                file = request.data["Image"].file
-                saturation_tool.file2image(file).add_quality_dict().add_preview(
-                    request.data["Preview"]
-                ).add_saturation(request.data["Saturation"])()
+                saturation_tool.request2data(request=request)()
                 image_path = saturation_tool.save_image()
                 imagepreview_path = saturation_tool.get_preview()
                 return JsonResponse(

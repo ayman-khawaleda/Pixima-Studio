@@ -315,18 +315,19 @@ class SaturationTool(PhotoTool):
     def __call__(self, *args, **kwargs):
         return self.apply(*args, **kwargs)
 
-    def add_saturation(self, saturation=0, serializer=None):
+    def add_saturation(self, saturation=50, serializer=None):
         if serializer is not None:
             saturation = serializer.data["Saturation"]
         if type(saturation) == str and saturation == "":
-            saturation = 0
+            saturation = 50
         if type(saturation) != int:
             saturation = int(saturation)
-        if saturation < -100 or saturation > 100:
-            saturation = 0
+        if saturation < 0 or saturation > 100:
+            saturation = 50
         self.saturation = saturation
         return self
-
+    def request2data(self, request):
+        return super().request2data(request).add_saturation(request.data.setdefault("Saturation",50))
     def serializer2data(self, serializer):
         return super().serializer2data(serializer).add_saturation(serializer=serializer)
 
