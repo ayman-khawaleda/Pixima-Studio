@@ -45,3 +45,7 @@ class CleatFaceBlurSerializerHandler(ImageSerializerHandler):
 class WhiteTeethToolSerializerHandler(ImageSerializerHandler):
     def handle(self) -> bool:
         return super().handle()
+
+class LipsToolSerializerHandler(ImageSerializerHandler):
+    def handle(self) -> bool:
+        return super().handle()
