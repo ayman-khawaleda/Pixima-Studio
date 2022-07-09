@@ -7,4 +7,4 @@
 - Initial UI For Web App
 <br>
 <br>
-<p align='center'><img src='MEDIA-SOURCE/Readme/ConceptUI.jpg' width='50%'></p>
+<p align='center'><img src='MEDIA-SOURCE/Readme/ConceptUI.jpg'></p>
