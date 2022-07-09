@@ -1,4 +1,4 @@
-from django.forms import ImageField
+import re
 from rest_framework.views import APIView
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from django.http import JsonResponse
@@ -11,7 +11,6 @@ from .serializer import (
     SaturationImageSerializer,
 )
 from .serializerHandler import (
-    ImageSerializerHandler,
     CropImageSerializerHandler,
     FlipImageSerializerHandler,
     ResizeImageSerializerHandler,
@@ -42,10 +41,7 @@ class CropToolView(APIView):
         im_handler = CropImageSerializerHandler(crop_serializer)
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
-                file = request.data["Image"].file
-                crop_tool.file2image(file).add_quality_dict().add_preview(
-                    request.data["Preview"]
-                ).add_ratio(request.data["Ratio"]).add_cords(serializer=request).apply()
+                crop_tool.request2data(request=request).apply()
                 image_path = crop_tool.save_image()
                 imagepreview_path = crop_tool.get_preview()
                 return JsonResponse(
@@ -59,7 +55,6 @@ class CropToolView(APIView):
             if im_handler.handle():
                 image_path = (
                     crop_tool.serializer2data(serializer=crop_serializer)
-                    .add_quality_dict()
                     .read_image()
                     .apply()
                     .save_image()
@@ -85,10 +80,7 @@ class FlipToolView(APIView):
         im_handler = FlipImageSerializerHandler(flip_serializer)
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
-                file = request.data["Image"].file
-                flip_tool.file2image(file).add_quality_dict().add_preview(
-                    request.data["Preview"]
-                ).add_direction(request.data["Direction"]).apply()
+                flip_tool.request2data(request=request).apply()
                 image_path = flip_tool.save_image()
                 imagepreview_path = flip_tool.get_preview()
                 return JsonResponse(
@@ -102,7 +94,6 @@ class FlipToolView(APIView):
             if im_handler.handle():
                 image_path = (
                     flip_tool.serializer2data(flip_serializer)
-                    .add_quality_dict()
                     .read_image()()
                     .save_image()
                 )
@@ -127,14 +118,7 @@ class RotateToolView(APIView):
         im_handler = RotateImageSerializerHandler(rotate_serializer)
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
-                file = request.data["Image"].file
-                rotate_tool.file2image(file).add_quality_dict().add_preview(
-                    request.data["Preview"]
-                ).add_angle(request.data["Angle"]).add_clock_wise(
-                    request.data["ClockWise"]
-                ).add_area_mode(
-                    request.data["AreaMode"]
-                ).apply()
+                rotate_tool.request2data(request=request).apply()
                 image_path = rotate_tool.save_image()
                 imagepreview_path = rotate_tool.get_preview()
                 return JsonResponse(
@@ -148,7 +132,6 @@ class RotateToolView(APIView):
             if im_handler.handle():
                 image_path = (
                     rotate_tool.serializer2data(rotate_serializer)
-                    .add_quality_dict()
                     .read_image()()
                     .save_image()
                 )
@@ -174,12 +157,7 @@ class ResizeToolView(APIView):
         im_handler = ResizeImageSerializerHandler(resize_serializer)
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
-                file = request.data["Image"].file
-                resize_tool.file2image(file).add_quality_dict().add_preview(
-                    request.data["Preview"]
-                ).add_high(request.data["High"]).add_width(
-                    request.data["Width"]
-                ).apply()
+                resize_tool.request2data(request=request).apply()
                 image_path = resize_tool.save_image()
                 imagepreview_path = resize_tool.get_preview()
                 return JsonResponse(
@@ -193,7 +171,6 @@ class ResizeToolView(APIView):
             if im_handler.handle():
                 image_path = (
                     resize_tool.serializer2data(resize_serializer)
-                    .add_quality_dict()
                     .read_image()()
                     .save_image()
                 )
@@ -219,12 +196,7 @@ class ContrastToolView(APIView):
         im_handler = ContrastImageSerializerHandler(contrast_serializer)
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
-                file = request.data["Image"].file
-                contrast_tool.file2image(file).add_quality_dict().add_preview(
-                    request.data["Preview"]
-                ).add_brightness(request.data["Brightness"]).add_contrast(
-                    request.data["Contrast"]
-                )()
+                contrast_tool.request2data(request=request)()
                 image_path = contrast_tool.save_image()
                 imagepreview_path = contrast_tool.get_preview()
                 return JsonResponse(
@@ -238,7 +210,6 @@ class ContrastToolView(APIView):
             if im_handler.handle():
                 image_path = (
                     contrast_tool.serializer2data(contrast_serializer)
-                    .add_quality_dict()
                     .read_image()
                     .apply()
                     .save_image()
@@ -267,10 +238,7 @@ class SaturationToolView(APIView):
         im_handler = SaturationImageSerializerHandler(saturation_serializer)
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
-                file = request.data["Image"].file
-                saturation_tool.file2image(file).add_quality_dict().add_preview(
-                    request.data["Preview"]
-                ).add_saturation(request.data["Saturation"])()
+                saturation_tool.request2data(request=request)()
                 image_path = saturation_tool.save_image()
                 imagepreview_path = saturation_tool.get_preview()
                 return JsonResponse(
@@ -284,7 +252,6 @@ class SaturationToolView(APIView):
             if im_handler.handle():
                 image_path = (
                     saturation_tool.serializer2data(saturation_serializer)
-                    .add_quality_dict()
                     .read_image()
                     .apply()
                     .save_image()
