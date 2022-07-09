@@ -41,9 +41,7 @@ class CropToolView(APIView):
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
                 file = request.data["Image"].file
-                crop_tool.file2image(file).add_quality_dict().add_preview(
-                    request.data["Preview"]
-                ).add_ratio(request.data["Ratio"]).add_cords(serializer=request).apply()
+                crop_tool.request2data(request=request).apply()
                 image_path = crop_tool.save_image()
                 imagepreview_path = crop_tool.get_preview()
                 return JsonResponse(

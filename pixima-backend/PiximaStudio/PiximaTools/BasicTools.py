@@ -45,6 +45,19 @@ class CropTool(PhotoTool):
         self.ratio = ratio
         return self
 
+    def request2data(self, request):
+        return (
+            super()
+            .request2data(request)
+            .add_ratio(request.data.setdefault("Ratio", "1:1"))
+            .add_cords(
+                X1=request.data.setdefault("X1", -1),
+                X2=request.data.setdefault("X2", -1),
+                Y1=request.data.setdefault("Y1", -1),
+                Y2=request.data.setdefault("Y2", -1),
+            )
+        )
+
     def serializer2data(self, serializer):
         return (
             super()
@@ -152,7 +165,6 @@ class RotatTool(PhotoTool):
             .add_area_mode(serializer=serializer)
         )
 
-
     def apply(self, *args, **kwargs):
         angle = self.angle
         if self.clock_wise:
@@ -216,6 +228,7 @@ class ResizeTool(PhotoTool):
         )
         return self
 
+
 class ContrastTool(PhotoTool):
     def __init__(self, contrast=0, brightness=0) -> None:
         self.contrast = contrast
@@ -259,8 +272,9 @@ class ContrastTool(PhotoTool):
     def apply(self, *args, **kwargs):
         alpha = self.contrast / 50
         beta = int(self.brightness)
-        self.Image = cv2.convertScaleAbs(self.Image,alpha=alpha,beta=beta)
+        self.Image = cv2.convertScaleAbs(self.Image, alpha=alpha, beta=beta)
         return self
+
 
 class SaturationTool(PhotoTool):
     def __init__(self, saturation=0) -> None:
@@ -282,15 +296,12 @@ class SaturationTool(PhotoTool):
         return self
 
     def serializer2data(self, serializer):
-        return (
-            super()
-            .serializer2data(serializer)
-            .add_saturation(serializer=serializer)
-        )
+        return super().serializer2data(serializer).add_saturation(serializer=serializer)
 
     def apply(self, *args, **kwargs):
         from PIL import ImageEnhance
+
         image = PIL.Image.fromarray(self.Image)
-        after_enh_image = ImageEnhance.Color(image).enhance(self.saturation/50)
+        after_enh_image = ImageEnhance.Color(image).enhance(self.saturation / 50)
         self.Image = np.array(after_enh_image)
         return self
