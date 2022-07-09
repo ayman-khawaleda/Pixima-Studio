@@ -41,3 +41,7 @@ class CleatFaceBlurSerializerHandler(ImageSerializerHandler):
         else:
             self.errors = self.serializer.errors
         return res
+
+class WhiteTeethToolSerializerHandler(ImageSerializerHandler):
+    def handle(self) -> bool:
+        return super().handle()
