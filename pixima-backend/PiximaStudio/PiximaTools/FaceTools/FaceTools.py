@@ -2,6 +2,7 @@ from abc import abstractmethod, ABC
 from abstractTools import Tool
 from PiximaStudio.settings import MEDIA_ROOT, MEDIA_URL
 from skimage import io
+from PiximaTools.Exceptions import ImageNotSaved
 import os
 
 
@@ -28,4 +29,4 @@ class FaceTool(Tool, ABC):
             )
             return mask_path
         except Exception as e:
-            raise Exception("Error In Save Image Mask")
+            raise ImageNotSaved("Error In Save Image Mask")
