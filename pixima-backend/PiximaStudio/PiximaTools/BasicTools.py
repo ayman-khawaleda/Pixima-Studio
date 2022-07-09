@@ -163,6 +163,15 @@ class RotatTool(PhotoTool):
         self.add_area_mode = mode
         return self
 
+    def request2data(self, request):
+        return (
+            super()
+            .request2data(request)
+            .add_angle(request.data.setdefault("Angle",90))
+            .add_clock_wise(request.data.setdefault("ClockWise",False))
+            .add_area_mode(request.data.setdefault("AreaMode","constant"))
+        )
+
     def serializer2data(self, serializer):
         return (
             super()

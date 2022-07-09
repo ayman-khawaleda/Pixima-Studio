@@ -117,14 +117,7 @@ class RotateToolView(APIView):
         im_handler = RotateImageSerializerHandler(rotate_serializer)
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
-                file = request.data["Image"].file
-                rotate_tool.file2image(file).add_quality_dict().add_preview(
-                    request.data["Preview"]
-                ).add_angle(request.data["Angle"]).add_clock_wise(
-                    request.data["ClockWise"]
-                ).add_area_mode(
-                    request.data["AreaMode"]
-                ).apply()
+                rotate_tool.request2data(request=request).apply()
                 image_path = rotate_tool.save_image()
                 imagepreview_path = rotate_tool.get_preview()
                 return JsonResponse(
