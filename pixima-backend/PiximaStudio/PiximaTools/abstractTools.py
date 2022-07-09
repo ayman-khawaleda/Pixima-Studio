@@ -6,6 +6,7 @@ from PIL import Image
 import os
 import numpy as np
 from uuid import uuid4
+from . import Exceptions
 
 
 class Tool(ABC):
@@ -55,7 +56,7 @@ class Tool(ABC):
 
     def read_image(self, image_index: int = -1, path=None):
         if self.directory_id is None:
-            raise Exception("Need Directory id")
+            raise Exceptions.NeedDirectoryID("Need Directory id")
         try:
             if path is not None:
                 img_path = path
@@ -73,7 +74,7 @@ class Tool(ABC):
             self.Image = imread(img_path)
             return self
         except Exception as e:
-            raise Exception("Error In Loading Image")
+            raise Exceptions.ImageNotFound("Error In Loading Image")
 
     def save_image(self, *args, **kwargs):
         if "id" in kwargs.keys():
@@ -94,7 +95,7 @@ class Tool(ABC):
             )
             return image_path
         except Exception as e:
-            raise Exception("Error In Saving Image")
+            raise Exceptions.ImageNotSaved("Error In Saving Image")
 
     def get_preview(self):
         quality = self.quality["High"]
@@ -108,7 +109,7 @@ class Tool(ABC):
                 MEDIA_URL, "Images", str(self.directory_id), f"{self.lastidx}.jpg"
             )
         if self.lastidx is None:
-            raise Exception("Please Call Save Image First!!")
+            raise Exceptions.ImageIndexNotFound("Please Call Save Image First!!")
 
         dir_path = os.path.join(MEDIA_ROOT, "Temp", str(self.directory_id))
         if not os.path.exists(dir_path):
@@ -119,13 +120,16 @@ class Tool(ABC):
             str(self.directory_id),
             f"{self.lastidx}_{self.preview}.jpg",
         )
-        Image.fromarray(self.Image).save(image_path, optimize=True, quality=quality)
-        return os.path.join(
-            MEDIA_URL,
-            "Temp",
-            str(self.directory_id),
-            f"{self.lastidx}_{self.preview}.jpg",
-        )
+        try:
+            Image.fromarray(self.Image).save(image_path, optimize=True, quality=quality)
+            return os.path.join(
+                MEDIA_URL,
+                "Temp",
+                str(self.directory_id),
+                f"{self.lastidx}_{self.preview}.jpg",
+            )
+        except Exception as e:
+            raise Exceptions.ImageNotSaved("Error While Saving Preview Image")
 
     def normalize8(self, I):
         mn = I.min()
