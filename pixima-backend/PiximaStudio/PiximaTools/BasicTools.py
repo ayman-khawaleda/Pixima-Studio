@@ -167,9 +167,9 @@ class RotatTool(PhotoTool):
         return (
             super()
             .request2data(request)
-            .add_angle(request.data.setdefault("Angle",90))
-            .add_clock_wise(request.data.setdefault("ClockWise",False))
-            .add_area_mode(request.data.setdefault("AreaMode","constant"))
+            .add_angle(request.data.setdefault("Angle", 90))
+            .add_clock_wise(request.data.setdefault("ClockWise", False))
+            .add_area_mode(request.data.setdefault("AreaMode", "constant"))
         )
 
     def serializer2data(self, serializer):
@@ -229,6 +229,14 @@ class ResizeTool(PhotoTool):
             high = 480
         self.high = high
         return self
+
+    def request2data(self, request):
+        return (
+            super()
+            .request2data(request)
+            .add_high(request.data.setdefault("High",480))
+            .add_width(request.data.setdefault("Width",720))
+        )
 
     def serializer2data(self, serializer):
         return (
