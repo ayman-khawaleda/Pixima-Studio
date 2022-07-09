@@ -33,3 +33,7 @@ class ClearFaceBlurSerializer(ImageSerializer):
 class WhiteTeethToolSerializer(ImageSerializer):
     Saturation = IntegerField(default=40, required=False, min_value=0, max_value=100)
     Brightness = IntegerField(default=20, required=False, min_value=0, max_value=100)
+
+class LipsToolSerializer(ImageSerializer):
+    Color = IntegerField(default=0, required=False, min_value=0, max_value=180)
+    Saturation = IntegerField(default=0, required=False, min_value=0, max_value=100)
