@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Core',
     'BasicPhotoTools',
-    'PhotoFilters'
+    'PhotoFilters',
+    'FaceTools',
 ]
 
 MIDDLEWARE = [
