@@ -17,3 +17,9 @@ class EyesColorSerializer(ImageSerializer):
 class EyesResizeSerializer(ImageSerializer):
     Factor = FloatField(default=1.1, required=False, min_value=0.75, max_value=2)
     Radius = IntegerField(default=75, required=False, min_value=50, max_value=200)
+
+class NoseResizeSerializer(ImageSerializer):
+    X = IntegerField(default=0, required=False, min_value=-50, max_value=50)
+    Y = IntegerField(default=0, required=False, min_value=-50, max_value=50)
+    Factor = FloatField(default=1.1, required=False, min_value=0.75, max_value=2)
+    Radius = IntegerField(default=75, required=False, min_value=50, max_value=200)
