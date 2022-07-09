@@ -40,7 +40,6 @@ class CropToolView(APIView):
         im_handler = CropImageSerializerHandler(crop_serializer)
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
-                file = request.data["Image"].file
                 crop_tool.request2data(request=request).apply()
                 image_path = crop_tool.save_image()
                 imagepreview_path = crop_tool.get_preview()
@@ -80,10 +79,7 @@ class FlipToolView(APIView):
         im_handler = FlipImageSerializerHandler(flip_serializer)
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
-                file = request.data["Image"].file
-                flip_tool.file2image(file).add_quality_dict().add_preview(
-                    request.data["Preview"]
-                ).add_direction(request.data["Direction"]).apply()
+                flip_tool.request2data(request=request).apply()
                 image_path = flip_tool.save_image()
                 imagepreview_path = flip_tool.get_preview()
                 return JsonResponse(

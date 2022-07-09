@@ -107,6 +107,13 @@ class FlipTool(PhotoTool):
     def __call__(self, *args, **kwargs):
         return self.apply(*args, **kwargs)
 
+    def request2data(self, request):
+        return (
+            super()
+            .request2data(request)
+            .add_direction(request.data.setdefault("Direction", "Hor"))
+        )
+
     def add_direction(self, dir: str = "Hor", serializer=None):
         if serializer is not None:
             dir = serializer.data["Direction"]
