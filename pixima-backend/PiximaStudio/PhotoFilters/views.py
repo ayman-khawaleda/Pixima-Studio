@@ -20,14 +20,7 @@ class GlitchFilterView(APIView):
         )
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
-                file = request.data["Image"].file
-                glitch_filter.file2image(file).add_quality_dict().add_preview(
-                    request.data["Preview"]
-                ).add_shift(request.data["Shift"]).add_step(
-                    request.data["Step"]
-                ).add_density(
-                    request.data["Density"]
-                ).apply()
+                glitch_filter.request2data(request=request)()
                 image_path = glitch_filter.save_image()
                 imagepreview_path = glitch_filter.get_preview()
                 return JsonResponse(
@@ -69,15 +62,7 @@ class CircleFilterView(APIView):
         try:
             if "Image" in request.data.keys() and request.data["Image"] != "":
                 file = request.data["Image"].file
-                circles_filter.file2image(file).add_quality_dict().add_preview(
-                    request.data.setdefault("Preview", "None")
-                ).add_center(
-                    request.data.setdefault("X", -1), request.data.setdefault("Y", -1)
-                ).add_facekey(
-                    request.data.setdefault("FaceKey", "RightEye")
-                ).add_radius(
-                    request.data.setdefault("Radius", 15)
-                )()
+                circles_filter.request2data(request=request)()
                 image_path = circles_filter.save_image()
                 imagepreview_path = circles_filter.get_preview()
                 return JsonResponse(

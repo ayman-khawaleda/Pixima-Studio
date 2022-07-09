@@ -28,6 +28,15 @@ class GlitchFilter(Filter):
     def __call__(self, *args, **kwargs):
         return self.apply(*args, **kwargs)
 
+    def request2data(self, request):
+        return (
+            super()
+            .request2data(request)
+            .add_shift(request.data.setdefault("Shift", 20))
+            .add_step(request.data.setdefault("Step", 15))
+            .add_density(request.data.setdefault("Density", 5))
+        )
+
     def serializer2data(self, serializer):
         return (
             super()
@@ -144,6 +153,17 @@ class CirclesFilter(Filter):
             radius = 15
         self.radius = radius
         return self
+
+    def request2data(self, request):
+        return (
+            super()
+            .request2data(request)
+            .add_center(
+                request.data.setdefault("X", -1), request.data.setdefault("Y", -1)
+            )
+            .add_facekey(request.data.setdefault("FaceKey", "RightEye"))
+            .add_radius(request.data.setdefault("Radius", 15))
+        )
 
     def serializer2data(self, serializer):
         return (
