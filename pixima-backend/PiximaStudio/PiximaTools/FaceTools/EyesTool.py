@@ -46,16 +46,45 @@ class EyesColorTool(EyesTool):
         self.color = color
         return self
 
+    def add_saturation(self, Saturation={"Saturation": [0]}, serializer=None):
+        if serializer is not None:
+            Saturation = serializer.data["Saturation"]
+        elif type(Saturation) == dict:
+
+            class SaturationSerializer(Serializer):
+                Saturation = ListField(
+                    child=IntegerField(default=0, min_value=0, max_value=100),
+                    min_length=1,
+                    max_length=2,
+                )
+
+            saturation_serializer = SaturationSerializer(data=Saturation)
+            if not saturation_serializer.is_valid():
+                raise RequierdValue("Saturation List Requierd")
+            Saturation = saturation_serializer.data["Saturation"]
+        elif not type(Saturation) == list:
+            raise RequierdValue("Saturation Should Be Dict Or List")
+        self.saturation = Saturation
+        return self
+
     def request2data(self, request):
-        return super().request2data(request).add_color(request.data)
+        return (
+            super()
+            .request2data(request)
+            .add_color(request.data)
+            .add_saturation(request.data)
+        )
 
     def serializer2data(self, serializer):
-        return super().serializer2data(serializer).add_color(serializer=serializer)
+        return (
+            super()
+            .serializer2data(serializer)
+            .add_color(serializer=serializer)
+            .add_saturation(serializer=serializer)
+        )
 
     def apply(self, *args, **kwargs):
         """
-        \ncolor: [Tuple, List] [eye|eyes]'s Color Value In HSV Space Color.
-        \nsaturation: [Tuple, List] Strength of Color.
         \nkwargs:
             \nFile: Path For The Image To Be Modifed.
         """
@@ -65,7 +94,7 @@ class EyesColorTool(EyesTool):
         results = self.faceMeshDetector.process(self.Image)
 
         if not results.multi_face_landmarks:
-            raise NoFace(f"No Faces Detected In Image")
+            raise NoFace(f"No Face Detected In The Image")
 
         self.__ri_list, self.__li_list = [], []
 
