@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from abstractTools import Tool
+from PiximaTools.abstractTools import Tool
 from PiximaStudio.settings import MEDIA_ROOT, MEDIA_URL
 from skimage import io
 from PiximaTools.Exceptions import ImageNotSaved
