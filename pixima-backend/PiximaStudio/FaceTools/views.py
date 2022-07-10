@@ -55,6 +55,16 @@ class EyesResizeToolView(RESTView):
             eyesresize_serializer
         )
         try:
+            if "Image" in request.data.keys() and request.data["Image"] != "":
+                eyesresize_tool.request2data(request=request)()
+                image_path = eyesresize_tool.save_image()
+                imagepreview_path = eyesresize_tool.get_preview()
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                    }
+                )
             if eyesresize_serializerhandler.handle():
                 eyesresize_tool.serializer2data(eyesresize_serializer).read_image()()
                 image_path = eyesresize_tool.save_image()
@@ -70,6 +80,5 @@ class EyesResizeToolView(RESTView):
         except NoFace as e:
             return self.bad_request({"Message": str(e)})
         except Exception as e:
-            print(e)
             return self.bad_request({"Message": "Error During Eyes Resize Process"})
         return self.bad_request(eyesresize_serializerhandler.errors)

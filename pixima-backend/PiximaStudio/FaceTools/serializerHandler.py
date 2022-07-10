@@ -9,3 +9,4 @@ class EyesColorSerializerHandler(ImageSerializerHandler):
 class EyesResizeSerializerHandler(ImageSerializerHandler):
     def handle(self) -> bool:
         return super().handle()
+    
