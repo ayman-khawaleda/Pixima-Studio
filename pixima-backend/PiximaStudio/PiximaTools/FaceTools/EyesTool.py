@@ -28,7 +28,7 @@ class EyesColorTool(EyesTool):
     def add_color(self, color={"Color": [0]}, serializer=None):
         if serializer is not None:
             color = serializer.data["Color"]
-        elif type(color) == dict:
+        elif type(color.dict()) == dict:
 
             class ColorSerializer(Serializer):
                 Color = ListField(
@@ -41,15 +41,16 @@ class EyesColorTool(EyesTool):
             if not color_serializer.is_valid():
                 raise RequiredValue("Color List Requierd")
             color = color_serializer.data["Color"]
-        elif not type(color) == list:
+            print(color)
+        else:
             raise RequiredValue("Color Should Be Dict Or List")
         self.color = color
         return self
 
-    def add_saturation(self, Saturation={"Saturation": [0]}, serializer=None):
+    def add_saturation(self, saturation={"Saturation": [0]}, serializer=None):
         if serializer is not None:
-            Saturation = serializer.data["Saturation"]
-        elif type(Saturation) == dict:
+            saturation = serializer.data["Saturation"]
+        elif type(saturation.dict()) == dict:
 
             class SaturationSerializer(Serializer):
                 Saturation = ListField(
@@ -58,13 +59,14 @@ class EyesColorTool(EyesTool):
                     max_length=2,
                 )
 
-            saturation_serializer = SaturationSerializer(data=Saturation)
+            saturation_serializer = SaturationSerializer(data=saturation)
             if not saturation_serializer.is_valid():
                 raise RequiredValue("Saturation List Requierd")
-            Saturation = saturation_serializer.data["Saturation"]
-        elif not type(Saturation) == list:
+            saturation = saturation_serializer.data["Saturation"]
+            print(saturation)
+        else:
             raise RequiredValue("Saturation Should Be Dict Or List")
-        self.saturation = Saturation
+        self.saturation = saturation
         return self
 
     def request2data(self, request):
