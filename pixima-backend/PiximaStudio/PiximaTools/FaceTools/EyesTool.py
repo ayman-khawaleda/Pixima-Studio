@@ -1,25 +1,58 @@
 from abc import abstractmethod, ABC
 from .FaceTools import FaceTool
-from Exceptions import NoFace
-from AI_Models import mp_face_detection
+from PiximaTools.Exceptions import NoFace, RequierdValue
+from PiximaTools.AI_Models import mp_face_detection
 import cv2
 import numpy as np
 import mediapipe as mp
 import decimal
+from rest_framework.serializers import ListField, IntegerField, Serializer
+
+
 class EyesTool(FaceTool):
     @classmethod
     @abstractmethod
     def apply(self, *args, **kwargs):
         pass
 
-class EyesColorTool(EyesTool):
 
+class EyesColorTool(EyesTool):
     def __init__(self, faceMeshDetector=None):
         if faceMeshDetector is None:
             faceMeshDetector = mp_face_detection
         self.faceMeshDetector = faceMeshDetector
 
-    def apply(self,*args, **kwargs):
+    def __call__(self, *args, **kwargs):
+        return self.apply(*args, **kwargs)
+
+    def add_color(self, color={"Color": [0]}, serializer=None):
+        if serializer is not None:
+            color = serializer.data["Color"]
+        elif type(color) == dict:
+
+            class ColorSerializer(Serializer):
+                Color = ListField(
+                    child=IntegerField(default=0, min_value=0, max_value=255),
+                    min_length=1,
+                    max_length=2,
+                )
+
+            color_serializer = ColorSerializer(data=color)
+            if not color_serializer.is_valid():
+                raise RequierdValue("Color List Requierd")
+            color = color_serializer.data["Color"]
+        elif not type(color) == list:
+            raise RequierdValue("Color Should Be Dict Or List")
+        self.color = color
+        return self
+
+    def request2data(self, request):
+        return super().request2data(request).add_color(request.data)
+
+    def serializer2data(self, serializer):
+        return super().serializer2data(serializer).add_color(serializer=serializer)
+
+    def apply(self, *args, **kwargs):
         """
         \ncolor: [Tuple, List] [eye|eyes]'s Color Value In HSV Space Color.
         \nsaturation: [Tuple, List] Strength of Color.
@@ -32,8 +65,8 @@ class EyesColorTool(EyesTool):
         results = self.faceMeshDetector.process(self.Image)
 
         if not results.multi_face_landmarks:
-            raise NoFace(f'No Faces Detected In Image')
-        
+            raise NoFace(f"No Faces Detected In Image")
+
         self.__ri_list, self.__li_list = [], []
 
         for face_landmarks in results.multi_face_landmarks:
@@ -45,6 +78,7 @@ class EyesColorTool(EyesTool):
                 right_iris_mask=right_iris_mask,
                 left_iris_mask=left_iris_mask,
             )
+        return self
 
     def __are_eyes_open(self, face_landmarks, dist: int = 15):
         right_min_p, right_max_p, left_min_p, left_max_p = (
@@ -81,7 +115,7 @@ class EyesColorTool(EyesTool):
 
     def __extract_iris_mask(self, face_landmarks, k: tuple = (3, 3), iter: int = 1):
         h, w, _ = self.Image.shape
-        right_th,left_th = None,None
+        right_th, left_th = None, None
 
         # Extract The Left (Iris & Eye) mask With Bin_Inv and Otsu
         # Than Generate Ellipse Mask have the same shape of Iris mask
@@ -148,9 +182,11 @@ class EyesColorTool(EyesTool):
             hsv_right_iris = cv2.cvtColor(self.right_iris, cv2.COLOR_RGB2HSV)
             r_h, r_s, r_v = cv2.split(hsv_right_iris)
             temp = r_h.copy()
-            temp[right_iris_mask == 255] = self.color[0] if len(self.color) == 2 else self.color[0]
+            temp[right_iris_mask == 255] = (
+                self.color[0] if len(self.color) == 2 else self.color[0]
+            )
             r_s[right_iris_mask == 255] += (
-                self.saturation[0] if len(self.saturation) ==2 else self.saturation[0]
+                self.saturation[0] if len(self.saturation) == 2 else self.saturation[0]
             )
             r_s[right_iris_mask == 255] = np.clip(r_s[right_iris_mask == 255], 0, 255)
             temp = cv2.cvtColor(cv2.merge([temp, r_s, r_v]), cv2.COLOR_HSV2RGB)
@@ -165,7 +201,9 @@ class EyesColorTool(EyesTool):
             hsv_left_iris = cv2.cvtColor(self.left_iris, cv2.COLOR_RGB2HSV)
             l_h, l_s, l_v = cv2.split(hsv_left_iris)
             temp = l_h.copy()
-            temp[left_iris_mask == 255] = self.color[1] if len(self.color) == 2 else self.color[0]
+            temp[left_iris_mask == 255] = (
+                self.color[1] if len(self.color) == 2 else self.color[0]
+            )
             l_s[left_iris_mask == 255] += (
                 self.saturation[1] if len(self.saturation) == 2 else self.saturation[0]
             )
