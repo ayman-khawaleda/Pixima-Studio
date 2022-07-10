@@ -1,4 +1,5 @@
 from abc import abstractmethod, ABC
+from math import factorial
 from .FaceTools import FaceTool
 from PiximaTools.Exceptions import NoFace, RequiredValue
 from PiximaTools.AI_Models import face_detection_model, face_mesh_model
@@ -252,3 +253,15 @@ class EyesColorTool(EyesTool):
                 self.__li_list[0][0] : self.__li_list[3][0],
                 :,
             ] = temp
+
+class EyesResizeTool(FaceTool):
+    def __init__(self,factor=1.1,radius=75):
+        self.factor = factor
+        self.radius = radius
+
+    def __call__(self, *args, **kwargs) :
+        return self.apply(*args, **kwargs)
+    
+    def save_mask(self, *args, **kwargs):
+        raise Exception("Not Implemented")
+    
