@@ -3,7 +3,7 @@ from random import Random
 from PiximaTools.abstractTools import Tool
 import cv2
 import numpy as np
-from .AI_Models import face_detection_modle, mp_face_detection
+from .AI_Models import face_detection_model, mp_face_detection
 
 FaceKey_Dict = {
     "RightEye": mp_face_detection.FaceKeyPoint.RIGHT_EYE,
@@ -179,7 +179,7 @@ class CirclesFilter(Filter):
         if self.x >= 0 and self.y >= 0:
             center = (self.x, self.y)
         else:
-            face_detection = face_detection_modle
+            face_detection = face_detection_model
             results = face_detection.process(self.Image)
             if not results.detections:
                 raise Exception("No Face Found")
