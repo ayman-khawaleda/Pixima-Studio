@@ -12,3 +12,6 @@ class ImageIndexNotFound(Exception):
 
 class NeedDirectoryID(Exception):
     pass
+
+class RequiredValue(Exception):
+    pass
