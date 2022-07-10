@@ -23,7 +23,7 @@ class FaceTool(Tool, ABC):
                 os.mkdir(sub_path)
             self.lastidx = len(os.listdir(sub_path))
             full_path = os.path.join(sub_path, f"{self.lastidx}.jpg")
-            io.imsave(full_path, self.Image, quality=quality)
+            io.imsave(full_path, self.Mask, quality=quality)
             mask_path = os.path.join(
                 MEDIA_URL, "ImageMasks", str(self.directory_id), f"{self.lastidx}.jpg"
             )
