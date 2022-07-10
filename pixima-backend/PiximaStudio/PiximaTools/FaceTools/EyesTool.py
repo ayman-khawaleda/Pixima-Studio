@@ -1,5 +1,4 @@
 from abc import abstractmethod, ABC
-from math import factorial
 from .FaceTools import FaceTool
 from PiximaTools.Exceptions import NoFace, RequiredValue
 from PiximaTools.AI_Models import face_detection_model, face_mesh_model
@@ -7,7 +6,7 @@ import cv2
 import numpy as np
 import mediapipe as mp
 import decimal
-from rest_framework.serializers import ListField, IntegerField, Serializer
+from rest_framework.serializers import ListField, IntegerField, Serializer, FloatField
 
 
 class EyesTool(FaceTool):
@@ -40,9 +39,8 @@ class EyesColorTool(EyesTool):
 
             color_serializer = ColorSerializer(data=color)
             if not color_serializer.is_valid():
-                raise RequiredValue("Color List Requierd")
+                raise RequiredValue("Color List Is Required")
             color = color_serializer.data["Color"]
-            print(color)
         else:
             raise RequiredValue("Color Should Be Dict Or List")
         self.color = color
@@ -62,9 +60,8 @@ class EyesColorTool(EyesTool):
 
             saturation_serializer = SaturationSerializer(data=saturation)
             if not saturation_serializer.is_valid():
-                raise RequiredValue("Saturation List Requierd")
+                raise RequiredValue("Saturation List Is Required")
             saturation = saturation_serializer.data["Saturation"]
-            print(saturation)
         else:
             raise RequiredValue("Saturation Should Be Dict Or List")
         self.saturation = saturation
@@ -254,14 +251,70 @@ class EyesColorTool(EyesTool):
                 :,
             ] = temp
 
+
 class EyesResizeTool(FaceTool):
-    def __init__(self,factor=1.1,radius=75):
+    def __init__(self, factor=1.1, radius=75):
         self.factor = factor
         self.radius = radius
 
-    def __call__(self, *args, **kwargs) :
+    def __call__(self, *args, **kwargs):
         return self.apply(*args, **kwargs)
-    
+
     def save_mask(self, *args, **kwargs):
         raise Exception("Not Implemented")
-    
+
+    def add_factor(self, factor=1.1, serializer=None):
+        if serializer:
+            factor = serializer.data["Factor"]
+        elif type(factor.dict()) == dict:
+
+            class FactorSerializer(Serializer):
+                Factor = FloatField(
+                    default=1.1, required=False, min_value=0.75, max_value=2
+                )
+            factor_serializer = FactorSerializer(data=factor)
+            if not factor_serializer.is_valid():
+                raise RequiredValue("Invalid Factor Value")
+            factor = factor_serializer.data["Factor"]
+        else:
+            raise RequiredValue("Factor Range [0.75, 2]")
+
+        self.factor = factor
+        return self
+
+    def add_radius(self, radius=75, serializer=None):
+        if serializer:
+            radius = serializer.data["Factor"]
+        elif type(radius.dict()) == dict:
+
+            class RadiusSerializer(Serializer):
+                Radius = IntegerField(
+                    default=75, required=False, min_value=50, max_value=200
+                )
+            radius_serializer = RadiusSerializer(data=radius)
+            if not radius_serializer.is_valid():
+                raise RequiredValue("Invalid Radius Value")
+            radius = radius_serializer.data["Radius"]
+        else:
+            raise RequiredValue("Factor Range [50, 200]")
+        self.radius = radius
+        return self
+
+    def request2data(self, request):
+        return (
+            super()
+            .request2data(request)
+            .add_factor(request.data)
+            .add_radius(request.data)
+        )
+
+    def serializer2data(self, serializer):
+        return (
+            super()
+            .serializer2data(serializer)
+            .add_factor(serializer=serializer)
+            .add_radius(serializer=serializer)
+        )
+
+    def apply(self,*args,**kwargs):
+        return self

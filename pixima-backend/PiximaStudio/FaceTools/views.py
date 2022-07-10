@@ -50,12 +50,14 @@ class EyesColorToolView(RESTView):
 
 class EyesResizeToolView(RESTView):
     def post(self, request, format=None):
+        eyesresize_tool = EyesTool.EyesResizeTool()
         eyesresize_serializer = EyesResizeSerializer(data=request.data)
         eyesresize_serializerhandler = EyesResizeSerializerHandler(
             eyesresize_serializer
         )
         try:
             if eyesresize_serializerhandler.handle():
+                eyesresize_tool.serializer2data(eyesresize_serializer)
                 return self.ok_request({"Message": eyesresize_serializer.data})
         except RequiredValue as e:
             return self.bad_request({"Message": str(e)})
