@@ -43,7 +43,6 @@ class EyesColorToolView(RESTView):
         except NoFace as e:
             return self.bad_request({"Message": str(e)})
         except Exception as e:
-            print(e)
             return self.bad_request({"Message": "Error During Color Eyes Process"})
         return self.bad_request(eyescolor_serializerhandler.errors)
 
@@ -57,8 +56,15 @@ class EyesResizeToolView(RESTView):
         )
         try:
             if eyesresize_serializerhandler.handle():
-                eyesresize_tool.serializer2data(eyesresize_serializer)
-                return self.ok_request({"Message": eyesresize_serializer.data})
+                eyesresize_tool.serializer2data(eyesresize_serializer).read_image()()
+                image_path = eyesresize_tool.save_image()
+                imagepreview_path = eyesresize_tool.get_preview()
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                    }
+                )
         except RequiredValue as e:
             return self.bad_request({"Message": str(e)})
         except NoFace as e:
