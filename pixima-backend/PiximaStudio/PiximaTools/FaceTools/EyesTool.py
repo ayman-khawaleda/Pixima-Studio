@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABC
 from .FaceTools import FaceTool
-from PiximaTools.Exceptions import NoFace, RequierdValue
-from PiximaTools.AI_Models import mp_face_detection
+from PiximaTools.Exceptions import NoFace, RequiredValue
+from PiximaTools.AI_Models import face_detection_model, face_mesh_model
 import cv2
 import numpy as np
 import mediapipe as mp
@@ -19,7 +19,7 @@ class EyesTool(FaceTool):
 class EyesColorTool(EyesTool):
     def __init__(self, faceMeshDetector=None):
         if faceMeshDetector is None:
-            faceMeshDetector = mp_face_detection
+            faceMeshDetector = face_mesh_model
         self.faceMeshDetector = faceMeshDetector
 
     def __call__(self, *args, **kwargs):
@@ -39,10 +39,10 @@ class EyesColorTool(EyesTool):
 
             color_serializer = ColorSerializer(data=color)
             if not color_serializer.is_valid():
-                raise RequierdValue("Color List Requierd")
+                raise RequiredValue("Color List Requierd")
             color = color_serializer.data["Color"]
         elif not type(color) == list:
-            raise RequierdValue("Color Should Be Dict Or List")
+            raise RequiredValue("Color Should Be Dict Or List")
         self.color = color
         return self
 
@@ -60,10 +60,10 @@ class EyesColorTool(EyesTool):
 
             saturation_serializer = SaturationSerializer(data=Saturation)
             if not saturation_serializer.is_valid():
-                raise RequierdValue("Saturation List Requierd")
+                raise RequiredValue("Saturation List Requierd")
             Saturation = saturation_serializer.data["Saturation"]
         elif not type(Saturation) == list:
-            raise RequierdValue("Saturation Should Be Dict Or List")
+            raise RequiredValue("Saturation Should Be Dict Or List")
         self.saturation = Saturation
         return self
 
@@ -92,12 +92,13 @@ class EyesColorTool(EyesTool):
             self.path = kwargs["File"]
             self.Image = cv2.cvtColor(cv2.imread(self.path), cv2.COLOR_BGR2RGB)
         results = self.faceMeshDetector.process(self.Image)
-
         if not results.multi_face_landmarks:
             raise NoFace(f"No Face Detected In The Image")
 
-        self.__ri_list, self.__li_list = [], []
+        h, w, _ = self.Image.shape
+        self.Mask = np.zeros((h, w))
 
+        self.__ri_list, self.__li_list = [], []
         for face_landmarks in results.multi_face_landmarks:
             self.__is_right_open, self.__is_left_open = self.__are_eyes_open(
                 face_landmarks
@@ -174,7 +175,10 @@ class EyesColorTool(EyesTool):
             left_th = cv2.bitwise_and(left_th, lellipse)
             left_th = cv2.morphologyEx(left_th, cv2.MORPH_DILATE, k, iterations=iter)
             left_th = cv2.bitwise_and(left_th, lellipse)
-
+            self.Mask[
+                self.__li_list[1][1] : self.__li_list[2][1],
+                self.__li_list[0][0] : self.__li_list[3][0],
+            ] = left_th.copy()
         # Extract The Right (Iris & Eye) mask With Bin_Inv and Otsu
         if self.__is_right_open:
             for tup in mp.solutions.face_mesh.FACEMESH_RIGHT_IRIS:
@@ -201,7 +205,10 @@ class EyesColorTool(EyesTool):
             right_th = cv2.bitwise_and(right_th, rellipse)
             right_th = cv2.morphologyEx(right_th, cv2.MORPH_DILATE, k, iterations=iter)
             right_th = cv2.bitwise_and(right_th, rellipse)
-
+            self.Mask[
+                self.__ri_list[3][1] : self.__ri_list[1][1],
+                self.__ri_list[2][0] : self.__ri_list[0][0],
+            ] = right_th.copy()
         return right_th, left_th
 
     def __color_eye(self, right_iris_mask, left_iris_mask):
