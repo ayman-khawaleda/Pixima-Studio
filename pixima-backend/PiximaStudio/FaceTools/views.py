@@ -91,6 +91,16 @@ class NoseResizeToolView(RESTView):
             noseresize_serializer
         )
         try:
+            if "Image" in request.data.keys() and request.data["Image"] != "":
+                noseresize_tool.request2data(request=request)()
+                image_path = noseresize_tool.save_image()
+                imagepreview_path = noseresize_tool.get_preview()
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                    }
+                )
             if noseresize_serializerhandler.handle():
                 noseresize_tool.serializer2data(noseresize_serializer).read_image().apply()
                 image_path = noseresize_tool.save_image()
