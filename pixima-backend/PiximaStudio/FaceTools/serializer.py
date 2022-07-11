@@ -24,7 +24,7 @@ class NoseResizeSerializer(ImageSerializer):
     Factor = FloatField(default=1.1, required=False, min_value=0.75, max_value=2)
     Radius = IntegerField(default=75, required=False, min_value=50, max_value=200)
 
-class ClearFaceBlurSeializer(ImageSerializer):
+class SmoothFaceSeializer(ImageSerializer):
     Method = CharField(default="BiB",required=False)
     Kernal = IntegerField(default=5, required=False, min_value=3, max_value=31)
     SigmaX = IntegerField(default=50, required=False, min_value=10, max_value=200)
