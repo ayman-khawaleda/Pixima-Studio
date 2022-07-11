@@ -1,8 +1,13 @@
 from rest_framework.views import APIView
 from PiximaStudio.AbstractView import RESTView
-from .serializer import EyesColorSerializer, EyesResizeSerializer, NoseResizeSerializer
-from .serializerHandler import EyesColorSerializerHandler, EyesResizeSerializerHandler, NoseResizeSerializerHandler
-from PiximaTools.FaceTools import EyesTool,NoseTool
+from .serializer import EyesColorSerializer, EyesResizeSerializer, NoseResizeSerializer, SmoothFaceSeializer
+from .serializerHandler import (
+    EyesColorSerializerHandler,
+    EyesResizeSerializerHandler,
+    NoseResizeSerializerHandler,
+    SmoothFaceSerializerHandler,
+)
+from PiximaTools.FaceTools import EyesTool, NoseTool
 from PiximaTools.Exceptions import RequiredValue, NoFace
 
 
@@ -83,6 +88,7 @@ class EyesResizeToolView(RESTView):
             return self.bad_request({"Message": "Error During Eyes Resize Process"})
         return self.bad_request(eyesresize_serializerhandler.errors)
 
+
 class NoseResizeToolView(RESTView):
     def post(self, request, format=None):
         noseresize_tool = NoseTool.NoseResizeTool()
@@ -102,7 +108,9 @@ class NoseResizeToolView(RESTView):
                     }
                 )
             if noseresize_serializerhandler.handle():
-                noseresize_tool.serializer2data(noseresize_serializer).read_image().apply()
+                noseresize_tool.serializer2data(
+                    noseresize_serializer
+                ).read_image().apply()
                 image_path = noseresize_tool.save_image()
                 imagepreview_path = noseresize_tool.get_preview()
                 return self.ok_request(
@@ -116,6 +124,23 @@ class NoseResizeToolView(RESTView):
         except NoFace as e:
             return self.bad_request({"Message": str(e)})
         except Exception as e:
-            print(e)
             return self.bad_request({"Message": "Error During Nose Resize Process"})
         return self.bad_request(noseresize_serializerhandler.errors)
+
+
+class SmoothFaceToolView(RESTView):
+    def post(self, request, format=None):
+        smothface_serializer = SmoothFaceSeializer(data=request.data)
+        smothface_serializerhandler = SmoothFaceSerializerHandler(
+            smothface_serializer
+        )
+        try:
+            if smothface_serializerhandler.handle():
+                return self.ok_request(smothface_serializer.data)
+        except RequiredValue as e:
+            return self.bad_request({"Message": str(e)})
+        except NoFace as e:
+            return self.bad_request({"Message": str(e)})
+        except Exception as e:
+            return self.bad_request({"Message": "Error During Face Smoothing Process"})
+        return self.bad_request(smothface_serializerhandler.errors)
