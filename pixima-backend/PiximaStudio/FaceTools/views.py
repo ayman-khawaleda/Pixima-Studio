@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from PiximaStudio.AbstractView import RESTView
-from .serializer import EyesColorSerializer, EyesResizeSerializer
-from .serializerHandler import EyesColorSerializerHandler, EyesResizeSerializerHandler
+from .serializer import EyesColorSerializer, EyesResizeSerializer, NoseResizeSerializer
+from .serializerHandler import EyesColorSerializerHandler, EyesResizeSerializerHandler, NoseResizeSerializerHandler
 from PiximaTools.FaceTools import EyesTool
 from PiximaTools.Exceptions import RequiredValue, NoFace
 
@@ -82,3 +82,21 @@ class EyesResizeToolView(RESTView):
         except Exception as e:
             return self.bad_request({"Message": "Error During Eyes Resize Process"})
         return self.bad_request(eyesresize_serializerhandler.errors)
+
+class NoseResizeToolView(RESTView):
+    def post(self, request, format=None):
+        noseresize_serializer = NoseResizeSerializer(data=request.data)
+        noseresize_serializerhandler = NoseResizeSerializerHandler(
+            noseresize_serializer
+        )
+        try:
+            if noseresize_serializerhandler.handle():
+                return self.ok_request(noseresize_serializer.data)
+        except RequiredValue as e:
+            return self.bad_request({"Message": str(e)})
+        except NoFace as e:
+            return self.bad_request({"Message": str(e)})
+        except Exception as e:
+            print(e)
+            return self.bad_request({"Message": "Error During Nose Resize Process"})
+        return self.bad_request(noseresize_serializerhandler.errors)
