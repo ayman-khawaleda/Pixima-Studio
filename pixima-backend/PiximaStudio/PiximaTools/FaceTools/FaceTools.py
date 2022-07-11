@@ -2,7 +2,9 @@ from abc import abstractmethod, ABC
 from PiximaTools.abstractTools import Tool
 from PiximaStudio.settings import MEDIA_ROOT, MEDIA_URL
 from skimage import io
-from PiximaTools.Exceptions import ImageNotSaved
+from PiximaTools.Exceptions import ImageNotSaved,RequiredValue,NoFace
+from PiximaTools.AI_Models import face_mesh_model
+from rest_framework.serializers import CharField,IntegerField,Serializer
 import os
 import numpy as np
 import cv2
@@ -27,3 +29,28 @@ class FaceTool(Tool, ABC):
             return mask_path
         except Exception as e:
             raise ImageNotSaved("Error In Save Image Mask")
+
+class SmoothFaceTool(FaceTool):
+    
+    def __init__(self, faceMeshDetector=None):
+        if faceMeshDetector is None:
+            faceMeshDetector = face_mesh_model
+        self.faceMeshDetector = faceMeshDetector
+
+    def __call__(self, *args, **kwargs):
+        return self.apply(*args, **kwargs)
+
+    def request2data(self, request):
+        return (
+            super()
+            .request2data(request)
+        )
+
+    def serializer2data(self, serializer):
+        return (
+            super()
+            .serializer2data(serializer)
+        )
+
+    def apply(self,*args,**kwargs):
+        return self
