@@ -27,5 +27,5 @@ class NoseResizeSerializer(ImageSerializer):
 class SmoothFaceSeializer(ImageSerializer):
     Method = CharField(default="BiB",required=False)
     Kernal = IntegerField(default=5, required=False, min_value=3, max_value=31)
-    SigmaX = IntegerField(default=50, required=False, min_value=10, max_value=200)
-    SigmaY = IntegerField(default=50, required=False, min_value=10, max_value=200)
+    SigmaX = IntegerField(default=0, required=False, min_value=0, max_value=150)
+    SigmaY = IntegerField(default=0, required=False, min_value=0, max_value=150)
