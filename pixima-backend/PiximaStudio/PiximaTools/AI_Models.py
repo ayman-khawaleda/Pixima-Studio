@@ -2,6 +2,7 @@ import mediapipe as mp
 
 mp_face_detection = mp.solutions.face_detection
 mp_face_mesh = mp.solutions.face_mesh
+mp_drawing_styles = mp.solutions.drawing_styles
 
 face_detection_model = mp_face_detection.FaceDetection(
     model_selection=1, min_detection_confidence=0.5
