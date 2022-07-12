@@ -5,11 +5,25 @@ from PiximaTools.abstractTools import Tool
 from PiximaStudio.settings import MEDIA_ROOT, MEDIA_URL
 from skimage import io
 from PiximaTools.Exceptions import ImageNotSaved, RequiredValue, NoFace
-from PiximaTools.AI_Models import face_mesh_model
+from PiximaTools.AI_Models import face_mesh_model,mp_drawing_styles
 from rest_framework.serializers import CharField, IntegerField, Serializer
 import os
 import numpy as np
 import cv2
+class FaceLandMarksArray:
+    lips_upper = [78, 191, 80, 81, 82, 13, 312, 311, 310, 415, 308]
+    lips_lower = [78, 95, 88, 178, 87, 14, 317, 402, 318, 324, 308]
+    rightEyeUpper = [246, 161, 160, 159, 158, 157, 173]
+    rightEyeLower = [33, 7, 163, 144, 145, 153, 154, 155, 133]
+    leftEyeUpper = [466, 388, 387, 386, 385, 384, 398]
+    leftEyeLower = [263, 249, 390, 373, 374, 380, 381, 382, 362]
+    rightEyeBrowUpper = [156, 70, 63, 105, 66, 107, 55]
+    rightEyeBrowLower = [65, 52, 53, 46]
+    leftEyeBrowUpper = [383, 300, 293, 334, 296, 336, 285]
+    leftEyeBrowLower = [295, 282, 283, 276]
+    lipsUpperOuter = [61, 185, 40, 39, 37, 0, 267, 269, 270, 409, 291]
+    lipsLowerOuter = [146, 91, 181, 84, 17, 314, 405, 321, 375, 291]
+    faceOval = mp_drawing_styles.face_mesh_connections.FACEMESH_FACE_OVAL
 
 
 class FaceTool(Tool, ABC):
@@ -145,6 +159,88 @@ class SmoothFaceTool(FaceTool):
             .add_sigmax(serialzier=serializer)
             .add_sigmay(serialzier=serializer)
         )
+
+    def __maskEyes(self,image, face_landmarks):
+        pointsRightEye = []
+        pointsLeftEye = []
+        h, w, _ = image.shape
+
+        for i in FaceLandMarksArray.rightEyeUpper:
+            xru, yru = face_landmarks.landmark[i].x, face_landmarks.landmark[i].y
+            xru, yru = self.normaliz_pixel(xru,yru,w,h)
+            pointsRightEye.append((xru, yru))
+        for i in FaceLandMarksArray.rightEyeLower:
+            xrl, yrl = face_landmarks.landmark[i].x, face_landmarks.landmark[i].y
+            xrl, yrl = self.normaliz_pixel(xrl,yrl,w,h)
+            pointsRightEye.append((xrl, yrl))
+        for i in FaceLandMarksArray.leftEyeUpper:
+            xlu, ylu = face_landmarks.landmark[i].x, face_landmarks.landmark[i].y
+            xlu, ylu = self.normaliz_pixel(xlu,ylu,w,h)
+            pointsLeftEye.append((xlu, ylu))
+        for i in FaceLandMarksArray.leftEyeLower:
+            xll, yll = face_landmarks.landmark[i].x, face_landmarks.landmark[i].y
+            xll, yll = self.normaliz_pixel(xll,yll,w,h)
+            pointsLeftEye.append((xll, yll))
+        cv2.drawContours(
+            self.face_fetures_mask, [np.array(pointsRightEye)], -1, (255, 255, 255), -1, cv2.LINE_AA
+        )
+        cv2.drawContours(
+            self.face_fetures_mask, [np.array(pointsLeftEye)], -1, (255, 255, 255), -1, cv2.LINE_AA
+        )
+
+    def __maskEyeBrow(self,image, face_landmarks):
+        pointsRightEyeBrow = []
+        pointsLeftEyeBrow = []
+        h, w, _ = image.shape
+        for i in FaceLandMarksArray.rightEyeBrowUpper:
+            xru, yru = face_landmarks.landmark[i].x, face_landmarks.landmark[i].y
+            xru, yru = self.normaliz_pixel(xru,yru,w,h)
+            pointsRightEyeBrow.append((xru, yru))
+        for i in FaceLandMarksArray.rightEyeBrowLower:
+            xrl, yrl = face_landmarks.landmark[i].x, face_landmarks.landmark[i].y
+            xrl, yrl = self.normaliz_pixel(xrl,yrl,w,h)
+            pointsRightEyeBrow.append((xrl, yrl))
+        for i in FaceLandMarksArray.leftEyeBrowUpper:
+            xlu, ylu = face_landmarks.landmark[i].x, face_landmarks.landmark[i].y
+            xlu, ylu = self.normaliz_pixel(xlu,ylu,w,h)
+            pointsLeftEyeBrow.append((xlu, ylu))
+        for i in FaceLandMarksArray.leftEyeBrowLower:
+            xll, yll = face_landmarks.landmark[i].x, face_landmarks.landmark[i].y
+            xll, yll = self.normaliz_pixel(xll,yll,w,h)
+            pointsLeftEyeBrow.append((xll, yll))
+        cv2.drawContours(
+            self.face_fetures_mask,
+            [np.array(pointsRightEyeBrow)],
+            -1,
+            (255, 255, 255),
+            -1,
+            cv2.LINE_AA,
+        )
+        cv2.drawContours(
+            self.face_fetures_mask,
+            [np.array(pointsLeftEyeBrow)],
+            -1,
+            (255, 255, 255),
+            -1,
+            cv2.LINE_AA,
+        )
+
+    def __maskLips(self,image, face_landmarks):
+        h, w, _ = image.shape
+        pointsLips = []
+
+        for i in FaceLandMarksArray.lipsLowerOuter:
+            xl, yl = face_landmarks.landmark[i].x, face_landmarks.landmark[i].y
+            xl, yl = self.normaliz_pixel(xl,yl,w,h)
+            pointsLips.append((xl, yl))
+        for i in FaceLandMarksArray.lips_upper:
+            xu, yu = face_landmarks.landmark[i].x, face_landmarks.landmark[i].y
+            xu, yu = self.normaliz_pixel(xu,yu,w,h)
+            pointsLips.append((xu, yu))
+
+            cv2.drawContours(
+                self.face_fetures_mask, [np.array(pointsLips)], -1, (255, 255, 255), -1, cv2.LINE_AA
+            )
 
     def apply(self, *args, **kwargs):
         return self
