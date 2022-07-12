@@ -8,6 +8,7 @@ db.sqlite3
 media
 *env
 *Config.py
+DNN_Models
 #Media Directory
 *pixima_media
 # Backup files # 
