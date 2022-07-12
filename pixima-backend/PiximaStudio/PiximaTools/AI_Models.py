@@ -1,4 +1,7 @@
+from abc import ABC, abstractmethod
 import mediapipe as mp
+import keras as ke
+import numpy as np
 
 mp_face_detection = mp.solutions.face_detection
 mp_face_mesh = mp.solutions.face_mesh
@@ -14,3 +17,25 @@ face_mesh_model = mp_face_mesh.FaceMesh(
     refine_landmarks=True,
     min_detection_confidence=0.5,
 )
+
+class AIModel(ABC):
+    @classmethod
+    @abstractmethod
+    def load_model(self,path):
+        pass
+    
+    @classmethod
+    @abstractmethod
+    def prdict(self,input):
+        pass
+    
+class DNNModel(AIModel):
+    pass
+
+class FaceSegmentationModel(DNNModel):
+    def load_model(self,path="/DNN_Models/FaceSeg-Model.h5"):
+        self.model = ke.models.load_model(path)
+
+    def prdict(self,input):
+        "Input <Gray Image> Should Have shape like (256,256,1)"
+        return self.model.predict(np.asarray([input])).reshape((256,256))
