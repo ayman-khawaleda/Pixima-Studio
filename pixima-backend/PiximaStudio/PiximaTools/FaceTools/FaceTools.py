@@ -585,7 +585,7 @@ class ColorLipsTool(FaceTool):
 
             class SaturationSerializer(Serializer):
                 Saturation = IntegerField(
-                    default=0, required=False, min_value=-100, max_value=100
+                    default=0, required=False, min_value=0, max_value=100
                 )
 
             saturation_serializer = SaturationSerializer(data=saturation)

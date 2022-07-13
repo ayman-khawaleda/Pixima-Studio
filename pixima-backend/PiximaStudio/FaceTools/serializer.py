@@ -41,4 +41,4 @@ class WhiteTeethToolSerializer(ImageSerializer):
 
 class ColorLipsToolSerializer(ImageSerializer):
     Color = IntegerField(default=0, required=False, min_value=0, max_value=180)
-    Saturation = IntegerField(default=0, required=False, min_value=-100, max_value=100)
+    Saturation = IntegerField(default=0, required=False, min_value=0, max_value=100)
