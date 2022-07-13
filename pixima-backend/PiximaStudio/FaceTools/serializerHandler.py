@@ -10,9 +10,12 @@ class EyesColorSerializerHandler(ImageSerializerHandler):
 class EyesResizeSerializerHandler(ImageSerializerHandler):
     def handle(self) -> bool:
         return super().handle()
+
+
 class NoseResizeSerializerHandler(ImageSerializerHandler):
     def handle(self) -> bool:
         return super().handle()
+
 
 class SmoothFaceSerializerHandler(ImageSerializerHandler):
     def __init__(
@@ -39,10 +42,12 @@ class SmoothFaceSerializerHandler(ImageSerializerHandler):
             self.errors = self.serializer.errors
         return res
 
+
 class WhiteTeethToolSerializerHandler(ImageSerializerHandler):
     def handle(self) -> bool:
         return super().handle()
 
-class LipsToolSerializerHandler(ImageSerializerHandler):
+
+class ColorLipsToolSerializerHandler(ImageSerializerHandler):
     def handle(self) -> bool:
         return super().handle()
