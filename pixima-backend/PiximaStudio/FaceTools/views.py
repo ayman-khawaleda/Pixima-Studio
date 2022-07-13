@@ -1,15 +1,23 @@
 from rest_framework.views import APIView
 from PiximaStudio.AbstractView import RESTView
-from .serializer import EyesColorSerializer, EyesResizeSerializer, NoseResizeSerializer, SmoothFaceSeializer
+from .serializer import (
+    EyesColorSerializer,
+    EyesResizeSerializer,
+    NoseResizeSerializer,
+    SmoothFaceSeializer,
+    WhiteTeethToolSerializer,
+)
 from .serializerHandler import (
     EyesColorSerializerHandler,
     EyesResizeSerializerHandler,
     NoseResizeSerializerHandler,
     SmoothFaceSerializerHandler,
+    WhiteTeethToolSerializerHandler,
 )
-from PiximaTools.FaceTools import EyesTool, NoseTool,FaceTools
+from PiximaTools.FaceTools import EyesTool, NoseTool, FaceTools
 from PiximaTools.Exceptions import RequiredValue, NoFace
 import traceback
+
 
 class EyesColorToolView(RESTView):
     def post(self, request, format=None):
@@ -142,16 +150,18 @@ class SmoothFaceToolView(RESTView):
                 image_path = smoothface_tool.save_image()
                 imagepreview_path = smoothface_tool.get_preview()
                 mask_path = smoothface_tool.save_mask()
-                
+
                 return self.ok_request(
                     {
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
-                        "Mask": mask_path
+                        "Mask": mask_path,
                     }
                 )
             if smoothface_serializerhandler.handle():
-                smoothface_tool.serializer2data(smoothface_serializer).read_image().apply()
+                smoothface_tool.serializer2data(
+                    smoothface_serializer
+                ).read_image().apply()
                 image_path = smoothface_tool.save_image()
                 imagepreview_path = smoothface_tool.get_preview()
                 mask_path = smoothface_tool.save_mask()
@@ -159,7 +169,7 @@ class SmoothFaceToolView(RESTView):
                     {
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
-                        "Mask": mask_path
+                        "Mask": mask_path,
                     }
                 )
         except RequiredValue as e:
@@ -167,6 +177,22 @@ class SmoothFaceToolView(RESTView):
         except NoFace as e:
             return self.bad_request({"Message": str(e)})
         except Exception as e:
-            print(traceback.format_exc())
             return self.bad_request({"Message": "Error During Face Smoothing Process"})
         return self.bad_request(smoothface_serializerhandler.errors)
+
+class WhiteTeethToolView(RESTView):
+    def post(self, request, format=None):
+        whiteteeth_serializer = WhiteTeethToolSerializer(data=request.data)
+        whiteteeth_serializerhandler = WhiteTeethToolSerializerHandler(
+            whiteteeth_serializer
+        )
+        try:
+            if whiteteeth_serializerhandler.handle():
+                return self.ok_request(whiteteeth_serializer.data)
+        except RequiredValue as e:
+            return self.bad_request({"Message": str(e)})
+        except NoFace as e:
+            return self.bad_request({"Message": str(e)})
+        except Exception as e:
+            return self.bad_request({"Message": "Error During Whiteing Teeth Process"})
+        return self.bad_request(whiteteeth_serializerhandler.errors)
