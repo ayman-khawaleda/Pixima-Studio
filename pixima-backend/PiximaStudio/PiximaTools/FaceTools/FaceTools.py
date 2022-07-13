@@ -1,4 +1,5 @@
 from abc import abstractmethod, ABC
+import json
 
 from requests import request
 from PiximaTools.abstractTools import Tool
@@ -110,7 +111,7 @@ class SmoothFaceTool(FaceTool):
 
             kernal_serializer = KernalSerializer(data=kernal)
             if not kernal_serializer.is_valid():
-                raise RequiredValue(**kernal_serializer.errors)
+                raise RequiredValue("Kernal Value Is Invalid")
             kernal = kernal_serializer.data["Kernal"]
         self.kernal = kernal
         return self
@@ -127,7 +128,7 @@ class SmoothFaceTool(FaceTool):
 
             sigmax_serializer = SigmaXSerializer(data=sigmax)
             if not sigmax_serializer.is_valid():
-                raise RequiredValue(**sigmax_serializer.errors)
+                raise RequiredValue("SigmaX Value Is Invalid")
             sigmax = sigmax_serializer.data["SigmaX"]
         self.sigmax = sigmax
         return self
@@ -144,7 +145,7 @@ class SmoothFaceTool(FaceTool):
 
             sigmay_serializer = SigmaYSerializer(data=sigmay)
             if not sigmay_serializer.is_valid():
-                raise RequiredValue(**sigmay_serializer.errors)
+                raise RequiredValue("SigmaY Value Is Invalid")
             sigmay = sigmay_serializer.data["SigmaY"]
         self.sigmay = sigmay
         return self
@@ -454,7 +455,7 @@ class WhiteTeethTool(FaceTool):
 
             saturation_serializer = SaturationSerializer(data=saturation)
             if not saturation_serializer.is_valid():
-                raise RequiredValue(**saturation_serializer.errors)
+                raise RequiredValue("Saturation Value Is Invalid")
             saturation = saturation_serializer.data["Saturation"]
         self.saturation = saturation
         return self
@@ -471,7 +472,7 @@ class WhiteTeethTool(FaceTool):
 
             brightness_serializer = BrightnessSerializer(data=brightness)
             if not brightness_serializer.is_valid():
-                raise RequiredValue(**brightness_serializer.errors)
+                raise RequiredValue("Brightness Value Is Invalid")
             brightness = brightness_serializer.data["Brightness"]
         self.brightness = brightness
         return self
@@ -589,7 +590,7 @@ class ColorLipsTool(FaceTool):
 
             saturation_serializer = SaturationSerializer(data=saturation)
             if not saturation_serializer.is_valid():
-                raise RequiredValue(**saturation_serializer.errors)
+                raise RequiredValue("Saturation Value Is Invalid")
             saturation = saturation_serializer.data["Saturation"]
         self.saturation = saturation
         return self
@@ -606,7 +607,7 @@ class ColorLipsTool(FaceTool):
 
             color_serializer = ColorSerializer(data=color)
             if not color_serializer.is_valid():
-                raise RequiredValue(**color_serializer.errors)
+                raise RequiredValue("Color Value Is Invalid")
             color = color_serializer.data["Color"]
         self.color = color
         return self
