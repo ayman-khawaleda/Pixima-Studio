@@ -7,9 +7,9 @@ from .serializerHandler import (
     NoseResizeSerializerHandler,
     SmoothFaceSerializerHandler,
 )
-from PiximaTools.FaceTools import EyesTool, NoseTool
+from PiximaTools.FaceTools import EyesTool, NoseTool,FaceTools
 from PiximaTools.Exceptions import RequiredValue, NoFace
-
+import traceback
 
 class EyesColorToolView(RESTView):
     def post(self, request, format=None):
@@ -129,18 +129,31 @@ class NoseResizeToolView(RESTView):
 
 
 class SmoothFaceToolView(RESTView):
+    
     def post(self, request, format=None):
-        smothface_serializer = SmoothFaceSeializer(data=request.data)
-        smothface_serializerhandler = SmoothFaceSerializerHandler(
-            smothface_serializer
+        smoothface_tool = FaceTools.SmoothFaceTool()
+        smoothface_serializer = SmoothFaceSeializer(data=request.data)
+        smoothface_serializerhandler = SmoothFaceSerializerHandler(
+            smoothface_serializer
         )
         try:
-            if smothface_serializerhandler.handle():
-                return self.ok_request(smothface_serializer.data)
+            if smoothface_serializerhandler.handle():
+                smoothface_tool.serializer2data(smoothface_serializer).read_image().apply()
+                image_path = smoothface_tool.save_image()
+                imagepreview_path = smoothface_tool.get_preview()
+                mask_path = smoothface_tool.save_mask()
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                        "Mask": mask_path
+                    }
+                )
         except RequiredValue as e:
             return self.bad_request({"Message": str(e)})
         except NoFace as e:
             return self.bad_request({"Message": str(e)})
         except Exception as e:
+            print(traceback.format_exc())
             return self.bad_request({"Message": "Error During Face Smoothing Process"})
-        return self.bad_request(smothface_serializerhandler.errors)
+        return self.bad_request(smoothface_serializerhandler.errors)
