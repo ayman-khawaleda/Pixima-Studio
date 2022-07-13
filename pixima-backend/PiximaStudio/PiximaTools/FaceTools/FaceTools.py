@@ -498,9 +498,7 @@ class WhiteTeethTool(FaceTool):
         )
 
     def __process_face(self, th=100):
-        self.results = self.face_mesh.process(
-            cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
-        )
+        self.results = self.faceMeshDetector.process(self.Image)
         if not self.results.multi_face_landmarks:
             raise NoFace("No Face Detected In The Image")
         for face_landmarks in self.results.multi_face_landmarks:
@@ -508,20 +506,19 @@ class WhiteTeethTool(FaceTool):
 
     def __make_mask_teeth(self, face_landmarks, th=100):
         h, w, _ = self.Image.shape
-        self.lips_lower = [78, 95, 88, 178, 87, 14, 317, 402, 318, 324, 308]
-        self.lips_upper = [78, 191, 80, 81, 82, 13, 312, 311, 310, 415, 308]
+
         pointsTeeth = []
-        self.min_y_teeth = int(self.annotated_image.shape[0])
+        self.min_y_teeth = h
         self.max_y_teeth = 0
         self.min_x_teeth = int(face_landmarks.landmark[78].x * w)
         self.max_x_teeth = int(face_landmarks.landmark[308].x * w)
-        for i in self.lips_lower:
+        for i in FaceLandMarksArray.lips_lower:
             xl, yl = face_landmarks.landmark[i].x, face_landmarks.landmark[i].y
             xl, yl = self.normaliz_pixel(xl, yl, w, h)
             if yl > self.max_y_teeth:
                 self.max_y_teeth = yl
             pointsTeeth.append((xl, yl))
-        for i in self.lips_upper:
+        for i in FaceLandMarksArray.lips_upper:
             xu, yu = face_landmarks.landmark[i].x, face_landmarks.landmark[i].y
             xu, yu = self.normaliz_pixel(xu, yu, w, h)
             if yu < self.min_y_teeth:
@@ -546,18 +543,29 @@ class WhiteTeethTool(FaceTool):
             self.min_y_teeth : self.max_y_teeth, self.min_x_teeth : self.max_x_teeth
         ].copy()
 
-        teeth_gray = cv2.cvtColor(self.teeth, cv2.COLOR_BGR2GRAY)
+        teeth_gray = cv2.cvtColor(self.teeth, cv2.COLOR_RGB2GRAY)
         ret, th1 = cv2.threshold(teeth_gray, th, 255, cv2.THRESH_BINARY)
         self.teethmask = cv2.bitwise_and(th1, self.teethmask)
 
-    def __process_teeth(self, satioration=40, value=20):
-        teeth_hsv = cv2.cvtColor(self.teeth, cv2.COLOR_BGR2HSV)
+    def __process_teeth(self):
+        teeth_hsv = cv2.cvtColor(self.teeth, cv2.COLOR_RGB2HSV)
         h, s, v = cv2.split(teeth_hsv)
-        s[(self.teethmask == 255) & (s > satioration)] -= satioration
-        v[(self.teethmask == 255) & (v < value)] += value
+        s[(self.teethmask == 255) & (s > self.saturation)] -= self.saturation
+        v[(self.teethmask == 255) & (v < self.brightness)] += self.brightness
         teeth_hsv = cv2.merge([h, s, v])
-        teeth_hsv = cv2.cvtColor(teeth_hsv, cv2.COLOR_HSV2BGR)
+        self.teeth = cv2.cvtColor(teeth_hsv, cv2.COLOR_HSV2RGB)
 
 
     def apply(self, *args, **kwargs):
+        self.__process_face()
+        self.__process_teeth()
+
+        self.Image[
+            self.min_y_teeth : self.max_y_teeth, self.min_x_teeth : self.max_x_teeth, :
+        ] = self.teeth
+
+        self.Mask[
+            self.min_y_teeth : self.max_y_teeth, self.min_x_teeth : self.max_x_teeth
+        ] = self.teethmask
+
         return self
