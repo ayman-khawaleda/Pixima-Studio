@@ -436,8 +436,13 @@ class SmoothFaceTool(FaceTool):
 
 
 class WhiteTeethTool(FaceTool):
-    def __init__(self, face, saturation=40, brightness=20) -> None:
-        super().__init__()
+    def __init__(self, faceMeshDetector=None, saturation=40, brightness=20) -> None:
+        if faceMeshDetector is None:
+            faceMeshDetector = face_mesh_model
+        self.faceMeshDetector = faceMeshDetector
+        self.saturation = saturation
+        self.brightness = brightness
+        
 
     def __call__(self, *args, **kwargs):
         return self.apply(*args, **kwargs)
