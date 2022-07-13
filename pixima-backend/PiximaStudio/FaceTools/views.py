@@ -188,6 +188,18 @@ class WhiteTeethToolView(RESTView):
             whiteteeth_serializer
         )
         try:
+            if "Image" in request.data.keys() and request.data["Image"] != "":
+                white_tool.request2data(request=request)()
+                image_path = white_tool.save_image()
+                imagepreview_path = white_tool.get_preview()
+                mask_path = white_tool.save_mask()
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                        "Mask": mask_path,
+                    }
+                )
             if whiteteeth_serializerhandler.handle():
                 white_tool.serializer2data(whiteteeth_serializer).read_image().apply()
                 image_path = white_tool.save_image()
