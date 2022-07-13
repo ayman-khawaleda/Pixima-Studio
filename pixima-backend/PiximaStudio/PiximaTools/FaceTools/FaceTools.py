@@ -420,10 +420,23 @@ class SmoothFaceTool(FaceTool):
 
     def blur_image(self):
         if self.method == "BiB":
-            blured_image = cv2.bilateralFilter(self.faceImage,self.kernal,self.sigmax,self.sigmay)
+            blured_image = cv2.bilateralFilter(
+                self.faceImage, self.kernal, self.sigmax, self.sigmay
+            )
         elif self.method == "GaB":
-            blured_image = cv2.GaussianBlur(self.faceImage,(self.kernal,self.kernal),self.sigmax)
+            blured_image = cv2.GaussianBlur(
+                self.faceImage, (self.kernal, self.kernal), self.sigmax
+            )
         return blured_image
-        
+
     def apply(self, *args, **kwargs):
+        mask = self.constract_final_mask()
+        blured_img = self.blur_image()
+        temp_image = self.faceImage.copy()
+        temp_image[mask] = blured_img[mask]
+        self.Image[
+            self.xstp : self.xend,
+            self.ystp : self.yend,
+            :,
+        ] = temp_image
         return self
