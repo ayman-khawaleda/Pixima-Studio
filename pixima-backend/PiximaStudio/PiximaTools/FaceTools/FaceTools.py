@@ -286,5 +286,34 @@ class SmoothFaceTool(FaceTool):
             )
         return lips_mask
 
+    def ROI(self):
+        face_detection_results = self.face_detection.process(self.Image)
+        for face in face_detection_results.detections:
+            h, w, _ = self.Image.shape
+            rbb = face.location_data.relative_bounding_box
+            self.__rect_start_point = self.normaliz_pixel(rbb.xmin, rbb.ymin, w, h)
+            self.__rect_end_point = self.normaliz_pixel(
+                rbb.xmin + rbb.width, rbb.ymin + rbb.height, w, h
+            )
+            self.h_offset = [50, 50]
+            self.v_offset = [400, 75]
+            self.xstp = (
+                0
+                if self.__rect_start_point[1] - self.v_offset[0] < 0
+                else self.__rect_start_point[1] - self.v_offset[0]
+            )
+            self.ystp = (
+                0
+                if self.__rect_start_point[0] - self.h_offset[0] < 0
+                else self.__rect_start_point[0] - self.h_offset[0]
+            )
+            self.xend = self.__rect_end_point[1] + self.v_offset[1]
+            self.yend = self.__rect_end_point[0] + self.h_offset[1]
+            self.faceImage = self.Image[
+                self.xstp : self.xend,
+                self.ystp : self.yend,
+                :,
+            ].copy()
+
     def apply(self, *args, **kwargs):
         return self
