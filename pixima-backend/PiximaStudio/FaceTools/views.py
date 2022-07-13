@@ -231,6 +231,19 @@ class ColorLipsToolView(RESTView):
             colorlips_serializer
         )
         try:
+            if "Image" in request.data.keys() and request.data["Image"] != "":
+                colorlips_tool.request2data(request)()
+                image_path = colorlips_tool.save_image()
+                imagepreview_path = colorlips_tool.get_preview()
+                mask_path = colorlips_tool.save_mask()
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                        "Mask": mask_path,
+                    }
+                )
+            
             if colorlips_serializerhandler.handle():
                 colorlips_tool.serializer2data(colorlips_serializer).read_image()()
                 image_path = colorlips_tool.save_image()
