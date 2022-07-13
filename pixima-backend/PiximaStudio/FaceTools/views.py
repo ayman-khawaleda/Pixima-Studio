@@ -182,17 +182,29 @@ class SmoothFaceToolView(RESTView):
 
 class WhiteTeethToolView(RESTView):
     def post(self, request, format=None):
+        white_tool = FaceTools.WhiteTeethTool()
         whiteteeth_serializer = WhiteTeethToolSerializer(data=request.data)
         whiteteeth_serializerhandler = WhiteTeethToolSerializerHandler(
             whiteteeth_serializer
         )
         try:
             if whiteteeth_serializerhandler.handle():
-                return self.ok_request(whiteteeth_serializer.data)
+                white_tool.serializer2data(whiteteeth_serializer).read_image().apply()
+                image_path = white_tool.save_image()
+                imagepreview_path = white_tool.get_preview()
+                mask_path = white_tool.save_mask()
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                        "Mask": mask_path,
+                    }
+                )
         except RequiredValue as e:
             return self.bad_request({"Message": str(e)})
         except NoFace as e:
             return self.bad_request({"Message": str(e)})
         except Exception as e:
+            print(traceback.format_exc())
             return self.bad_request({"Message": "Error During Whiteing Teeth Process"})
         return self.bad_request(whiteteeth_serializerhandler.errors)
