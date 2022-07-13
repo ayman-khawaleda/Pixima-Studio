@@ -6,7 +6,7 @@ from .serializer import (
     NoseResizeSerializer,
     SmoothFaceSeializer,
     WhiteTeethToolSerializer,
-    LipsToolSerializer
+    ColorLipsToolSerializer,
 )
 from .serializerHandler import (
     EyesColorSerializerHandler,
@@ -14,7 +14,7 @@ from .serializerHandler import (
     NoseResizeSerializerHandler,
     SmoothFaceSerializerHandler,
     WhiteTeethToolSerializerHandler,
-    LipsToolSerializerHandler
+    ColorLipsToolSerializerHandler,
 )
 from PiximaTools.FaceTools import EyesTool, NoseTool, FaceTools
 from PiximaTools.Exceptions import RequiredValue, NoFace
@@ -139,7 +139,6 @@ class NoseResizeToolView(RESTView):
 
 
 class SmoothFaceToolView(RESTView):
-    
     def post(self, request, format=None):
         smoothface_tool = FaceTools.SmoothFaceTool()
         smoothface_serializer = SmoothFaceSeializer(data=request.data)
@@ -182,6 +181,7 @@ class SmoothFaceToolView(RESTView):
             return self.bad_request({"Message": "Error During Face Smoothing Process"})
         return self.bad_request(smoothface_serializerhandler.errors)
 
+
 class WhiteTeethToolView(RESTView):
     def post(self, request, format=None):
         white_tool = FaceTools.WhiteTeethTool()
@@ -222,19 +222,34 @@ class WhiteTeethToolView(RESTView):
             return self.bad_request({"Message": "Error During Whiteing Teeth Process"})
         return self.bad_request(whiteteeth_serializerhandler.errors)
 
+
 class ColorLipsToolView(RESTView):
     def post(self, request, format=None):
-        colorlips_serializer = LipsToolSerializer(data=request.data)
-        colorlips_serializerhandler = LipsToolSerializerHandler(
+        colorlips_tool = FaceTools.ColorLipsTool()
+        colorlips_serializer = ColorLipsToolSerializer(data=request.data)
+        colorlips_serializerhandler = ColorLipsToolSerializerHandler(
             colorlips_serializer
         )
         try:
             if colorlips_serializerhandler.handle():
-                return self.ok_request(colorlips_serializer.data)
+                colorlips_tool.serializer2data(colorlips_serializer).read_image()()
+                image_path = colorlips_tool.save_image()
+                imagepreview_path = colorlips_tool.get_preview()
+                mask_path = colorlips_tool.save_mask()
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                        "Mask": mask_path,
+                    }
+                )
         except RequiredValue as e:
             return self.bad_request({"Message": str(e)})
         except NoFace as e:
             return self.bad_request({"Message": str(e)})
         except Exception as e:
-            return self.bad_request({"Message": "Error During Change Color Lips Process"})
+            print(traceback.format_exc())
+            return self.bad_request(
+                {"Message": "Error During Change Color Lips Process"}
+            )
         return self.bad_request(colorlips_serializerhandler.errors)
