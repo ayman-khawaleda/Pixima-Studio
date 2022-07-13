@@ -175,7 +175,6 @@ class SmoothFaceTool(FaceTool):
         pointsLeftEye = []
         eyes_mask = np.zeros((h, w))
         for facelandmark in self.face_mesh_results:
-            self.i += 1
             for i in FaceLandMarksArray.rightEyeUpper:
                 xru, yru = (
                     facelandmark.landmark[i].x,
@@ -228,7 +227,6 @@ class SmoothFaceTool(FaceTool):
         pointsLeftEyeBrow = []
         eye_brow_mask = np.zeros((h, w))
         for facelandmark in self.face_mesh_results:
-            self.i += 1
             for i in FaceLandMarksArray.rightEyeBrowUpper:
                 xru, yru = (
                     facelandmark.landmark[i].x,
@@ -276,12 +274,10 @@ class SmoothFaceTool(FaceTool):
         return eye_brow_mask
 
     def __maskLips(self):
-        self.i = 0
         h, w, _ = self.faceImage.shape
         pointsLips = []
         lips_mask = np.zeros((h, w))
         for facelandmark in self.face_mesh_results:
-            self.i += 1
             for i in FaceLandMarksArray.lipsLowerOuter:
                 xl, yl = (
                     facelandmark.landmark[i].x,
@@ -690,6 +686,15 @@ class ColorLipsTool(FaceTool):
             )
         self.lips_mask = lips_mask
         
+    def __color_lips(self):
+        hsv_img = cv2.cvtColor(self.Image,cv2.COLOR_RGB2HSV)
+        h,s,v = cv2.split(hsv_img)
+        cond = self.lips_mask==255
+        h[cond] = self.color
+        s[cond] += self.saturation
+        hsv_img = cv2.merge([h,s,v])
+        self.Image = cv2.cvtColor(hsv_img,cv2.COLOR_HSV2RGB)
 
     def apply(self,*args,**kwargs):
+
         return self
