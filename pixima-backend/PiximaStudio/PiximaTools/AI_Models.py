@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 import mediapipe as mp
 import keras as ke
 import numpy as np
+from PiximaStudio.settings import PROJECT_DIR
+import os
 from mediapipe.python.solutions.drawing_utils import DrawingSpec
 from mediapipe.python.solutions.drawing_utils import draw_landmarks
 mp_face_detection = mp.solutions.face_detection
@@ -27,16 +29,19 @@ class AIModel(ABC):
     
     @classmethod
     @abstractmethod
-    def prdict(self,input):
+    def predict(self,input):
         pass
     
 class DNNModel(AIModel):
     pass
 
 class FaceSegmentationModel(DNNModel):
-    def load_model(self,path="/DNN_Models/FaceSeg-Model.h5"):
+    def __init__(self,path=os.path.join(PROJECT_DIR,"DNN_Models/FaceSeg-Model.h5")):
         self.model = ke.models.load_model(path)
 
-    def prdict(self,input):
+    def load_model(self,path=os.path.join(PROJECT_DIR,"DNN_Models/FaceSeg-Model.h5")):
+        self.model = ke.models.load_model(path)
+
+    def predict(self,input):
         "Input <Gray Image> Should Have shape like (256,256,1)"
         return self.model.predict(np.asarray([input])).reshape((256,256))
