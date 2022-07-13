@@ -696,5 +696,6 @@ class ColorLipsTool(FaceTool):
         self.Image = cv2.cvtColor(hsv_img,cv2.COLOR_HSV2RGB)
 
     def apply(self,*args,**kwargs):
-
+        self.__lips_mask()
+        self.__color_lips()
         return self
