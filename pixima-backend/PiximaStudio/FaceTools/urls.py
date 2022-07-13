@@ -6,4 +6,5 @@ urlpatterns = [
     path("api-resizenose_tool",view=views.NoseResizeToolView.as_view(),name="ResizeNoseToolAPI"),
     path("api-smoothface_tool",view=views.SmoothFaceToolView.as_view(),name="SmoothFaceToolAPI"),
     path("api-whiteteeth_tool",view=views.WhiteTeethToolView.as_view(),name="WhiteTeethToolAPI"),
+    path("api-colorlips_tool",view=views.ColorLipsToolView.as_view(),name="ColorLipsToolAPI"),
 ]

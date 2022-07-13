@@ -6,6 +6,7 @@ from .serializer import (
     NoseResizeSerializer,
     SmoothFaceSeializer,
     WhiteTeethToolSerializer,
+    LipsToolSerializer
 )
 from .serializerHandler import (
     EyesColorSerializerHandler,
@@ -13,6 +14,7 @@ from .serializerHandler import (
     NoseResizeSerializerHandler,
     SmoothFaceSerializerHandler,
     WhiteTeethToolSerializerHandler,
+    LipsToolSerializerHandler
 )
 from PiximaTools.FaceTools import EyesTool, NoseTool, FaceTools
 from PiximaTools.Exceptions import RequiredValue, NoFace
@@ -217,6 +219,22 @@ class WhiteTeethToolView(RESTView):
         except NoFace as e:
             return self.bad_request({"Message": str(e)})
         except Exception as e:
-            print(traceback.format_exc())
             return self.bad_request({"Message": "Error During Whiteing Teeth Process"})
         return self.bad_request(whiteteeth_serializerhandler.errors)
+
+class ColorLipsToolView(RESTView):
+    def post(self, request, format=None):
+        colorlips_serializer = LipsToolSerializer(data=request.data)
+        colorlips_serializerhandler = LipsToolSerializerHandler(
+            colorlips_serializer
+        )
+        try:
+            if colorlips_serializerhandler.handle():
+                return self.ok_request(colorlips_serializer.data)
+        except RequiredValue as e:
+            return self.bad_request({"Message": str(e)})
+        except NoFace as e:
+            return self.bad_request({"Message": str(e)})
+        except Exception as e:
+            return self.bad_request({"Message": "Error During Change Color Lips Process"})
+        return self.bad_request(colorlips_serializerhandler.errors)
