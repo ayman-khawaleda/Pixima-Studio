@@ -285,6 +285,56 @@ class SmoothFaceTool(FaceTool):
                 cv2.LINE_AA,
             )
         return lips_mask
+    def __model_mask(self):
+        h,w,_ = self.faceImage.shape
+        model_input_img = cv2.resize(
+            rgb2gray(self.faceImage),
+            (self.__IMH, self.__IMW),
+            interpolation=cv2.INTER_CUBIC,
+        ).reshape((self.__IMH, self.__IMW, 1))
+        model_mask = self.face_segmentation.predict(model_input_img)
+        model_mask = cv2.normalize(model_mask, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
+        model_mask = cv2.threshold(
+            model_mask.reshape((self.__IMH, self.__IMW, 1)),
+            0,
+            255,
+            cv2.THRESH_BINARY + cv2.THRESH_OTSU,
+        )[1]
+        model_mask = cv2.resize(model_mask,(w,h))
+        return model_mask
+
+    def __mesh_mask(self):
+        h,w,_ = self.faceImage
+        results = self.faceMeshDetector.process(self.faceImage)
+        if not results.multi_face_landmarks:
+            raise NoFace(f"No Face Detected In The Image")
+            
+        self.face_mesh_results = results.multi_face_landmarks
+        for face_landmark in self.face_mesh_results:
+            faceovalMask = np.zeros((w, h, 3), np.uint8)
+            draw_landmarks(
+                image=faceovalMask,
+                landmark_list=face_landmark,
+                connections=mp_drawing_styles.face_mesh_connections.FACEMESH_FACE_OVAL,
+                landmark_drawing_spec=None,
+                connection_drawing_spec=DrawingSpec((255, 255, 255), 5, 10),
+            )
+
+            ret, thresh = cv2.threshold(
+                cv2.cvtColor(faceovalMask, cv2.COLOR_RGB2GRAY), 127, 255, 0
+            )
+
+            contours, hierarchy = cv2.findContours(
+                thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE
+            )
+
+            mesh_mask = np.zeros((w, h), np.uint8)
+            cv2.drawContours(mesh_mask, contours, 0, (255, 255, 255), -1, cv2.LINE_AA)
+            mesh_mask = cv2.resize(mesh_mask, (self.__IMH, self.__IMW))
+            mesh_mask = cv2.normalize(
+                mesh_mask, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U
+            )
+        return mesh_mask
 
     def ROI(self):
         face_detection_results = self.face_detection.process(self.Image)
