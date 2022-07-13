@@ -433,3 +433,64 @@ class SmoothFaceTool(FaceTool):
             :,
         ] = temp_image
         return self
+
+
+class WhiteTeethTool(FaceTool):
+    def __init__(self, face, saturation=40, brightness=20) -> None:
+        super().__init__()
+
+    def __call__(self, *args, **kwargs):
+        return self.apply(*args, **kwargs)
+
+    def add_saturation(self, saturation=5, serialzier=None):
+        if serialzier:
+            saturation = serialzier.data["Saturation"]
+        elif type(saturation.dict()) == dict:
+
+            class SaturationSerializer(Serializer):
+                Saturation = IntegerField(
+                    default=40, required=False, min_value=0, max_value=100
+                )
+
+            saturation_serializer = SaturationSerializer(data=saturation)
+            if not saturation_serializer.is_valid():
+                raise RequiredValue(**saturation_serializer.errors)
+            saturation = saturation_serializer.data["Saturation"]
+        self.saturation = saturation
+        return self
+
+    def add_brightness(self, brightness=5, serialzier=None):
+        if serialzier:
+            brightness = serialzier.data["Brightness"]
+        elif type(brightness.dict()) == dict:
+
+            class BrightnessSerializer(Serializer):
+                Brightness = IntegerField(
+                    default=20, required=False, min_value=0, max_value=100
+                )
+
+            brightness_serializer = BrightnessSerializer(data=brightness)
+            if not brightness_serializer.is_valid():
+                raise RequiredValue(**brightness_serializer.errors)
+            brightness = brightness_serializer.data["Brightness"]
+        self.brightness = brightness
+        return self
+
+    def request2data(self, request):
+        return (
+            super()
+            .request2data(request)
+            .add_saturation(request.data)
+            .add_brightness(request.data)
+        )
+
+    def serializer2data(self, serializer):
+        return (
+            super()
+            .serializer2data(serializer)
+            .add_brightness(serialzier=serializer)
+            .add_brightness(serialzier=serializer)
+        )
+
+    def apply(self, *args, **kwargs):
+        return self
