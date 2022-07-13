@@ -175,6 +175,7 @@ class SmoothFaceTool(FaceTool):
         pointsLeftEye = []
         eyes_mask = np.zeros((h, w))
         for facelandmark in self.face_mesh_results:
+            self.i += 1
             for i in FaceLandMarksArray.rightEyeUpper:
                 xru, yru = (
                     facelandmark.landmark[i].x,
@@ -227,6 +228,7 @@ class SmoothFaceTool(FaceTool):
         pointsLeftEyeBrow = []
         eye_brow_mask = np.zeros((h, w))
         for facelandmark in self.face_mesh_results:
+            self.i += 1
             for i in FaceLandMarksArray.rightEyeBrowUpper:
                 xru, yru = (
                     facelandmark.landmark[i].x,
@@ -274,10 +276,12 @@ class SmoothFaceTool(FaceTool):
         return eye_brow_mask
 
     def __maskLips(self):
+        self.i = 0
         h, w, _ = self.faceImage.shape
         pointsLips = []
         lips_mask = np.zeros((h, w))
         for facelandmark in self.face_mesh_results:
+            self.i += 1
             for i in FaceLandMarksArray.lipsLowerOuter:
                 xl, yl = (
                     facelandmark.landmark[i].x,
@@ -405,26 +409,24 @@ class SmoothFaceTool(FaceTool):
         or_result = cv2.bitwise_or(lips_mask, eyebrow_mask)
         or_result = cv2.bitwise_or(or_result, eye_mask)
         or_result = self.normalize8(or_result)
-        and_result = cv2.bitwise_and(face_mask, or_result)
-        self.Mask = and_result
+        and_result = cv2.bitwise_and(face_mask, cv2.bitwise_not(or_result))
+        h, w, _ = self.Image.shape
+        self.Mask = np.zeros((w, h), np.uint8)
+        self.Mask[self.xstp : self.xend, self.ystp : self.yend] = and_result
         return and_result
 
     def blur_image(self):
-        if self.method == "BiB":
-            blured_image = cv2.bilateralFilter(
-                self.faceImage, self.kernal, self.sigmax, self.sigmay
-            )
-        elif self.method == "GaB":
-            blured_image = cv2.GaussianBlur(
-                self.faceImage, self.kernal, self.sigmax
-            )
+        blured_image = cv2.bilateralFilter(
+            self.faceImage, self.kernal, self.sigmax, self.sigmay
+        )
         return blured_image
 
     def apply(self, *args, **kwargs):
         mask = self.constract_final_mask()
         blured_img = self.blur_image()
         temp_image = self.faceImage.copy()
-        temp_image[mask] = blured_img[mask]
+        cond = mask == 255
+        temp_image[cond] = blured_img[cond]
         self.Image[
             self.xstp : self.xend,
             self.ystp : self.yend,
