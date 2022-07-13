@@ -137,6 +137,19 @@ class SmoothFaceToolView(RESTView):
             smoothface_serializer
         )
         try:
+            if "Image" in request.data.keys() and request.data["Image"] != "":
+                smoothface_tool.request2data(request=request)()
+                image_path = smoothface_tool.save_image()
+                imagepreview_path = smoothface_tool.get_preview()
+                mask_path = smoothface_tool.save_mask()
+                
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                        "Mask": mask_path
+                    }
+                )
             if smoothface_serializerhandler.handle():
                 smoothface_tool.serializer2data(smoothface_serializer).read_image().apply()
                 image_path = smoothface_tool.save_image()

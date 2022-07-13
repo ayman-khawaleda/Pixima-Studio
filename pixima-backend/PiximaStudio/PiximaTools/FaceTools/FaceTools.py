@@ -108,7 +108,7 @@ class SmoothFaceTool(FaceTool):
                     default=5, required=False, min_value=3, max_value=31
                 )
 
-            kernal_serializer = KernalSerializer(data=request.data)
+            kernal_serializer = KernalSerializer(data=kernal)
             if not kernal_serializer.is_valid():
                 raise RequiredValue(**kernal_serializer.errors)
             kernal = kernal_serializer.data["Kernal"]
@@ -125,7 +125,7 @@ class SmoothFaceTool(FaceTool):
                     default=0, required=False, min_value=0, max_value=150
                 )
 
-            sigmax_serializer = SigmaXSerializer(data=request.data)
+            sigmax_serializer = SigmaXSerializer(data=sigmax)
             if not sigmax_serializer.is_valid():
                 raise RequiredValue(**sigmax_serializer.errors)
             sigmax = sigmax_serializer.data["SigmaX"]
@@ -142,7 +142,7 @@ class SmoothFaceTool(FaceTool):
                     default=0, required=False, min_value=0, max_value=150
                 )
 
-            sigmay_serializer = SigmaYSerializer(data=request.data)
+            sigmay_serializer = SigmaYSerializer(data=sigmay)
             if not sigmay_serializer.is_valid():
                 raise RequiredValue(**sigmay_serializer.errors)
             sigmay = sigmay_serializer.data["SigmaY"]
@@ -153,10 +153,10 @@ class SmoothFaceTool(FaceTool):
         return (
             super()
             .request2data(request)
-            .add_method(request)
-            .add_kernal(request)
-            .add_sigmax(request)
-            .add_sigmay(request)
+            .add_method(request.data)
+            .add_kernal(request.data)
+            .add_sigmax(request.data)
+            .add_sigmay(request.data)
         )
 
     def serializer2data(self, serializer):
