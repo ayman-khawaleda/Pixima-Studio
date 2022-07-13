@@ -442,7 +442,6 @@ class WhiteTeethTool(FaceTool):
         self.faceMeshDetector = faceMeshDetector
         self.saturation = saturation
         self.brightness = brightness
-        self.Mask = np.zeros(self.Image.shape[:2], np.uint8)
 
     def __call__(self, *args, **kwargs):
         return self.apply(*args, **kwargs)
@@ -498,6 +497,7 @@ class WhiteTeethTool(FaceTool):
         )
 
     def __process_face(self, th=100):
+        self.Mask = np.zeros(self.Image.shape[:2], np.uint8)
         self.results = self.faceMeshDetector.process(self.Image)
         if not self.results.multi_face_landmarks:
             raise NoFace("No Face Detected In The Image")
@@ -527,7 +527,7 @@ class WhiteTeethTool(FaceTool):
 
             if self.max_y_teeth - self.min_y_teeth > 10:
                 cv2.drawContours(
-                    self.mask,
+                    self.Mask,
                     [np.array(pointsTeeth)],
                     -1,
                     (255, 255, 255),
