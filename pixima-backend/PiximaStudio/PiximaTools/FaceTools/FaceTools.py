@@ -551,7 +551,6 @@ class WhiteTeethTool(FaceTool):
         teeth_hsv = cv2.merge([h, s, v])
         self.teeth = cv2.cvtColor(teeth_hsv, cv2.COLOR_HSV2RGB)
 
-
     def apply(self, *args, **kwargs):
         self.__process_face()
         self.__process_teeth()
@@ -565,6 +564,7 @@ class WhiteTeethTool(FaceTool):
         ] = self.teethmask
 
         return self
+
 
 class ColorLipsTool(FaceTool):
     def __init__(self, faceMeshDetector=None, saturation=0, color=0) -> None:
@@ -626,7 +626,7 @@ class ColorLipsTool(FaceTool):
             .add_saturation(serialzier=serializer)
             .add_color(serialzier=serializer)
         )
-    
+
     def __lips_mask(self):
         h, w, _ = self.Image.shape
         results = self.faceMeshDetector.process(self.Image)
@@ -675,27 +675,27 @@ class ColorLipsTool(FaceTool):
                 -1,
                 cv2.LINE_AA,
             )
-            
+
             cv2.drawContours(
                 lips_mask,
                 [np.array(pointsLips_inner)],
                 -1,
-                (0,0,0),
+                (0, 0, 0),
                 -1,
                 cv2.LINE_AA,
             )
-        self.lips_mask = lips_mask
-        
+        self.Mask = lips_mask
+
     def __color_lips(self):
-        hsv_img = cv2.cvtColor(self.Image,cv2.COLOR_RGB2HSV)
-        h,s,v = cv2.split(hsv_img)
-        cond = self.lips_mask==255
+        hsv_img = cv2.cvtColor(self.Image, cv2.COLOR_RGB2HSV)
+        h, s, v = cv2.split(hsv_img)
+        cond = self.Mask == 255
         h[cond] = self.color
         s[cond] += self.saturation
-        hsv_img = cv2.merge([h,s,v])
-        self.Image = cv2.cvtColor(hsv_img,cv2.COLOR_HSV2RGB)
+        hsv_img = cv2.merge([h, s, v])
+        self.Image = cv2.cvtColor(hsv_img, cv2.COLOR_HSV2RGB)
 
-    def apply(self,*args,**kwargs):
+    def apply(self, *args, **kwargs):
         self.__lips_mask()
         self.__color_lips()
         return self
