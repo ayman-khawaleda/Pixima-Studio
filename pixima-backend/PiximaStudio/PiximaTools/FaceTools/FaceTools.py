@@ -100,24 +100,7 @@ class SmoothFaceTool(FaceTool):
 
     def add_kernal(self, kernal=5, serialzier=None):
         if serialzier:
-            kernal = serialzier.data["Method"]
-        elif type(kernal.dict()) == dict:
-
-            class KernalSerializer(Serializer):
-                Kernal = IntegerField(
-                    default=5, required=False, min_value=3, max_value=31
-                )
-
-            kernal_serializer = KernalSerializer(data=request.data)
-            if not kernal_serializer.is_valid():
-                raise RequiredValue(**kernal_serializer.errors)
-            kernal = kernal_serializer.data["Kernal"]
-        self.kernal = kernal
-        return self
-
-    def add_sigmax(self, kernal=5, serialzier=None):
-        if serialzier:
-            kernal = serialzier.data["Method"]
+            kernal = serialzier.data["Kernal"]
         elif type(kernal.dict()) == dict:
 
             class KernalSerializer(Serializer):
@@ -421,6 +404,7 @@ class SmoothFaceTool(FaceTool):
         eye_mask = self.__maskEyes()
         or_result = cv2.bitwise_or(lips_mask, eyebrow_mask)
         or_result = cv2.bitwise_or(or_result, eye_mask)
+        or_result = self.normalize8(or_result)
         and_result = cv2.bitwise_and(face_mask, or_result)
         self.Mask = and_result
         return and_result
@@ -432,7 +416,7 @@ class SmoothFaceTool(FaceTool):
             )
         elif self.method == "GaB":
             blured_image = cv2.GaussianBlur(
-                self.faceImage, (self.kernal, self.kernal), self.sigmax
+                self.faceImage, self.kernal, self.sigmax
             )
         return blured_image
 
