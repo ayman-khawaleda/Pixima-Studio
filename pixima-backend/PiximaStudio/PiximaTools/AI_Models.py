@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 import mediapipe as mp
 import keras as ke
 import numpy as np
-
+from mediapipe.python.solutions.drawing_utils import DrawingSpec
+from mediapipe.python.solutions.drawing_utils import draw_landmarks
 mp_face_detection = mp.solutions.face_detection
 mp_face_mesh = mp.solutions.face_mesh
 mp_drawing_styles = mp.solutions.drawing_styles
