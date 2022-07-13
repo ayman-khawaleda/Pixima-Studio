@@ -630,21 +630,21 @@ class ColorLipsTool(FaceTool):
     def __lips_mask(self):
         h, w, _ = self.Image.shape
         results = self.faceMeshDetector.process(self.Image)
-        if results.multi_face_landmarks:
+        if not results.multi_face_landmarks:
             raise NoFace(f"No Face Detected In The Image")
 
         pointsLips_outter = []
         pointsLips_inner = []
         lips_mask = np.zeros((h, w))
         for facelandmark in results.multi_face_landmarks:
-            for i in self.lipsLowerOuter:
+            for i in FaceLandMarksArray.lipsLowerOuter:
                 xl, yl = (
                     facelandmark.landmark[i].x,
                     facelandmark.landmark[i].y,
                 )
                 xl, yl = self.normaliz_pixel(xl, yl, w, h)
                 pointsLips_outter.append((xl, yl))
-            for i in self.lipsUpperOuter:
+            for i in FaceLandMarksArray.lipsUpperOuter:
                 xu, yu = (
                     facelandmark.landmark[i].x,
                     facelandmark.landmark[i].y,
@@ -652,14 +652,14 @@ class ColorLipsTool(FaceTool):
                 xu, yu = self.normaliz_pixel(xu, yu, w, h)
                 pointsLips_outter.append((xu, yu))
 
-            for i in self.lips_lower:
+            for i in FaceLandMarksArray.lips_lower:
                 xl, yl = (
                     facelandmark.landmark[i].x,
                     facelandmark.landmark[i].y,
                 )
                 xl, yl = self.normaliz_pixel(xl, yl, w, h)
                 pointsLips_inner.append((xl, yl))
-            for i in self.lips_upper:
+            for i in FaceLandMarksArray.lips_upper:
                 xu, yu = (
                     facelandmark.landmark[i].x,
                     facelandmark.landmark[i].y,
