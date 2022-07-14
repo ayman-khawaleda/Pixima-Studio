@@ -1,9 +1,10 @@
 from abc import abstractmethod, ABCMeta
 from rest_framework.serializers import Serializer
-from Core.models import UploadImageModel
+from Core.models import ImageModel
 from PiximaStudio.settings import MEDIA_ROOT
 from . import serializer
 import os
+
 
 class SerializerHandler(metaclass=ABCMeta):
     def __init__(self, serializer: Serializer) -> None:
@@ -59,10 +60,10 @@ class ImageSerializerHandler(SerializerHandler):
                 }
                 return False
             try:
-                query_set = UploadImageModel.objects.get(id=self.serializer.data["id"])
+                query_set = ImageModel.objects.get(id=self.serializer.data["id"])
                 if not query_set:
-                    raise UploadImageModel.DoesNotExist()
-            except UploadImageModel.DoesNotExist as ex:
+                    raise ImageModel.DoesNotExist()
+            except ImageModel.DoesNotExist as ex:
                 self.errors = {"Message": "Id Not Found"}
                 return False
         if not res:
