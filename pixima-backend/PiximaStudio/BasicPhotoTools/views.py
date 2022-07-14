@@ -26,6 +26,7 @@ from PiximaTools.BasicTools import (
     RotatTool,
     SaturationTool,
 )
+from Core.models import ImageModel, ImageOperationsModel
 
 
 def bad_request(errors: dict):
@@ -60,6 +61,10 @@ class CropToolView(APIView):
                     .save_image()
                 )
                 imagepreview_path = crop_tool.get_preview()
+                ImageObj = ImageModel.objects.get(id=crop_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="CropTool"
+                ).save()
                 return JsonResponse(
                     data={
                         "code": HTTP_200_OK,
@@ -98,6 +103,10 @@ class FlipToolView(APIView):
                     .save_image()
                 )
                 imagepreview_path = flip_tool.get_preview()
+                ImageObj = ImageModel.objects.get(id=flip_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="FlipTool"
+                ).save()
                 return JsonResponse(
                     data={
                         "code": HTTP_200_OK,
@@ -136,6 +145,10 @@ class RotateToolView(APIView):
                     .save_image()
                 )
                 imagepreview_path = rotate_tool.get_preview()
+                ImageObj = ImageModel.objects.get(id=rotate_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="RotateTool"
+                ).save()
                 return JsonResponse(
                     data={
                         "code": HTTP_200_OK,
@@ -175,6 +188,10 @@ class ResizeToolView(APIView):
                     .save_image()
                 )
                 imagepreview_path = resize_tool.get_preview()
+                ImageObj = ImageModel.objects.get(id=resize_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="ResizeTool"
+                ).save()
                 return JsonResponse(
                     data={
                         "code": HTTP_200_OK,
@@ -215,6 +232,10 @@ class ContrastToolView(APIView):
                     .save_image()
                 )
                 imagepreview_path = contrast_tool.get_preview()
+                ImageObj = ImageModel.objects.get(id=contrast_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="ContrastTool"
+                ).save()
                 return JsonResponse(
                     data={
                         "code": HTTP_200_OK,
@@ -257,6 +278,10 @@ class SaturationToolView(APIView):
                     .save_image()
                 )
                 imagepreview_path = saturation_tool.get_preview()
+                ImageObj = ImageModel.objects.get(id=saturation_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="SaturationTool"
+                ).save()
                 return JsonResponse(
                     data={
                         "code": HTTP_200_OK,
@@ -267,6 +292,6 @@ class SaturationToolView(APIView):
                 )
         except Exception as e:
             return bad_request(
-                {"Message": "Error During Saturation&Hue Adjustment Process"}
+                {"Message": "Error During Saturation Adjustment Process"}
             )
         return bad_request(im_handler.errors)
