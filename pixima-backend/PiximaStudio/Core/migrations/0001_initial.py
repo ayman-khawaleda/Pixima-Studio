@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='UploadImageModel',
+            name='ImageModel',
             fields=[
                 ('id', models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True)),
                 ('Image', models.ImageField(upload_to=Core.models.upload_to)),
