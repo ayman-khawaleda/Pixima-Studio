@@ -18,8 +18,7 @@ from .serializerHandler import (
 )
 from PiximaTools.FaceTools import EyesTool, NoseTool, FaceTools
 from PiximaTools.Exceptions import RequiredValue, NoFace
-import traceback
-
+from Core.models import ImageModel,ImageOperationsModel
 
 class EyesColorToolView(RESTView):
     def post(self, request, format=None):
@@ -46,6 +45,10 @@ class EyesColorToolView(RESTView):
                 image_path = eyescolor_tool.save_image()
                 imagepreview_path = eyescolor_tool.get_preview()
                 mask_path = eyescolor_tool.save_mask()
+                ImageObj = ImageModel.objects.get(id=eyescolor_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="EyesColorTool"
+                ).save()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -84,6 +87,10 @@ class EyesResizeToolView(RESTView):
                 eyesresize_tool.serializer2data(eyesresize_serializer).read_image()()
                 image_path = eyesresize_tool.save_image()
                 imagepreview_path = eyesresize_tool.get_preview()
+                ImageObj = ImageModel.objects.get(id=eyesresize_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="EyesResizeTool"
+                ).save()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -111,6 +118,10 @@ class NoseResizeToolView(RESTView):
                 noseresize_tool.request2data(request=request)()
                 image_path = noseresize_tool.save_image()
                 imagepreview_path = noseresize_tool.get_preview()
+                ImageObj = ImageModel.objects.get(id=noseresize_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="NoseResizeTool"
+                ).save()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -151,7 +162,10 @@ class SmoothFaceToolView(RESTView):
                 image_path = smoothface_tool.save_image()
                 imagepreview_path = smoothface_tool.get_preview()
                 mask_path = smoothface_tool.save_mask()
-
+                ImageObj = ImageModel.objects.get(id=smoothface_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="SmoothFaceTool"
+                ).save()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -207,6 +221,10 @@ class WhiteTeethToolView(RESTView):
                 image_path = white_tool.save_image()
                 imagepreview_path = white_tool.get_preview()
                 mask_path = white_tool.save_mask()
+                ImageObj = ImageModel.objects.get(id=whiteteeth_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="WhiteTeethTool"
+                ).save()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -236,6 +254,10 @@ class ColorLipsToolView(RESTView):
                 image_path = colorlips_tool.save_image()
                 imagepreview_path = colorlips_tool.get_preview()
                 mask_path = colorlips_tool.save_mask()
+                ImageObj = ImageModel.objects.get(id=colorlips_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="ColorLipsTool"
+                ).save()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -261,7 +283,6 @@ class ColorLipsToolView(RESTView):
         except NoFace as e:
             return self.bad_request({"Message": str(e)})
         except Exception as e:
-            print(traceback.format_exc())
             return self.bad_request(
                 {"Message": "Error During Change Color Lips Process"}
             )
