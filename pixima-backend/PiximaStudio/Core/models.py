@@ -26,9 +26,12 @@ class ImageModel(models.Model):
 
 class ImageOperationsManager(models.Manager):
     def create(self, **kwargs):
-        query = ImageOperationsModel.objects.filter(image_id=str(kwargs["image"]))
-        kwargs["operation_num"] = query.count() + 1
-        return super().create(**kwargs)
+        try:
+            query = ImageOperationsModel.objects.filter(image_id=str(kwargs["image"]))
+            kwargs["operation_num"] = query.count() + 1
+            return super().create(**kwargs)
+        except Exception as e:
+            return super().create(**kwargs)
 
 
 class ImageOperationsModel(models.Model):
