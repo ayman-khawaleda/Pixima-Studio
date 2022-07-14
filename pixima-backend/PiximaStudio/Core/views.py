@@ -56,6 +56,10 @@ class GetImagesDirectoryId(APIView):
                 PROJECT_DIR, MEDIA_ROOT, "Images", id_serializer["id"].value
             )
             if os.path.exists(path):
+                numbers = [(int(x.split('.')[0]),x.split('.')[1]) for x in os.listdir(path)]
+                numbers = sorted(numbers,key=lambda x: x[0])
+                numbers = [str(num) + "." + suffix for num,suffix in numbers]
+
                 return JsonResponse(
                     {
                         "code": HTTP_200_OK,
@@ -66,7 +70,7 @@ class GetImagesDirectoryId(APIView):
                                 MEDIA_URL, "Images", id_serializer["id"].value, x
                             )
                             for i, x in enumerate(
-                                sorted(os.listdir(path), key=lambda x: x)
+                                numbers
                             )
                         },
                     }
