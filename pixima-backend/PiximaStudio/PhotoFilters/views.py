@@ -3,7 +3,7 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from django.http import JsonResponse
 from . import serializer, serializerHandler
 from PiximaTools import Filters
-
+from Core.models import ImageModel,ImageOperationsModel
 
 def bad_request(errors: dict):
     return JsonResponse(
@@ -38,6 +38,10 @@ class GlitchFilterView(APIView):
                     .save_image()
                 )
                 imagepreview_path = glitch_filter.get_preview()
+                ImageObj = ImageModel.objects.get(id=glicth_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="GlitchFilter"
+                ).save()
 
                 return JsonResponse(
                     data={
@@ -79,6 +83,10 @@ class CircleFilterView(APIView):
                 ).read_image().apply()
                 image_path = circles_filter.save_image()
                 imagepreview_path = circles_filter.get_preview()
+                ImageObj = ImageModel.objects.get(id=circles_filter["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="CircleFilter"
+                ).save()
                 return JsonResponse(
                     data={
                         "code": HTTP_200_OK,
