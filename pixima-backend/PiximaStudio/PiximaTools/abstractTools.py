@@ -7,7 +7,7 @@ import os
 import numpy as np
 from uuid import uuid4
 from . import Exceptions
-
+from Core.models import ImageOperationsModel
 
 class Tool(ABC):
     @classmethod
@@ -51,6 +51,8 @@ class Tool(ABC):
         return self
 
     def add_image_index(self, index):
+        if index ==-1:
+            index = ImageOperationsModel.objects.filter(image=str(self.directory_id)).count()
         self.image_index = index
         return self
 
