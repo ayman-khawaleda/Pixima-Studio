@@ -29,6 +29,8 @@ class ImageSerializerHandler(SerializerHandler):
     def __image_index_exists(self):
         directory_id = self.serializer.data["id"]
         index = self.serializer.data["ImageIndex"]
+        if index == -1:
+            return True
         return (
             True
             if os.path.exists(
@@ -48,8 +50,15 @@ class ImageSerializerHandler(SerializerHandler):
             ):
                 self.errors = {"Message": "Both id and Image Can't Be Null"}
                 return False
-            if self.serializer.data["ImageIndex"] < 0:
-                self.errors = {"Message": "ImageIndex Less Than 0"}
+            try:
+                query_set = ImageModel.objects.get(id=self.serializer.data["id"])
+                if not query_set:
+                    raise ImageModel.DoesNotExist()
+            except ImageModel.DoesNotExist as ex:
+                self.errors = {"Message": "Id Not Found"}
+                return False
+            if self.serializer.data["ImageIndex"] < -1:
+                self.errors = {"Message": "ImageIndex Less Than -1"}
                 return False
             if not self.__image_index_exists() and self.serializer.data["id"]:
                 self.errors = {"Message": "ImageIndex Not Found"}
@@ -58,13 +67,6 @@ class ImageSerializerHandler(SerializerHandler):
                 self.errors = {
                     "Message": f"Preview Should Be On Of This Values {self.preview_options}"
                 }
-                return False
-            try:
-                query_set = ImageModel.objects.get(id=self.serializer.data["id"])
-                if not query_set:
-                    raise ImageModel.DoesNotExist()
-            except ImageModel.DoesNotExist as ex:
-                self.errors = {"Message": "Id Not Found"}
                 return False
         if not res:
             self.errors = self.serializer.errors
