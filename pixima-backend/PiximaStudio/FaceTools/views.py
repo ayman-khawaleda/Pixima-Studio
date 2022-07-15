@@ -1,4 +1,3 @@
-from rest_framework.views import APIView
 from PiximaStudio.AbstractView import RESTView
 from .serializer import (
     EyesColorSerializer,
@@ -118,10 +117,6 @@ class NoseResizeToolView(RESTView):
                 noseresize_tool.request2data(request=request)()
                 image_path = noseresize_tool.save_image()
                 imagepreview_path = noseresize_tool.get_preview()
-                ImageObj = ImageModel.objects.get(id=noseresize_serializer["id"].value)
-                ImageOperationsModel.objects.create(
-                    image=ImageObj, operation_name="NoseResizeTool"
-                ).save()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -134,6 +129,10 @@ class NoseResizeToolView(RESTView):
                 ).read_image().apply()
                 image_path = noseresize_tool.save_image()
                 imagepreview_path = noseresize_tool.get_preview()
+                ImageObj = ImageModel.objects.get(id=noseresize_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="NoseResizeTool"
+                ).save()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -162,10 +161,6 @@ class SmoothFaceToolView(RESTView):
                 image_path = smoothface_tool.save_image()
                 imagepreview_path = smoothface_tool.get_preview()
                 mask_path = smoothface_tool.save_mask()
-                ImageObj = ImageModel.objects.get(id=smoothface_serializer["id"].value)
-                ImageOperationsModel.objects.create(
-                    image=ImageObj, operation_name="SmoothFaceTool"
-                ).save()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -180,6 +175,10 @@ class SmoothFaceToolView(RESTView):
                 image_path = smoothface_tool.save_image()
                 imagepreview_path = smoothface_tool.get_preview()
                 mask_path = smoothface_tool.save_mask()
+                ImageObj = ImageModel.objects.get(id=smoothface_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="SmoothFaceTool"
+                ).save()
                 return self.ok_request(
                     {
                         "Image": image_path,
