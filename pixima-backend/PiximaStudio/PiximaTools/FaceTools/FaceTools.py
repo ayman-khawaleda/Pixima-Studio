@@ -1,7 +1,5 @@
 from abc import abstractmethod, ABC
-import json
-
-from requests import request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from PiximaTools.abstractTools import Tool
 from PiximaStudio.settings import MEDIA_ROOT, MEDIA_URL
 from skimage.color import rgb2gray
@@ -18,7 +16,6 @@ from rest_framework.serializers import IntegerField, Serializer
 import os
 import numpy as np
 import cv2
-import matplotlib.pyplot as plt
 
 
 class FaceLandMarksArray:
@@ -319,7 +316,7 @@ class SmoothFaceTool(FaceTool):
             255,
             cv2.THRESH_BINARY + cv2.THRESH_OTSU,
         )[1]
-        return model_mask
+        return (model_mask, "model")
 
     def __mesh_mask(self):
         h, w, _ = self.faceImage.shape
@@ -352,7 +349,7 @@ class SmoothFaceTool(FaceTool):
             mesh_mask = cv2.normalize(
                 mesh_mask, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U
             )
-        return mesh_mask
+        return (mesh_mask, "mesh")
 
     def ROI(self):
         face_detection_results = self.faceDetector.process(self.Image)
@@ -384,8 +381,18 @@ class SmoothFaceTool(FaceTool):
             ].copy()
 
     def __get_face_mask(self):
-        model_mask = self.__model_mask()
-        mesh_mask = self.__mesh_mask()
+        futures = []
+        with ThreadPoolExecutor() as executor:
+            model_mask_fut = executor.submit(self.__model_mask)
+            mesh_mask_fut = executor.submit(self.__mesh_mask)
+            futures.extend([model_mask_fut, mesh_mask_fut])
+            for future in as_completed(futures):
+                mask, name = future.result()
+                if name == "mesh":
+                    mesh_mask = mask
+                if name == "model":
+                    model_mask = mask
+
         upper_half_mask = model_mask[:128, :]
         upper_half_meshmask = mesh_mask[:128, :]
         lower_half_mask = model_mask[-128:, :]
