@@ -1,3 +1,6 @@
 from django.shortcuts import render
+from PiximaStudio.AbstractView import RESTView
 
-# Create your views here.
+class ColorHairToolView(RESTView):
+    def post(self,request,format=None):
+        pass
