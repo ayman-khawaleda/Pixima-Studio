@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'BasicPhotoTools',
     'PhotoFilters',
     'FaceTools',
+    'BodyTools'
 ]
 
 MIDDLEWARE = [
