@@ -1,9 +1,7 @@
 from abc import abstractmethod, ABC
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from PiximaTools.abstractTools import Tool
-from PiximaStudio.settings import MEDIA_ROOT, MEDIA_URL
 from skimage.color import rgb2gray
-from PiximaTools.Exceptions import ImageNotSaved, RequiredValue, NoFace
+from PiximaTools.Exceptions import RequiredValue, NoFace
 from PiximaTools.AI_Models import (
     FaceSegmentationModel,
     face_mesh_model,
@@ -13,7 +11,7 @@ from PiximaTools.AI_Models import (
     draw_landmarks,
 )
 from rest_framework.serializers import IntegerField, Serializer
-import os
+from PiximaTools.abstractTools import BodyTool
 import numpy as np
 import cv2
 
@@ -34,26 +32,11 @@ class FaceLandMarksArray:
     faceOval = mp_drawing_styles.face_mesh_connections.FACEMESH_FACE_OVAL
 
 
-class FaceTool(Tool, ABC):
+class FaceTool(BodyTool, ABC):
     @classmethod
     @abstractmethod
     def apply(self, *args, **kwargs):
         pass
-
-    def save_mask(self, *args, **kwargs):
-        try:
-            sub_path = os.path.join(MEDIA_ROOT, "ImageMasks", str(self.directory_id))
-            if not os.path.exists(sub_path):
-                os.mkdir(sub_path)
-            self.lastidx = len(os.listdir(sub_path))
-            full_path = os.path.join(sub_path, f"{self.lastidx}.jpg")
-            cv2.imwrite(full_path, self.Mask)
-            mask_path = os.path.join(
-                MEDIA_URL, "ImageMasks", str(self.directory_id), f"{self.lastidx}.jpg"
-            )
-            return mask_path
-        except Exception as e:
-            raise ImageNotSaved("Error In Save Image Mask")
 
 
 class SmoothFaceTool(FaceTool):
