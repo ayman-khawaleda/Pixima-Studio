@@ -10,6 +10,9 @@ mp_face_detection = mp.solutions.face_detection
 mp_face_mesh = mp.solutions.face_mesh
 mp_drawing_styles = mp.solutions.drawing_styles
 
+mp_selfie_segmentation = mp.solutions.selfie_segmentation
+selfie_segmentation_model = mp_selfie_segmentation.SelfieSegmentation(model_selection=0)
+
 face_detection_model = mp_face_detection.FaceDetection(
     model_selection=1, min_detection_confidence=0.5
 )
