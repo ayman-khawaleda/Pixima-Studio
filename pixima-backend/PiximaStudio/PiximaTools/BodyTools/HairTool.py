@@ -1,19 +1,42 @@
-from rest_framework.serializers import Serializer,IntegerField
+import time
+from rest_framework.serializers import Serializer, IntegerField
 from PiximaTools.abstractTools import BodyTool
-from PiximaTools.AI_Models import face_detection_model,HairSegmentationModel
-from PiximaTools.Exceptions import NoFace,RequiredValue
+from PiximaTools.AI_Models import (
+    face_detection_model,
+    HairSegmentationModel,
+    selfie_segmentation_model,
+)
+from PiximaTools.Exceptions import NoFace, RequiredValue
+from skimage.color import rgb2gray
 import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
 
 class ColorHairTool(BodyTool):
-    def __init__(self, faceDetector=None,hair_seg_model = None, saturation=0, color=0) -> None:
+    def __init__(
+        self,
+        faceDetector=None,
+        selfie_segmentation=None,
+        hair_seg_model=None,
+        saturation=0,
+        color=0,
+        IMH=256,
+        IMW=256
+    ) -> None:
         if faceDetector is None:
             faceDetector = face_detection_model
         if hair_seg_model is None:
             hair_seg_model = HairSegmentationModel()
-        self.model = hair_seg_model
+        if selfie_segmentation is None:
+            selfie_segmentation = selfie_segmentation_model
+        self.selfieSegmentation = selfie_segmentation
+        self.hair_segmentation = hair_seg_model
         self.faceDetector = faceDetector
         self.saturation = saturation
         self.color = color
+        self.__IMH = IMH
+        self.__IMW = IMW
 
     def __call__(self, *args, **kwargs):
         return self.apply(*args, **kwargs)
@@ -67,3 +90,24 @@ class ColorHairTool(BodyTool):
             .add_saturation(serialzier=serializer)
             .add_color(serialzier=serializer)
         )
+
+    def __selfie_mask(self):
+        BG_COLOR = (192, 192, 192) 
+        MASK_COLOR = (255, 255, 255)
+        image = self.Image
+        results = self.selfieSegmentation.process(image)
+        condition = np.stack((results.segmentation_mask,) * 3, axis=-1) > 0.1
+        fg_image = np.zeros(image.shape, dtype=np.uint8)
+        fg_image[:] = MASK_COLOR
+        bg_image = np.zeros(image.shape, dtype=np.uint8)
+        bg_image[:] = BG_COLOR
+        mask = np.where(condition, fg_image, bg_image)
+        newImage = np.ones_like(mask) * 255
+        cond = mask == 255
+        newImage[cond] = self.Image[cond]
+        self.InputImage = newImage
+
+    def apply(self, *args, **kwargs):
+        self.__selfie_mask()
+
+        return self
