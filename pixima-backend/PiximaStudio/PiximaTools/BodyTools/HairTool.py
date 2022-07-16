@@ -10,7 +10,6 @@ from PiximaTools.Exceptions import NoFace, RequiredValue
 from skimage.color import rgb2gray
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 class ColorHairTool(BodyTool):
@@ -122,13 +121,19 @@ class ColorHairTool(BodyTool):
             255,
             cv2.THRESH_BINARY + cv2.THRESH_OTSU,
         )[1]
-        self.model_mask = cv2.resize(model_mask,(w,h),interpolation=cv2.INTER_CUBIC)
+        mask = np.zeros(model_mask.shape)
+        contours, hierarchy = cv2.findContours(model_mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+        tup = [[cv2.contourArea(c),c] for c in contours]
+        tup.sort(key=lambda x:x[0],reverse=True)
+        mask = cv2.drawContours(mask,[tup[0][1]],-1,(255,255,255),-1)
+        self.model_mask = cv2.resize(mask,(w,h),interpolation=cv2.INTER_CUBIC)
 
     def __color_hair(self):
         hsv_image = cv2.cvtColor(self.Image,cv2.COLOR_RGB2HSV)
         h,s,v = cv2.split(hsv_image)
         mask = cv2.GaussianBlur(self.model_mask,(3,3),0.5)
-        mask = cv2.morphologyEx(mask,cv2.MORPH_ERODE,(15,25),iterations=5)
+        mask = cv2.morphologyEx(mask,cv2.MORPH_ERODE,(15,35),iterations=10)
+        mask = np.roll(mask,-5,0)
         cond = mask >= 1
         h[cond] = self.color
         s[cond] += self.saturation
