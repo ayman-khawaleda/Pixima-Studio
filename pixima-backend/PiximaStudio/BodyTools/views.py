@@ -12,6 +12,18 @@ class ColorHairToolView(RESTView):
         colorhair_serializer = ColorHairSerializer(data=request.data)
         colorhair_serializerhandler = ColorHairSerializerHandler(colorhair_serializer)
         try:
+            if "Image" in request.data.keys() and request.data["Image"] != "":
+                hair_tool.request2data(request=request)()
+                image_path = hair_tool.save_image()
+                imagepreview_path = hair_tool.get_preview()
+                mask_path = hair_tool.save_mask()
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                        "Mask": mask_path,
+                    }
+                )
             if colorhair_serializerhandler.handle():
                 hair_tool.serializer2data(colorhair_serializer).read_image().apply()
                 image_path = hair_tool.save_image()
