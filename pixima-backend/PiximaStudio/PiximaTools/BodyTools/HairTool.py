@@ -107,7 +107,26 @@ class ColorHairTool(BodyTool):
         newImage[cond] = self.Image[cond]
         self.InputImage = newImage
 
+    def __model_mask(self):
+        h, w, _ = self.InputImage.shape
+        model_input_img = cv2.resize(
+            rgb2gray(self.InputImage),
+            (self.__IMH, self.__IMW),
+            interpolation=cv2.INTER_CUBIC,
+        ).reshape((self.__IMH, self.__IMW, 1))
+        model_mask = self.hair_segmentation.predict(model_input_img)
+        model_mask = cv2.normalize(model_mask, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
+        model_mask = cv2.threshold(
+            model_mask.reshape((self.__IMH, self.__IMW, 1)),
+            0,
+            255,
+            cv2.THRESH_BINARY + cv2.THRESH_OTSU,
+        )[1]
+        self.model_mask = cv2.resize(model_mask,(w,h),interpolation=cv2.INTER_CUBIC)
+
+
     def apply(self, *args, **kwargs):
         self.__selfie_mask()
-
+        self.__model_mask()
+        self.Mask = self.model_mask
         return self
