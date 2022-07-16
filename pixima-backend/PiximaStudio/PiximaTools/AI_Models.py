@@ -36,10 +36,21 @@ class DNNModel(AIModel):
     pass
 
 class FaceSegmentationModel(DNNModel):
-    def __init__(self,path=os.path.join(PROJECT_DIR,"DNN_Models/FaceSeg-Model.h5")):
+    def __init__(self,path=os.path.join(PROJECT_DIR,"DNN_Models","FaceSeg-Model.h5")):
         self.model = ke.models.load_model(path)
 
-    def load_model(self,path=os.path.join(PROJECT_DIR,"DNN_Models/FaceSeg-Model.h5")):
+    def load_model(self,path=os.path.join(PROJECT_DIR,"DNN_Models","FaceSeg-Model.h5")):
+        self.model = ke.models.load_model(path)
+
+    def predict(self,input):
+        "Input <Gray Image> Should Have shape like (256,256,1)"
+        return self.model.predict(np.asarray([input])).reshape((256,256))
+
+class HairSegmentationModel(DNNModel):
+    def __init__(self,path=os.path.join(PROJECT_DIR,"DNN_Models","HairSeg-Model.h5")):
+        self.model = ke.models.load_model(path)
+
+    def load_model(self,path=os.path.join(PROJECT_DIR,"DNN_Models","HairSeg-Model.h5")):
         self.model = ke.models.load_model(path)
 
     def predict(self,input):
