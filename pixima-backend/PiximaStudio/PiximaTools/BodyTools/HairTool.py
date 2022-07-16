@@ -106,7 +106,7 @@ class ColorHairTool(BodyTool):
         cond = mask == 255
         newImage[cond] = self.Image[cond]
         self.InputImage = newImage
-
+        
     def __model_mask(self):
         h, w, _ = self.InputImage.shape
         model_input_img = cv2.resize(
@@ -124,9 +124,20 @@ class ColorHairTool(BodyTool):
         )[1]
         self.model_mask = cv2.resize(model_mask,(w,h),interpolation=cv2.INTER_CUBIC)
 
+    def __color_hair(self):
+        hsv_image = cv2.cvtColor(self.Image,cv2.COLOR_RGB2HSV)
+        h,s,v = cv2.split(hsv_image)
+        mask = cv2.GaussianBlur(self.model_mask,(3,3),0.5)
+        mask = cv2.morphologyEx(mask,cv2.MORPH_ERODE,(15,25),iterations=5)
+        cond = mask >= 1
+        h[cond] = self.color
+        s[cond] += self.saturation
+        hsv_image = cv2.merge([h,s,v])
+        self.Image = cv2.cvtColor(hsv_image,cv2.COLOR_HSV2RGB)
 
     def apply(self, *args, **kwargs):
         self.__selfie_mask()
         self.__model_mask()
+        self.__color_hair()
         self.Mask = self.model_mask
         return self
