@@ -690,3 +690,47 @@ class ColorLipsTool(FaceTool):
         self.__lips_mask()
         self.__color_lips()
         return self
+
+class SmileTool(FaceTool):
+    def __init__(self, faceMeshDetector=None, factor=0) -> None:
+        if faceMeshDetector is None:
+            faceMeshDetector = face_mesh_model
+        self.faceMeshDetector = faceMeshDetector
+        self.factor = factor
+
+    def __call__(self, *args, **kwargs):
+        return self.apply(*args, **kwargs)
+
+    def add_factor(self, factor=5, serialzier=None):
+        if serialzier:
+            factor = serialzier.data["Factor"]
+        elif type(factor.dict()) == dict:
+
+            class SmileSerializer(Serializer):
+                Factor = IntegerField(
+                    default=5, required=False, min_value=-50, max_value=50
+                )
+
+            smile_serializer = SmileSerializer(data=factor)
+            if not smile_serializer.is_valid():
+                raise RequiredValue("Smile Factor Value Is Invalid")
+            factor = smile_serializer.data["Facotr"]
+        self.factor = factor
+        return self
+
+    def request2data(self, request):
+        return (
+            super()
+            .request2data(request)
+            .add_factor(request.data)
+        )
+
+    def serializer2data(self, serializer):
+        return (
+            super()
+            .serializer2data(serializer)
+            .add_factor(serialzier=serializer)
+        )
+    
+    def apply(self,*args,**kwargs):
+        return self
