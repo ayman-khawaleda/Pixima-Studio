@@ -6,6 +6,7 @@ from .serializer import (
     SmoothFaceSeializer,
     WhiteTeethToolSerializer,
     ColorLipsToolSerializer,
+    SmileToolSerializer,
 )
 from .serializerHandler import (
     EyesColorSerializerHandler,
@@ -14,10 +15,12 @@ from .serializerHandler import (
     SmoothFaceSerializerHandler,
     WhiteTeethToolSerializerHandler,
     ColorLipsToolSerializerHandler,
+    SmileToolSerializerHandler,
 )
 from PiximaTools.FaceTools import EyesTool, NoseTool, FaceTools
 from PiximaTools.Exceptions import RequiredValue, NoFace
-from Core.models import ImageModel,ImageOperationsModel
+from Core.models import ImageModel, ImageOperationsModel
+
 
 class EyesColorToolView(RESTView):
     def post(self, request, format=None):
@@ -253,10 +256,6 @@ class ColorLipsToolView(RESTView):
                 image_path = colorlips_tool.save_image()
                 imagepreview_path = colorlips_tool.get_preview()
                 mask_path = colorlips_tool.save_mask()
-                ImageObj = ImageModel.objects.get(id=colorlips_serializer["id"].value)
-                ImageOperationsModel.objects.create(
-                    image=ImageObj, operation_name="ColorLipsTool"
-                ).save()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -264,12 +263,15 @@ class ColorLipsToolView(RESTView):
                         "Mask": mask_path,
                     }
                 )
-            
             if colorlips_serializerhandler.handle():
                 colorlips_tool.serializer2data(colorlips_serializer).read_image()()
                 image_path = colorlips_tool.save_image()
                 imagepreview_path = colorlips_tool.get_preview()
                 mask_path = colorlips_tool.save_mask()
+                ImageObj = ImageModel.objects.get(id=colorlips_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="ColorLipsTool"
+                ).save()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -286,3 +288,48 @@ class ColorLipsToolView(RESTView):
                 {"Message": "Error During Change Color Lips Process"}
             )
         return self.bad_request(colorlips_serializerhandler.errors)
+
+
+class SmileToolView(RESTView):
+    def post(self, request, format=None):
+        smile_tool = FaceTools.SmileTool()
+        smile_serializer = SmileToolSerializer(data=request.data)
+        smile_serializerhandler = SmileToolSerializerHandler(smile_serializer)
+        try:
+            if "Image" in request.data.keys() and request.data["Image"] != "":
+                smile_tool.request2data(request)()
+                image_path = smile_tool.save_image()
+                imagepreview_path = smile_tool.get_preview()
+                mask_path = smile_tool.save_mask()
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                        "Mask": mask_path,
+                    }
+                )
+            if smile_serializerhandler.handle():
+                smile_tool.serializer2data(smile_serializer).read_image()()
+                image_path = smile_tool.save_image()
+                imagepreview_path = smile_tool.get_preview()
+                mask_path = smile_tool.save_mask()
+                ImageObj = ImageModel.objects.get(id=smile_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="SmileTool"
+                ).save()
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                        "Mask": mask_path,
+                    }
+                )
+        except RequiredValue as e:
+            return self.bad_request({"Message": str(e)})
+        except NoFace as e:
+            return self.bad_request({"Message": str(e)})
+        except Exception as e:
+            return self.bad_request(
+                {"Message": "Error During Smile Adjustment Process"}
+            )
+        return self.bad_request(smile_serializerhandler.errors)

@@ -12,6 +12,8 @@ from PiximaTools.AI_Models import (
 )
 from rest_framework.serializers import IntegerField, Serializer
 from PiximaTools.abstractTools import BodyTool
+from molesq import ImageTransformer
+from molesq.utils import grid_field
 import numpy as np
 import cv2
 
@@ -30,6 +32,7 @@ class FaceLandMarksArray:
     lipsUpperOuter = [61, 185, 40, 39, 37, 0, 267, 269, 270, 409, 291]
     lipsLowerOuter = [146, 91, 181, 84, 17, 314, 405, 321, 375, 291]
     faceOval = mp_drawing_styles.face_mesh_connections.FACEMESH_FACE_OVAL
+    faceTesselation = mp_drawing_styles.face_mesh_connections.FACEMESH_TESSELATION
 
 
 class FaceTool(BodyTool, ABC):
@@ -690,3 +693,141 @@ class ColorLipsTool(FaceTool):
         self.__lips_mask()
         self.__color_lips()
         return self
+
+
+class SmileTool(FaceTool):
+    point_indices = [
+        186,
+        43,
+        410,
+        273,
+        61,
+        291,
+        187,
+        169,
+        411,
+        364,
+    ]  # First Six Indices Are For Control Point And Last Four Indices Are For Mouth Bounds
+
+    def __init__(self, faceMeshDetector=None, factor=5) -> None:
+        if faceMeshDetector is None:
+            faceMeshDetector = face_mesh_model
+        self.faceMeshDetector = faceMeshDetector
+        self.factor = factor
+
+    def __call__(self, *args, **kwargs):
+        return self.apply(*args, **kwargs)
+
+    def add_factor(self, factor=5, serialzier=None):
+        if serialzier:
+            factor = serialzier.data["Factor"]
+        elif type(factor.dict()) == dict:
+
+            class SmileSerializer(Serializer):
+                Factor = IntegerField(
+                    default=5, required=False, min_value=-50, max_value=50
+                )
+
+            smile_serializer = SmileSerializer(data=factor)
+            if not smile_serializer.is_valid():
+                raise RequiredValue("Smile Factor Value Is Invalid")
+            factor = smile_serializer.data["Factor"]
+        self.factor = factor
+        return self
+
+    def request2data(self, request):
+        return super().request2data(request).add_factor(request.data)
+
+    def serializer2data(self, serializer):
+        return super().serializer2data(serializer).add_factor(serialzier=serializer)
+
+    def apply(self, *args, **kwargs):
+        self.Mask = np.zeros_like(self.Image)
+        bound_dict = {}
+        h, w, _ = self.Image.shape
+        results = self.faceMeshDetector.process(self.Image)
+
+        if not results.multi_face_landmarks:
+            raise NoFace("No Face Detected In The Image")
+        red_points_image = self.Image.copy()
+        for face_landmarks in results.multi_face_landmarks:
+            for land_mark in FaceLandMarksArray.faceTesselation:
+                sor, _ = land_mark
+                if sor in self.point_indices:
+                    x1, y1 = (
+                        face_landmarks.landmark[sor].x,
+                        face_landmarks.landmark[sor].y,
+                    )
+                    x, y = self.normaliz_pixel(x1, y1, w, h)
+                    if sor == 187:
+                        bound_dict["UpperLeft"] = (x, y)
+                        continue
+                    if sor == 169:
+                        bound_dict["LowerLeft"] = (x, y)
+                        continue
+                    if sor == 411:
+                        bound_dict["UpperRight"] = (x, y)
+                        continue
+                    if sor == 364:
+                        bound_dict["LowerRight"] = (x, y)
+                        continue
+                    red_points_image[y, x, 0] = 255
+
+        mouth_img_red_points = red_points_image[
+            bound_dict["UpperLeft"][1] : bound_dict["LowerLeft"][1],
+            bound_dict["UpperLeft"][0] : bound_dict["UpperRight"][0],
+            ...,
+        ]
+
+        mouth_img = self.Image[
+            bound_dict["UpperLeft"][1] : bound_dict["LowerLeft"][1],
+            bound_dict["UpperLeft"][0] : bound_dict["UpperRight"][0],
+            ...,
+        ]
+        indices = np.where(mouth_img_red_points[:, :, 0] == 255)
+        indices = zip(indices[0], indices[1])
+        indices = np.array(sorted(indices, key=lambda var: var[1]))
+
+        shift = np.array((self.factor, 5 * np.abs(self.factor) / 4))
+        h, w, _ = mouth_img.shape
+        control_points = self.__make_control_points(w, h, shift, indices)
+        src = control_points[:, :2]
+        tgt = control_points[:, 2:]
+        new_mouth_img = self.__deform_image(mouth_img, src, tgt)
+        self.Image[
+            bound_dict["UpperLeft"][1] : bound_dict["LowerLeft"][1],
+            bound_dict["UpperLeft"][0] : bound_dict["UpperRight"][0],
+            ...,
+        ] = new_mouth_img
+        return self
+
+    def __make_control_points(self, w, h, shift, indices):
+        return np.array(
+            [
+                [0, 0, 0, 0],
+                [h, 0, h, 0],
+                [h, w, h, w],
+                [0, w, 0, w],
+                [h / 2, 0, h / 2, 0],
+                [h / 2, w, h / 2, w],
+                [0, w / 4, 0, w / 4],
+                [0, w / 2, 0, w / 2],
+                [0, 3 * w / 4, 0, 3 * w / 4],
+                [h, w / 2, h, w / 2],
+                [h, w / 4, h, w / 4],
+                [h, 3 * w / 4, h, 3 * w / 4],
+                [*indices[0], *(indices[0] - shift)], # First Left Control Point
+                [*indices[3], indices[3][0] - shift[0], indices[3][1] + shift[1]], # First Right Control Point
+                [*indices[1], *(indices[1] - shift)], # Second Left Control Point
+                [*indices[4], indices[4][0] - shift[0], indices[4][1] + shift[1]],# Second Right Control Point
+                [*indices[2], *(indices[2] - shift)], # Third Left Control Point
+                [*indices[5], indices[5][0] - shift[0], indices[5][1] + shift[1]], # Third Right Control Point
+            ]
+        )
+
+    def __deform_image(self, image, src, tgt):
+        trans = ImageTransformer(
+            image, src, tgt, color_dim=2, interp_order=0, extrap_mode="nearest"
+        )
+        new_image, offset = trans.deform_whole()
+        return new_image
