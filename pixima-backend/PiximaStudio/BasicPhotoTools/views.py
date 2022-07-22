@@ -1,7 +1,3 @@
-import re
-from rest_framework.views import APIView
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-from django.http import JsonResponse
 from .serializer import (
     ContrastImageSerializer,
     CropImageSerializer,
@@ -27,15 +23,10 @@ from PiximaTools.BasicTools import (
     SaturationTool,
 )
 from Core.models import ImageModel, ImageOperationsModel
+from PiximaStudio.AbstractView import RESTView
 
 
-def bad_request(errors: dict):
-    return JsonResponse(
-        data={"code": HTTP_400_BAD_REQUEST, "status": "BAD REQUEST", **errors}
-    )
-
-
-class CropToolView(APIView):
+class CropToolView(RESTView):
     def post(self, request, format=None):
         crop_tool = CropTool()
         crop_serializer = CropImageSerializer(data=request.data)
@@ -45,10 +36,8 @@ class CropToolView(APIView):
                 crop_tool.request2data(request=request).apply()
                 image_path = crop_tool.save_image()
                 imagepreview_path = crop_tool.get_preview()
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request(
+                    {
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -65,20 +54,18 @@ class CropToolView(APIView):
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="CropTool"
                 ).save()
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request(
+                    {
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
                 )
         except Exception as e:
-            return bad_request({"Message": "Error During Crop Process"})
-        return bad_request(im_handler.errors)
+            return self.bad_request({"Message": "Error During Crop Process"})
+        return self.bad_request(im_handler.errors)
 
 
-class FlipToolView(APIView):
+class FlipToolView(RESTView):
     def post(self, request, format=None):
         flip_tool = FlipTool()
         flip_serializer = FlipImageSerializer(data=request.data)
@@ -88,10 +75,8 @@ class FlipToolView(APIView):
                 flip_tool.request2data(request=request).apply()
                 image_path = flip_tool.save_image()
                 imagepreview_path = flip_tool.get_preview()
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request(
+                    {
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -107,20 +92,18 @@ class FlipToolView(APIView):
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="FlipTool"
                 ).save()
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request(
+                    {
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
                 )
         except Exception as e:
-            return bad_request({"Message": "Error During Flip Process"})
-        return bad_request(im_handler.errors)
+            return self.bad_request({"Message": "Error During Flip Process"})
+        return self.bad_request(im_handler.errors)
 
 
-class RotateToolView(APIView):
+class RotateToolView(RESTView):
     def post(self, request, format=None):
         rotate_tool = RotatTool()
         rotate_serializer = RotateImageSerializer(data=request.data)
@@ -130,10 +113,7 @@ class RotateToolView(APIView):
                 rotate_tool.request2data(request=request).apply()
                 image_path = rotate_tool.save_image()
                 imagepreview_path = rotate_tool.get_preview()
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -149,21 +129,17 @@ class RotateToolView(APIView):
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="RotateTool"
                 ).save()
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
                 )
         except Exception as e:
-            return bad_request({"Message": "Error During Rotate Process"})
+            return self.bad_request({"Message": "Error During Rotate Process"})
+        return self.bad_request(im_handler.errors)
 
-        return bad_request(im_handler.errors)
 
-
-class ResizeToolView(APIView):
+class ResizeToolView(RESTView):
     def post(self, request, format=None):
         resize_tool = ResizeTool()
         resize_serializer = ResizeImageSerializer(data=request.data)
@@ -173,10 +149,7 @@ class ResizeToolView(APIView):
                 resize_tool.request2data(request=request).apply()
                 image_path = resize_tool.save_image()
                 imagepreview_path = resize_tool.get_preview()
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -192,21 +165,18 @@ class ResizeToolView(APIView):
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="ResizeTool"
                 ).save()
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
                 )
         except Exception as e:
-            return bad_request({"Message": "Error During Resize Process"})
+            return self.bad_request({"Message": "Error During Resize Process"})
 
-        return bad_request(im_handler.errors)
+        return self.bad_request(im_handler.errors)
 
 
-class ContrastToolView(APIView):
+class ContrastToolView(RESTView):
     def post(self, request, format=None):
         contrast_tool = ContrastTool()
         contrast_serializer = ContrastImageSerializer(data=request.data)
@@ -216,10 +186,7 @@ class ContrastToolView(APIView):
                 contrast_tool.request2data(request=request)()
                 image_path = contrast_tool.save_image()
                 imagepreview_path = contrast_tool.get_preview()
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -236,23 +203,20 @@ class ContrastToolView(APIView):
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="ContrastTool"
                 ).save()
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
                 )
         except Exception as e:
-            return bad_request(
+            return self.bad_request(
                 {"Message": "Error During Contrast&Brightness Adjustment Process"}
             )
 
-        return bad_request(im_handler.errors)
+        return self.bad_request(im_handler.errors)
 
 
-class SaturationToolView(APIView):
+class SaturationToolView(RESTView):
     def post(self, request, format=None):
         saturation_tool = SaturationTool()
         saturation_serializer = SaturationImageSerializer(data=request.data)
@@ -262,10 +226,7 @@ class SaturationToolView(APIView):
                 saturation_tool.request2data(request=request)()
                 image_path = saturation_tool.save_image()
                 imagepreview_path = saturation_tool.get_preview()
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -282,16 +243,13 @@ class SaturationToolView(APIView):
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="SaturationTool"
                 ).save()
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
                 )
         except Exception as e:
-            return bad_request(
+            return self.bad_request(
                 {"Message": "Error During Saturation Adjustment Process"}
             )
-        return bad_request(im_handler.errors)
+        return self.bad_request(im_handler.errors)

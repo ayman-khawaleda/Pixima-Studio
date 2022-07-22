@@ -1,17 +1,10 @@
-from rest_framework.views import APIView
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-from django.http import JsonResponse
 from . import serializer, serializerHandler
 from PiximaTools import Filters
 from Core.models import ImageModel,ImageOperationsModel
-
-def bad_request(errors: dict):
-    return JsonResponse(
-        data={"code": HTTP_400_BAD_REQUEST, "status": "BAD REQUEST", **errors}
-    )
+from PiximaStudio.AbstractView import RESTView
 
 
-class GlitchFilterView(APIView):
+class GlitchFilterView(RESTView):
     def post(self, request, format=None):
         glitch_filter = Filters.GlitchFilter()
         glicth_serializer = serializer.GlitchFilterSerializer(data=request.data)
@@ -23,10 +16,7 @@ class GlitchFilterView(APIView):
                 glitch_filter.request2data(request=request)()
                 image_path = glitch_filter.save_image()
                 imagepreview_path = glitch_filter.get_preview()
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -43,20 +33,17 @@ class GlitchFilterView(APIView):
                     image=ImageObj, operation_name="GlitchFilter"
                 ).save()
 
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
                 )
         except Exception as e:
-            return bad_request({"Message": "Error In Glitch Filter Request"})
-        return bad_request(filter_handler.errors)
+            return self.bad_request({"Message": "Error In Glitch Filter Request"})
+        return self.bad_request(filter_handler.errors)
 
 
-class CircleFilterView(APIView):
+class CircleFilterView(RESTView):
     def post(self, request, format=None):
         circles_filter = Filters.CirclesFilter()
         circles_serializer = serializer.CirclesFilterSerializer(data=request.data)
@@ -69,10 +56,7 @@ class CircleFilterView(APIView):
                 circles_filter.request2data(request=request)()
                 image_path = circles_filter.save_image()
                 imagepreview_path = circles_filter.get_preview()
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -87,14 +71,11 @@ class CircleFilterView(APIView):
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="CircleFilter"
                 ).save()
-                return JsonResponse(
-                    data={
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
                 )
         except Exception as e:
-            return bad_request({"Message": "Error In Circles Filter Request"})
-        return bad_request(filter_handler.errors)
+            return self.bad_request({"Message": "Error In Circles Filter Request"})
+        return self.bad_request(filter_handler.errors)
