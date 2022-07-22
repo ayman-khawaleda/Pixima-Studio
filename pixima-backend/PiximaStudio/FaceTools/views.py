@@ -293,11 +293,22 @@ class ColorLipsToolView(RESTView):
 
 class SmileToolView(RESTView):
     def post(self, request, format=None):
+        smile_tool = FaceTools.SmileTool()
         smile_serializer = SmileToolSerializer(data=request.data)
         smile_serializerhandler = SmileToolSerializerHandler(smile_serializer)
         try:
             if smile_serializerhandler.handle():
-                return self.ok_request(smile_serializer.data)
+                smile_tool.serializer2data(smile_serializer).read_image()()
+                image_path = smile_tool.save_image()
+                imagepreview_path = smile_tool.get_preview()
+                mask_path = smile_tool.save_mask()
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                        "Mask": mask_path,
+                    }
+                )
         except RequiredValue as e:
             return self.bad_request({"Message": str(e)})
         except NoFace as e:
