@@ -793,7 +793,12 @@ class SmileTool(FaceTool):
         control_points = self.__make_control_points(w, h, shift, indices)
         src = control_points[:, :2]
         tgt = control_points[:, 2:]
-
+        new_mouth_img = self.__deform_image(mouth_img, src, tgt)
+        self.Image[
+            bound_dict["UpperLeft"][1] : bound_dict["LowerLeft"][1],
+            bound_dict["UpperLeft"][0] : bound_dict["UpperRight"][0],
+            ...,
+        ] = new_mouth_img
         return self
 
     def __make_control_points(self, w, h, shift, indices):
@@ -811,11 +816,18 @@ class SmileTool(FaceTool):
                 [h, w / 2, h, w / 2],
                 [h, w / 4, h, w / 4],
                 [h, 3 * w / 4, h, 3 * w / 4],
-                [*indices[0], *(indices[0] - shift)],
-                [*indices[3], indices[3][0] - shift[0], indices[3][1] + shift[1]],
-                [*indices[1], *(indices[1] - shift)],
-                [*indices[4], indices[4][0] - shift[0], indices[4][1] + shift[1]],
-                [*indices[2], *(indices[2] - shift)],
-                [*indices[5], indices[5][0] - shift[0], indices[5][1] + shift[1]],
+                [*indices[0], *(indices[0] - shift)], # First Left Control Point
+                [*indices[3], indices[3][0] - shift[0], indices[3][1] + shift[1]], # First Right Control Point
+                [*indices[1], *(indices[1] - shift)], # Second Left Control Point
+                [*indices[4], indices[4][0] - shift[0], indices[4][1] + shift[1]],# Second Right Control Point
+                [*indices[2], *(indices[2] - shift)], # Third Left Control Point
+                [*indices[5], indices[5][0] - shift[0], indices[5][1] + shift[1]], # Third Right Control Point
             ]
         )
+
+    def __deform_image(self, image, src, tgt):
+        trans = ImageTransformer(
+            image, src, tgt, color_dim=2, interp_order=0, extrap_mode="nearest"
+        )
+        new_image, offset = trans.deform_whole()
+        return new_image
