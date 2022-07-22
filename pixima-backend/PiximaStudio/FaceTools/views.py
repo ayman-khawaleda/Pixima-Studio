@@ -296,6 +296,18 @@ class SmileToolView(RESTView):
         smile_serializer = SmileToolSerializer(data=request.data)
         smile_serializerhandler = SmileToolSerializerHandler(smile_serializer)
         try:
+            if "Image" in request.data.keys() and request.data["Image"] != "":
+                smile_tool.request2data(request)()
+                image_path = smile_tool.save_image()
+                imagepreview_path = smile_tool.get_preview()
+                mask_path = smile_tool.save_mask()
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                        "Mask": mask_path,
+                    }
+                )
             if smile_serializerhandler.handle():
                 smile_tool.serializer2data(smile_serializer).read_image()()
                 image_path = smile_tool.save_image()
