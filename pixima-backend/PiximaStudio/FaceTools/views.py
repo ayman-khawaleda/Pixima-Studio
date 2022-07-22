@@ -6,6 +6,7 @@ from .serializer import (
     SmoothFaceSeializer,
     WhiteTeethToolSerializer,
     ColorLipsToolSerializer,
+    SmileToolSerializer,
 )
 from .serializerHandler import (
     EyesColorSerializerHandler,
@@ -14,10 +15,12 @@ from .serializerHandler import (
     SmoothFaceSerializerHandler,
     WhiteTeethToolSerializerHandler,
     ColorLipsToolSerializerHandler,
+    SmileToolSerializerHandler,
 )
 from PiximaTools.FaceTools import EyesTool, NoseTool, FaceTools
 from PiximaTools.Exceptions import RequiredValue, NoFace
-from Core.models import ImageModel,ImageOperationsModel
+from Core.models import ImageModel, ImageOperationsModel
+
 
 class EyesColorToolView(RESTView):
     def post(self, request, format=None):
@@ -264,7 +267,7 @@ class ColorLipsToolView(RESTView):
                         "Mask": mask_path,
                     }
                 )
-            
+
             if colorlips_serializerhandler.handle():
                 colorlips_tool.serializer2data(colorlips_serializer).read_image()()
                 image_path = colorlips_tool.save_image()
@@ -286,3 +289,21 @@ class ColorLipsToolView(RESTView):
                 {"Message": "Error During Change Color Lips Process"}
             )
         return self.bad_request(colorlips_serializerhandler.errors)
+
+
+class SmileToolView(RESTView):
+    def post(self, request, format=None):
+        smile_serializer = SmileToolSerializer(data=request.data)
+        smile_serializerhandler = SmileToolSerializerHandler(smile_serializer)
+        try:
+            if smile_serializerhandler.handle():
+                return self.ok_request(smile_serializer.data)
+        except RequiredValue as e:
+            return self.bad_request({"Message": str(e)})
+        except NoFace as e:
+            return self.bad_request({"Message": str(e)})
+        except Exception as e:
+            return self.bad_request(
+                {"Message": "Error During Smile Adjustment Process"}
+            )
+        return self.bad_request(smile_serializerhandler.errors)
