@@ -731,7 +731,7 @@ class SmileTool(FaceTool):
             smile_serializer = SmileSerializer(data=factor)
             if not smile_serializer.is_valid():
                 raise RequiredValue("Smile Factor Value Is Invalid")
-            factor = smile_serializer.data["Facotr"]
+            factor = smile_serializer.data["Factor"]
         self.factor = factor
         return self
 
