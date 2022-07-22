@@ -1,11 +1,9 @@
 from django.shortcuts import render
 from django.views import View
-from django.http import JsonResponse
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
-from . import serializers, models
+from . import serializers
 from PiximaStudio.settings import MEDIA_ROOT, PROJECT_DIR, MEDIA_URL
+from PiximaStudio.AbstractView import RESTView
 import os
 
 # Create your views here.
@@ -21,31 +19,23 @@ class Index(View):
         )
 
 
-class UploadImage(APIView):
+class UploadImage(RESTView):
     parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request, format=None):
         image_serializer = serializers.UploadImageSerializer(data=request.data)
         if image_serializer.is_valid():
             ins = image_serializer.save()
-            return JsonResponse(
+            return self.ok_request(
                 {
-                    "code": HTTP_200_OK,
-                    "status": "OK",
                     "id": str(ins.id),
                     **image_serializer.data,
                 }
             )
-        return JsonResponse(
-            {
-                "code": HTTP_400_BAD_REQUEST,
-                "status": "BAD REQUEST",
-                **image_serializer.errors,
-            }
-        )
+        return self.bad_request(image_serializer.errors)
 
 
-class GetImagesDirectoryId(APIView):
+class GetImagesDirectoryId(RESTView):
 
     parser_classes = [MultiPartParser, FormParser]
 
@@ -56,37 +46,23 @@ class GetImagesDirectoryId(APIView):
                 PROJECT_DIR, MEDIA_ROOT, "Images", id_serializer["id"].value
             )
             if os.path.exists(path):
-                numbers = [(int(x.split('.')[0]),x.split('.')[1]) for x in os.listdir(path)]
-                numbers = sorted(numbers,key=lambda x: x[0])
-                numbers = [str(num) + "." + suffix for num,suffix in numbers]
+                numbers = [
+                    (int(x.split(".")[0]), x.split(".")[1]) for x in os.listdir(path)
+                ]
+                numbers = sorted(numbers, key=lambda x: x[0])
+                numbers = [str(num) + "." + suffix for num, suffix in numbers]
 
-                return JsonResponse(
+                return self.ok_request(
                     {
-                        "code": HTTP_200_OK,
-                        "status": "OK",
                         "id": str(id_serializer["id"].value),
                         "images": {
                             i: os.path.join(
                                 MEDIA_URL, "Images", id_serializer["id"].value, x
                             )
-                            for i, x in enumerate(
-                                numbers
-                            )
+                            for i, x in enumerate(numbers)
                         },
                     }
                 )
             else:
-                return JsonResponse(
-                    {
-                        "code": HTTP_400_BAD_REQUEST,
-                        "status": "BAD REQUEST",
-                        "id": ["NOT FOUND"],
-                    }
-                )
-        return JsonResponse(
-            {
-                "code": HTTP_400_BAD_REQUEST,
-                "status": "BAD REQUEST",
-                **id_serializer.errors,
-            }
-        )
+                return self.bad_request({"id": ["NOT FOUND"]})
+        return self.bad_request(id_serializer.errors)
