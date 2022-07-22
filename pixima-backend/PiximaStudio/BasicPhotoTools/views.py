@@ -1,7 +1,3 @@
-import re
-from rest_framework.views import APIView
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-from django.http import JsonResponse
 from .serializer import (
     ContrastImageSerializer,
     CropImageSerializer,
@@ -42,8 +38,6 @@ class CropToolView(RESTView):
                 imagepreview_path = crop_tool.get_preview()
                 return self.ok_request(
                     {
-                        "code": HTTP_200_OK,
-                        "status": "OK",
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -62,8 +56,6 @@ class CropToolView(RESTView):
                 ).save()
                 return self.ok_request(
                     {
-                        "code": HTTP_200_OK,
-                        "status": "OK",
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -85,8 +77,6 @@ class FlipToolView(RESTView):
                 imagepreview_path = flip_tool.get_preview()
                 return self.ok_request(
                     {
-                        "code": HTTP_200_OK,
-                        "status": "OK",
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -104,8 +94,6 @@ class FlipToolView(RESTView):
                 ).save()
                 return self.ok_request(
                     {
-                        "code": HTTP_200_OK,
-                        "status": "OK",
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -125,10 +113,7 @@ class RotateToolView(RESTView):
                 rotate_tool.request2data(request=request).apply()
                 image_path = rotate_tool.save_image()
                 imagepreview_path = rotate_tool.get_preview()
-                return self.ok_request(
-                    {
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -144,10 +129,7 @@ class RotateToolView(RESTView):
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="RotateTool"
                 ).save()
-                return self.ok_request(
-                    {
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -167,10 +149,7 @@ class ResizeToolView(RESTView):
                 resize_tool.request2data(request=request).apply()
                 image_path = resize_tool.save_image()
                 imagepreview_path = resize_tool.get_preview()
-                return self.ok_request(
-                    {
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -186,10 +165,7 @@ class ResizeToolView(RESTView):
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="ResizeTool"
                 ).save()
-                return self.ok_request(
-                    {
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -210,10 +186,7 @@ class ContrastToolView(RESTView):
                 contrast_tool.request2data(request=request)()
                 image_path = contrast_tool.save_image()
                 imagepreview_path = contrast_tool.get_preview()
-                return self.ok_request(
-                    {
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -230,10 +203,7 @@ class ContrastToolView(RESTView):
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="ContrastTool"
                 ).save()
-                return self.ok_request(
-                    {
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -256,10 +226,7 @@ class SaturationToolView(RESTView):
                 saturation_tool.request2data(request=request)()
                 image_path = saturation_tool.save_image()
                 imagepreview_path = saturation_tool.get_preview()
-                return self.ok_request(
-                    {
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -276,10 +243,7 @@ class SaturationToolView(RESTView):
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="SaturationTool"
                 ).save()
-                return self.ok_request(
-                    {
-                        "code": HTTP_200_OK,
-                        "status": "OK",
+                return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
