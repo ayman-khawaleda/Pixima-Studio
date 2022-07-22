@@ -256,10 +256,6 @@ class ColorLipsToolView(RESTView):
                 image_path = colorlips_tool.save_image()
                 imagepreview_path = colorlips_tool.get_preview()
                 mask_path = colorlips_tool.save_mask()
-                ImageObj = ImageModel.objects.get(id=colorlips_serializer["id"].value)
-                ImageOperationsModel.objects.create(
-                    image=ImageObj, operation_name="ColorLipsTool"
-                ).save()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -267,12 +263,15 @@ class ColorLipsToolView(RESTView):
                         "Mask": mask_path,
                     }
                 )
-
             if colorlips_serializerhandler.handle():
                 colorlips_tool.serializer2data(colorlips_serializer).read_image()()
                 image_path = colorlips_tool.save_image()
                 imagepreview_path = colorlips_tool.get_preview()
                 mask_path = colorlips_tool.save_mask()
+                ImageObj = ImageModel.objects.get(id=colorlips_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="ColorLipsTool"
+                ).save()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -302,6 +301,10 @@ class SmileToolView(RESTView):
                 image_path = smile_tool.save_image()
                 imagepreview_path = smile_tool.get_preview()
                 mask_path = smile_tool.save_mask()
+                ImageObj = ImageModel.objects.get(id=smile_serializer["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="SmileTool"
+                ).save()
                 return self.ok_request(
                     {
                         "Image": image_path,
