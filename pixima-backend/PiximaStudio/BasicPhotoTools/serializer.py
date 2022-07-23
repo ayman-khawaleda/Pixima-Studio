@@ -36,6 +36,6 @@ class ContrastImageSerializer(ImageSerializer):
 class SaturationImageSerializer(ImageSerializer):
     Saturation = IntegerField(default=0, required=False, allow_null=True)
 
-class ChnageColorToolSerializer(ImageSerializer):
-    X = IntegerField(required=True)
-    Y = IntegerField(required=True)
+class ChangeColorToolSerializer(ImageSerializer):
+    X = IntegerField(required=True,min_value=0)
+    Y = IntegerField(required=True,min_value=0)
