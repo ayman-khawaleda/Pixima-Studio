@@ -207,3 +207,7 @@ class SaturationImageSerializerHandler(ImageSerializerHandler):
                 self.errors = {"Message": "Saturation Should Be In Range [0,100]"}
                 return False
         return res
+
+class ChangeColorToolSerializerHandler(ImageSerializerHandler):
+    def handle(self) -> bool:
+        return super().handle()
