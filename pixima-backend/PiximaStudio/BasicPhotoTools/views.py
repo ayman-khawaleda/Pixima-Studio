@@ -1,4 +1,5 @@
 from .serializer import (
+    ChangeColorToolSerializer,
     ContrastImageSerializer,
     CropImageSerializer,
     FlipImageSerializer,
@@ -13,6 +14,7 @@ from .serializerHandler import (
     RotateImageSerializerHandler,
     ContrastImageSerializerHandler,
     SaturationImageSerializerHandler,
+    ChangeColorToolSerializerHandler,
 )
 from PiximaTools.BasicTools import (
     ContrastTool,
@@ -21,10 +23,11 @@ from PiximaTools.BasicTools import (
     ResizeTool,
     RotatTool,
     SaturationTool,
+    ChangeColorTool,
 )
 from Core.models import ImageModel, ImageOperationsModel
 from PiximaStudio.AbstractView import RESTView
-
+from PiximaTools.Exceptions import ClickedOutOfBound, NoFace,RequiredValue
 
 class CropToolView(RESTView):
     def post(self, request, format=None):
@@ -113,7 +116,8 @@ class RotateToolView(RESTView):
                 rotate_tool.request2data(request=request).apply()
                 image_path = rotate_tool.save_image()
                 imagepreview_path = rotate_tool.get_preview()
-                return self.ok_request({
+                return self.ok_request(
+                    {
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -129,7 +133,8 @@ class RotateToolView(RESTView):
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="RotateTool"
                 ).save()
-                return self.ok_request({
+                return self.ok_request(
+                    {
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -149,7 +154,8 @@ class ResizeToolView(RESTView):
                 resize_tool.request2data(request=request).apply()
                 image_path = resize_tool.save_image()
                 imagepreview_path = resize_tool.get_preview()
-                return self.ok_request({
+                return self.ok_request(
+                    {
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -165,7 +171,8 @@ class ResizeToolView(RESTView):
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="ResizeTool"
                 ).save()
-                return self.ok_request({
+                return self.ok_request(
+                    {
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -186,7 +193,8 @@ class ContrastToolView(RESTView):
                 contrast_tool.request2data(request=request)()
                 image_path = contrast_tool.save_image()
                 imagepreview_path = contrast_tool.get_preview()
-                return self.ok_request({
+                return self.ok_request(
+                    {
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -203,7 +211,8 @@ class ContrastToolView(RESTView):
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="ContrastTool"
                 ).save()
-                return self.ok_request({
+                return self.ok_request(
+                    {
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -226,7 +235,8 @@ class SaturationToolView(RESTView):
                 saturation_tool.request2data(request=request)()
                 image_path = saturation_tool.save_image()
                 imagepreview_path = saturation_tool.get_preview()
-                return self.ok_request({
+                return self.ok_request(
+                    {
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -243,7 +253,8 @@ class SaturationToolView(RESTView):
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="SaturationTool"
                 ).save()
-                return self.ok_request({
+                return self.ok_request(
+                    {
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,
                     }
@@ -252,4 +263,41 @@ class SaturationToolView(RESTView):
             return self.bad_request(
                 {"Message": "Error During Saturation Adjustment Process"}
             )
+        return self.bad_request(im_handler.errors)
+
+
+class ChangeColorToolView(RESTView):
+    def post(self, request, format=None):
+        changecolor_tool = ChangeColorTool()
+        changecolor_serializer = ChangeColorToolSerializer(data=request.data)
+        im_handler = ChangeColorToolSerializerHandler(changecolor_serializer)
+        
+        try:
+            if im_handler.handle():
+                image_path = (
+                    changecolor_tool.serializer2data(changecolor_serializer)
+                    .read_image()
+                    .apply()
+                    .save_image()
+                )
+                imagepreview_path = changecolor_tool.get_preview()
+                mask_path = changecolor_tool.save_mask()
+                ImageObj = ImageModel.objects.get(id=changecolor_tool["id"].value)
+                ImageOperationsModel.objects.create(
+                    image=ImageObj, operation_name="ChangeColorTool"
+                ).save()
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                        "Mask": mask_path
+                    }
+                )
+        
+        except (ClickedOutOfBound,RequiredValue,NoFace) as e:
+            return self.bad_request({"Message": str(e)})
+        
+        except Exception as e:
+            return self.bad_request({"Message": "Error During Change Color Process"})
+        
         return self.bad_request(im_handler.errors)
