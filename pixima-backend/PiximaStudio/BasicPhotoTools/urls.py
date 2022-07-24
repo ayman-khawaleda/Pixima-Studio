@@ -7,5 +7,5 @@ urlpatterns = [
     path('api-resize_tool',view=views.ResizeToolView.as_view(),name='ResizeToolAPI'),
     path('api-contrast_tool',view=views.ContrastToolView.as_view(),name='ContrastToolAPI'),
     path('api-saturation_tool',view=views.SaturationToolView.as_view(),name='SaturationToolAPI'),
-    path('api-changecolor_tool',view=views.ChangeColorToolView.as_view(),name='ChangeColorToolAPI'),
+    path('api-changecolor_tool',view=views.ChanclgeColorToolView.as_view(),name='ChangeColorToolAPI'),
 ]
