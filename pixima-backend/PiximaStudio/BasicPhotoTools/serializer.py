@@ -39,3 +39,5 @@ class SaturationImageSerializer(ImageSerializer):
 class ChangeColorToolSerializer(ImageSerializer):
     X = IntegerField(required=True,min_value=0)
     Y = IntegerField(required=True,min_value=0)
+    Color = IntegerField(default=0, required=False, allow_null=True,min_value=0,max_value=180)
+    Saturation = IntegerField(default=0, required=False, allow_null=True,min_value=0,max_value=100)
