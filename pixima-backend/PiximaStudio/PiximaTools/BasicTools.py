@@ -1,8 +1,14 @@
 from abc import abstractmethod
+import colorsys
 from PiximaTools.abstractTools import Tool
 from skimage.transform import rotate
-from PiximaStudio.AbstractSerializer.serializer import ImageSerializer, IntegerField
+from rest_framework.serializers import (
+    IntegerField,
+    Serializer,
+)
 from PiximaTools.AI_Models import selfie_segmentation_model
+from .Exceptions import ClickedOutOfBound, NoFace, RequiredValue
+from .abstractTools import BodyTool
 import numpy as np
 import cv2
 import PIL
@@ -310,7 +316,7 @@ class ContrastTool(PhotoTool):
         return self
 
 
-class ChangeColorTool(PhotoTool):
+class SaturationTool(PhotoTool):
     def __init__(self, saturation=0) -> None:
         self.saturation = saturation
 
@@ -348,11 +354,11 @@ class ChangeColorTool(PhotoTool):
         return self
 
 
-class ChangeColorTool(PhotoTool):
+class ChangeColorTool(BodyTool):
     def __init__(self, selfieSeg=None) -> None:
         if selfieSeg is None:
             selfieSeg = selfie_segmentation_model
-        self.selfieSegmentationModel - selfieSeg
+        self.selfieSegmentationModel = selfieSeg
 
     def __call__(self, *args, **kwargs):
         return self.apply(*args, **kwargs)
@@ -362,7 +368,7 @@ class ChangeColorTool(PhotoTool):
             Y = serializer.data["Y"]
         elif type(Y.dict()) == dict:
 
-            class ChangeColorToolSerializer(ImageSerializer):
+            class ChangeColorToolSerializer(Serializer):
                 Y = IntegerField(required=True, min_value=0)
 
             changecolor_serializer = ChangeColorToolSerializer(data=Y.data)
@@ -376,7 +382,7 @@ class ChangeColorTool(PhotoTool):
             X = serializer.data["X"]
         elif type(X.dict()) == dict:
 
-            class ChangeColorToolSerializer(ImageSerializer):
+            class ChangeColorToolSerializer(Serializer):
                 X = IntegerField(required=True, min_value=0)
 
             changecolor_serializer = ChangeColorToolSerializer(data=X.data)
@@ -385,8 +391,49 @@ class ChangeColorTool(PhotoTool):
         self.X = X
         return self
 
+    def add_saturation(self, saturation=5, serialzier=None):
+        if serialzier:
+            saturation = serialzier.data["Saturation"]
+        elif type(saturation.dict()) == dict:
+
+            class SaturationSerializer(Serializer):
+                Saturation = IntegerField(
+                    default=0, required=False, min_value=0, max_value=100
+                )
+
+            saturation_serializer = SaturationSerializer(data=saturation)
+            if not saturation_serializer.is_valid():
+                raise RequiredValue("Saturation Value Is Invalid")
+            saturation = saturation_serializer.data["Saturation"]
+        self.saturation = saturation
+        return self
+
+    def add_color(self, color=0, serialzier=None):
+        if serialzier:
+            color = serialzier.data["Color"]
+        elif type(color.dict()) == dict:
+
+            class ColorSerializer(Serializer):
+                Color = IntegerField(
+                    default=0, required=False, min_value=0, max_value=180
+                )
+
+            color_serializer = ColorSerializer(data=color)
+            if not color_serializer.is_valid():
+                raise RequiredValue("Color Value Is Invalid")
+            color = color_serializer.data["Color"]
+        self.color = color
+        return self
+
     def request2data(self, request):
-        return super().request2data(request).add_x(request).add_y(request)
+        return (
+            super()
+            .request2data(request)
+            .add_x(request)
+            .add_y(request)
+            .add_color(request)
+            .add_saturation(request)
+        )
 
     def serializer2data(self, serializer):
         return (
@@ -394,7 +441,10 @@ class ChangeColorTool(PhotoTool):
             .serializer2data(serializer)
             .add_x(serializer=serializer)
             .add_y(serializer=serializer)
+            .add_color(serialzier=serializer)
+            .add_saturation(serialzier=serializer)
         )
 
     def apply(self, *args, **kwargs):
+
         return self
