@@ -1,8 +1,10 @@
 from abc import abstractmethod
 from PiximaTools.abstractTools import Tool
+from skimage.transform import rotate
+from PiximaStudio.AbstractSerializer.serializer import ImageSerializer, IntegerField
+from PiximaTools.AI_Models import selfie_segmentation_model
 import numpy as np
 import cv2
-from skimage.transform import rotate
 import PIL
 
 
@@ -289,8 +291,8 @@ class ContrastTool(PhotoTool):
         return (
             super()
             .request2data(request)
-            .add_brightness(request.data.setdefault("Brightness",0))
-            .add_contrast(request.data.setdefault("Contrast",50))
+            .add_brightness(request.data.setdefault("Brightness", 0))
+            .add_contrast(request.data.setdefault("Contrast", 50))
         )
 
     def serializer2data(self, serializer):
@@ -308,7 +310,7 @@ class ContrastTool(PhotoTool):
         return self
 
 
-class SaturationTool(PhotoTool):
+class ChangeColorTool(PhotoTool):
     def __init__(self, saturation=0) -> None:
         self.saturation = saturation
 
@@ -326,8 +328,14 @@ class SaturationTool(PhotoTool):
             saturation = 50
         self.saturation = saturation
         return self
+
     def request2data(self, request):
-        return super().request2data(request).add_saturation(request.data.setdefault("Saturation",50))
+        return (
+            super()
+            .request2data(request)
+            .add_saturation(request.data.setdefault("Saturation", 50))
+        )
+
     def serializer2data(self, serializer):
         return super().serializer2data(serializer).add_saturation(serializer=serializer)
 
@@ -337,4 +345,56 @@ class SaturationTool(PhotoTool):
         image = PIL.Image.fromarray(self.Image)
         after_enh_image = ImageEnhance.Color(image).enhance(self.saturation / 50)
         self.Image = np.array(after_enh_image)
+        return self
+
+
+class ChangeColorTool(PhotoTool):
+    def __init__(self, selfieSeg=None) -> None:
+        if selfieSeg is None:
+            selfieSeg = selfie_segmentation_model
+        self.selfieSegmentationModel - selfieSeg
+
+    def __call__(self, *args, **kwargs):
+        return self.apply(*args, **kwargs)
+
+    def add_y(self, Y=None, serializer=None):
+        if serializer is not None:
+            Y = serializer.data["Y"]
+        elif type(Y.dict()) == dict:
+
+            class ChangeColorToolSerializer(ImageSerializer):
+                Y = IntegerField(required=True, min_value=0)
+
+            changecolor_serializer = ChangeColorToolSerializer(data=Y.data)
+            if changecolor_serializer.is_valid():
+                Y = changecolor_serializer["Y"]
+        self.Y = Y
+        return self
+
+    def add_x(self, X=None, serializer=None):
+        if serializer is not None:
+            X = serializer.data["X"]
+        elif type(X.dict()) == dict:
+
+            class ChangeColorToolSerializer(ImageSerializer):
+                X = IntegerField(required=True, min_value=0)
+
+            changecolor_serializer = ChangeColorToolSerializer(data=X.data)
+            if changecolor_serializer.is_valid():
+                X = changecolor_serializer["X"]
+        self.X = X
+        return self
+
+    def request2data(self, request):
+        return super().request2data(request).add_x(request).add_y(request)
+
+    def serializer2data(self, serializer):
+        return (
+            super()
+            .serializer2data(serializer)
+            .add_x(serializer=serializer)
+            .add_y(serializer=serializer)
+        )
+
+    def apply(self, *args, **kwargs):
         return self
