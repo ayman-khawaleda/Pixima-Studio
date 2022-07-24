@@ -366,42 +366,45 @@ class ChangeColorTool(BodyTool):
     def add_y(self, Y=None, serializer=None):
         if serializer is not None:
             Y = serializer.data["Y"]
-        elif type(Y.dict()) == dict:
+        elif type(Y.data.dict()) == dict:
 
             class ChangeColorToolSerializer(Serializer):
                 Y = IntegerField(required=True, min_value=0)
 
             changecolor_serializer = ChangeColorToolSerializer(data=Y.data)
-            if changecolor_serializer.is_valid():
-                Y = changecolor_serializer["Y"]
+            if not changecolor_serializer.is_valid():
+                raise RequiredValue("Y Value Is Invalid")
+            Y = changecolor_serializer["Y"].value
         self.Y = Y
         return self
 
     def add_x(self, X=None, serializer=None):
         if serializer is not None:
             X = serializer.data["X"]
-        elif type(X.dict()) == dict:
+        elif type(X.data.dict()) == dict:
 
             class ChangeColorToolSerializer(Serializer):
                 X = IntegerField(required=True, min_value=0)
 
             changecolor_serializer = ChangeColorToolSerializer(data=X.data)
             if changecolor_serializer.is_valid():
-                X = changecolor_serializer["X"]
+                raise RequiredValue("X Value Is Invalid")
+
+            X = changecolor_serializer["X"].value
         self.X = X
         return self
 
     def add_saturation(self, saturation=5, serialzier=None):
         if serialzier:
             saturation = serialzier.data["Saturation"]
-        elif type(saturation.dict()) == dict:
+        elif type(saturation.data.dict()) == dict:
 
             class SaturationSerializer(Serializer):
                 Saturation = IntegerField(
                     default=0, required=False, min_value=0, max_value=100
                 )
 
-            saturation_serializer = SaturationSerializer(data=saturation)
+            saturation_serializer = SaturationSerializer(data=saturation.data)
             if not saturation_serializer.is_valid():
                 raise RequiredValue("Saturation Value Is Invalid")
             saturation = saturation_serializer.data["Saturation"]
@@ -411,14 +414,14 @@ class ChangeColorTool(BodyTool):
     def add_color(self, color=0, serialzier=None):
         if serialzier:
             color = serialzier.data["Color"]
-        elif type(color.dict()) == dict:
+        elif type(color.data.dict()) == dict:
 
             class ColorSerializer(Serializer):
                 Color = IntegerField(
                     default=0, required=False, min_value=0, max_value=180
                 )
 
-            color_serializer = ColorSerializer(data=color)
+            color_serializer = ColorSerializer(data=color.data)
             if not color_serializer.is_valid():
                 raise RequiredValue("Color Value Is Invalid")
             color = color_serializer.data["Color"]
