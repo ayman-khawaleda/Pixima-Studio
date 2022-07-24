@@ -480,7 +480,26 @@ class ChangeColorTool(BodyTool):
         color_v = round(255 * color_hsv_percentage[2])
         return color_h, color_s, color_v
 
+    def __create_mask(self):
+        r, g, b = self.selfie_image_croma_back[int(self.Y), int(self.X)]
+        if r == 64 and g == 177 and b == 0:
+            raise ClickedOutOfBound("Click on Person's Clothes")
+        h, s, v = self.convert_rgb_to_hsv(r, g, b)
+        lower = np.array([h - 10, s - 40, v - 40])
+        upper = np.array([h + 10, s + 40, v + 40])
+        self.Mask = cv2.inRange(self.hsvImage, lower, upper)
+
+    def __color_mask(self):
+        hsv_img = cv2.cvtColor(self.Image, cv2.COLOR_RGB2HSV)
+        h, s, v = cv2.split(hsv_img)
+        cond = self.Mask == 255
+        h[cond] = self.color
+        s[cond] += self.saturation
+        hsv_img = cv2.merge([h, s, v])
+        self.Image = cv2.cvtColor(hsv_img, cv2.COLOR_HSV2RGB)
+
     def apply(self, *args, **kwargs):
         self.__selfie_segmentation()
-
+        self.__create_mask()
+        self.__color_mask()
         return self
