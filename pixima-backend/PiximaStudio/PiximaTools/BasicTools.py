@@ -445,6 +445,42 @@ class ChangeColorTool(BodyTool):
             .add_saturation(serialzier=serializer)
         )
 
+    def __selfie_segmentation(self):
+        BG_COLOR = (64, 177, 0)  # croma
+        MASK_COLOR = (255, 255, 255)  # white
+        image = self.Image.copy()
+        results = self.selfieSegmentationModel.process(image)
+        condition = np.stack((results.segmentation_mask,) * 3, axis=-1) > 0.001
+        fg_image = np.zeros(image.shape, dtype=np.uint8)
+        fg_image[:] = MASK_COLOR
+        bg_image = np.zeros(image.shape, dtype=np.uint8)
+        bg_image[:] = BG_COLOR
+        self.output_image = np.where(condition, fg_image, bg_image)
+        self.selfie_image_croma_back = np.where(condition, image, self.output_image)
+        count = len(np.unique(self.selfie_image_croma_back))
+        if count == 3:
+            raise NoFace("No Face Detected In The Image")
+
+    def convert_rgb_to_hsv(self, red, green, blue):
+        self.hsvImage = cv2.cvtColor(self.selfie_image_croma_back, cv2.COLOR_RGB2HSV)
+
+        # get rgb percentage: range (0-1, 0-1, 0-1 )
+        red_percentage = red / float(255)
+        green_percentage = green / float(255)
+        blue_percentage = blue / float(255)
+
+        # get hsv percentage: range (0-1, 0-1, 0-1)
+        color_hsv_percentage = colorsys.rgb_to_hsv(
+            red_percentage, green_percentage, blue_percentage
+        )
+
+        # get normal hsv: range (0-180, 0-255, 0-255)
+        color_h = round(180 * color_hsv_percentage[0])
+        color_s = round(255 * color_hsv_percentage[1])
+        color_v = round(255 * color_hsv_percentage[2])
+        return color_h, color_s, color_v
+
     def apply(self, *args, **kwargs):
+        self.__selfie_segmentation()
 
         return self
