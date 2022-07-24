@@ -1,3 +1,4 @@
+import traceback
 from .serializer import (
     ChangeColorToolSerializer,
     ContrastImageSerializer,
@@ -273,6 +274,18 @@ class ChangeColorToolView(RESTView):
         im_handler = ChangeColorToolSerializerHandler(changecolor_serializer)
         
         try:
+            if "Image" in request.data.keys() and request.data["Image"] != "":
+                changecolor_tool.request2data(request=request)()
+                image_path = changecolor_tool.save_image()
+                imagepreview_path = changecolor_tool.get_preview()
+                mask_path = changecolor_tool.save_mask()
+                return self.ok_request(
+                    {
+                        "Image": image_path,
+                        "ImagePreview": imagepreview_path,
+                        "Mask":mask_path
+                    }
+                )
             if im_handler.handle():
                 image_path = (
                     changecolor_tool.serializer2data(changecolor_serializer)
@@ -298,6 +311,8 @@ class ChangeColorToolView(RESTView):
             return self.bad_request({"Message": str(e)})
         
         except Exception as e:
+            print(e)
+            print(traceback.format_exc())
             return self.bad_request({"Message": "Error During Change Color Process"})
         
         return self.bad_request(im_handler.errors)
