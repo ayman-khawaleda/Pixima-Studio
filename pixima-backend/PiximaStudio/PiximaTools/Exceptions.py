@@ -15,3 +15,6 @@ class NeedDirectoryID(Exception):
 
 class RequiredValue(Exception):
     pass
+
+class ClickedOutOfBound(Exception):
+    pass
