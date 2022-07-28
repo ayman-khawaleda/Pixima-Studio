@@ -50,7 +50,9 @@ INSTALLED_APPS = [
     'BasicPhotoTools',
     'PhotoFilters',
     'FaceTools',
-    'BodyTools'
+    'BodyTools',
+    'corsheaders',
+
 ]
 
 MIDDLEWARE = [
@@ -61,9 +63,23 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'PiximaStudio.urls'
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'access-control-allow-origin'
+)
 
 TEMPLATES = [
     {
