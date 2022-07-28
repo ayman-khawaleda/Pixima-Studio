@@ -40,7 +40,7 @@ class GetImagesDirectoryId(RESTView):
     parser_classes = [MultiPartParser, FormParser]
 
     def get(self, request, format=None):
-        id_serializer = serializers.GetImageSerializer(data=request.data)
+        id_serializer = serializers.GetImageSerializer(data=request.query_params)
         if id_serializer.is_valid():
             path = os.path.join(
                 PROJECT_DIR, MEDIA_ROOT, "Images", id_serializer["id"].value
