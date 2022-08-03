@@ -1,0 +1,38 @@
+.input-area {
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(25px);
+    border-width: 2px;
+    border-color: rgba(0, 0, 0, 0.72);
+    border-style: solid;
+    border-radius: 25px;
+    position: fixed;
+    left: 80%;
+    top: 20%;
+    display: inline;
+    min-width: 250px;
+    min-height: 400px;
+    
+}
+
+#slider {
+    color: white;
+    position: fixed;
+    top:50px;
+    transform: scale(0.85);
+}
+.check {
+    position:fixed;
+    color:white;
+    transform: scale(1.5);
+    top: 80%;
+    left:46%;
+    opacity: 0.8;
+    border: 2px solid white;
+    border-radius: 10px;
+}
+#slider {
+    color:white;
+}
+.check:hover{
+    opacity: 1;
+}

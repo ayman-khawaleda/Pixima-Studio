@@ -1,0 +1,10 @@
+body {
+    background: rgb(39, 72, 129) !important;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+#root {
+    min-width: fit-content;
+    min-height: fit-content;
+}

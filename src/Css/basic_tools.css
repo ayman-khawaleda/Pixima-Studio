@@ -1,0 +1,22 @@
+.crop-tool,
+.resize-tool,
+.saturation-tool,
+.flip-tool,
+.rotate-tool,
+.contrast-tool {
+    color: white;
+    transform: scale(1.2);
+    display: block;
+    opacity: 0.7;
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.crop-tool:hover,
+.saturation-tool:hover,
+.resize-tool:hover,
+.flip-tool:hover,
+.rotate-tool:hover,
+.contrast-tool:hover {
+    opacity: 1;
+}
