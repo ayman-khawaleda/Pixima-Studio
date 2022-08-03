@@ -35,8 +35,8 @@ class SmoothFaceSeializer(ImageSerializer):
 
 
 class WhiteTeethToolSerializer(ImageSerializer):
-    Saturation = IntegerField(default=40, required=False, min_value=0, max_value=100)
-    Brightness = IntegerField(default=20, required=False, min_value=0, max_value=100)
+    Saturation = IntegerField(default=40, required=False, min_value=0, max_value=255)
+    Brightness = IntegerField(default=20, required=False, min_value=0, max_value=255)
 
 
 class ColorLipsToolSerializer(ImageSerializer):

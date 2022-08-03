@@ -1,3 +1,4 @@
+import traceback
 from . import serializer, serializerHandler
 from PiximaTools import Filters
 from Core.models import ImageModel,ImageOperationsModel
@@ -67,7 +68,7 @@ class CircleFilterView(RESTView):
                 ).read_image().apply()
                 image_path = circles_filter.save_image()
                 imagepreview_path = circles_filter.get_preview()
-                ImageObj = ImageModel.objects.get(id=circles_filter["id"].value)
+                ImageObj = ImageModel.objects.get(id=circles_serializer["id"].value)
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="CircleFilter"
                 ).save()
