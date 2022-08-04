@@ -26,41 +26,60 @@ export class SubTools extends Component {
     ToolsIndices.MainTool.FaceTools,
     ToolsIndices.MainTool.BodyTools,
     ToolsIndices.MainTool.FilterTools,
-  ]
+  ];
   state = {
-    sub_tool_index : 0
+    sub_tool_index: 0,
   };
   tools = {};
 
-  updateCurrentSubToolsEvent = (index)=> {
-    this.setState({ sub_tool_index: index})
-  }
+  updateCurrentSubToolsEvent = (index) => {
+    this.setState({ sub_tool_index: index });
+  };
 
   constructor() {
     super();
-    
-    const { BasicTools, FaceTools, BodyTools, FilterTools } = ToolsIndices.MainTool;
+
+    const { BasicTools, FaceTools, BodyTools, FilterTools } =
+      ToolsIndices.MainTool;
     this.tools.last_tool_index = 0;
-    this.tools.sub_tool_index = 7
+    this.tools.sub_tool_index = 7;
     this.tools[BasicTools] = [
-      <FlipTool onClick={this.updateCurrentSubToolsEvent}/>,
-      <RotateTool onClick={this.updateCurrentSubToolsEvent}/>,
-      <CropTool onClick={this.updateCurrentSubToolsEvent}/>,
-      <ResizeTool onClick={this.updateCurrentSubToolsEvent}/>,
-      <ContrastTool onClick={this.updateCurrentSubToolsEvent}/>,
-      <SaturationTool onClick={this.updateCurrentSubToolsEvent}/>,
+      <FlipTool key={ToolsIndices.SubTools.FlipTool}onClick={this.updateCurrentSubToolsEvent} />,
+      <RotateTool key={ToolsIndices.SubTools.RotateTool} onClick={this.updateCurrentSubToolsEvent} />,
+      <CropTool key={ToolsIndices.SubTools.CropTool} onClick={this.updateCurrentSubToolsEvent} />,
+      <ResizeTool key={ToolsIndices.SubTools.ResizeTool} onClick={this.updateCurrentSubToolsEvent} />,
+      <ContrastTool key={ToolsIndices.SubTools.ContrastTool} onClick={this.updateCurrentSubToolsEvent} />,
+      <SaturationTool key={ToolsIndices.SubTools.SaturationTool} onClick={this.updateCurrentSubToolsEvent} />,
     ];
     this.tools[FaceTools] = [
-      <SmileTool onClick={this.updateCurrentSubToolsEvent}/>,
-      <SmoothTool onClick={this.updateCurrentSubToolsEvent}/>,
-      <ColorLipsTool onClick={this.updateCurrentSubToolsEvent}/>,
-      <ColorEyeTool onClick={this.updateCurrentSubToolsEvent}/>,
-      <ResizeEyeTool onClick={this.updateCurrentSubToolsEvent}/>,
-      <NoseResizeTool onClick={this.updateCurrentSubToolsEvent}/>,
-      <TeethTool onClick={this.updateCurrentSubToolsEvent}/>,
+      <SmileTool key={ToolsIndices.SubTools.SmileTool} onClick={this.updateCurrentSubToolsEvent} />,
+      <SmoothTool key={ToolsIndices.SubTools.SmoothFaceTool} onClick={this.updateCurrentSubToolsEvent} />,
+      <ColorLipsTool key={ToolsIndices.SubTools.ColorLipsTool} onClick={this.updateCurrentSubToolsEvent} />,
+      <ColorEyeTool key={ToolsIndices.SubTools.ColorEyeTool} onClick={this.updateCurrentSubToolsEvent} />,
+      <ResizeEyeTool key={ToolsIndices.SubTools.ResizeEyeTool} onClick={this.updateCurrentSubToolsEvent} />,
+      <NoseResizeTool key={ToolsIndices.SubTools.NoseResizeTool}onClick={this.updateCurrentSubToolsEvent} />,
+      <TeethTool key={ToolsIndices.SubTools.WhiteTeethTool}onClick={this.updateCurrentSubToolsEvent} />,
     ];
-    this.tools[BodyTools] = [<ChangeClotheColor onClick={this.updateCurrentSubToolsEvent}/>, <HairTool onClick={this.updateCurrentSubToolsEvent}/>];
-    this.tools[FilterTools] = [<GlitchFilter onClick={this.updateCurrentSubToolsEvent}/>, <CircleFilter onClick={this.updateCurrentSubToolsEvent}/>];  
+    this.tools[BodyTools] = [
+      <ChangeClotheColor
+        key={ToolsIndices.SubTools.ChangeColorTool}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
+      <HairTool
+        key={ToolsIndices.SubTools.HairColorTool}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
+    ];
+    this.tools[FilterTools] = [
+      <GlitchFilter
+        key={ToolsIndices.SubTools.GlitchFilter}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
+      <CircleFilter
+        key={ToolsIndices.SubTools.CirclesFilter}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
+    ];
   }
 
   render() {
@@ -70,20 +89,20 @@ export class SubTools extends Component {
     if (res) {
       block = this.tools[tool_index];
       this.tools.last_tool_index = tool_index;
-//      this.setState({sub_tool_index: this.props.sub_tool_default_index})
     } else {
       block = this.tools[this.tools.last_tool_index];
-//      this.setState({sub_tool_index: this.props.sub_tool_default_index})
     }
     return (
       <React.Fragment>
-      <div className="sub-tools">
-        {block.map((tool) => {
-          return tool;
-        })}
-      </div>
-        <InputArea tool_index = { this.state.sub_tool_index } default_tool ={this.tools.sub_tool_default_index} />
-      
+        <div className="sub-tools">
+          {block.map((tool) => {
+            return tool;
+          })}
+        </div>
+        <InputArea
+          tool_index={this.state.sub_tool_index}
+          default_tool={this.tools.sub_tool_default_index}
+        />
       </React.Fragment>
     );
   }
