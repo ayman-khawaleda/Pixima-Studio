@@ -6,25 +6,37 @@ import {
 import { MainTools } from "../Components/main_tools/main_tool_button";
 import { SubTools } from "./sub_tools/sub_tool_buttons.jsx";
 import ImageArea from "./ImageArea";
+
 export class Body extends Component {
   state = {
     Current: 0,
-    DefaultSubTool:7
+    DefaultSubTool: 7,
+    hasImage: true,
   };
   setCurrentToolIndex = (index) => {
     this.setState({ Current: index });
   };
   setDefaultSubToolIndex = (index) => {
-    this.setState({DefaultSubTool:index});
+    this.setState({ DefaultSubTool: index });
+  };
+
+  setHasImage = (hasImage) => {
+    this.setState({ hasImage })
   }
   render() {
+    const imageBlock = this.state.hasImage ? <ImageArea /> : <UploadArea setHasImage={this.setHasImage}/>;
     return (
       <React.Fragment>
-        <MainTools onClick={this.setCurrentToolIndex} setDefault={this.setDefaultSubToolIndex} />
-        {/*<UploadArea />*/}
-        <ImageArea />
-        <UserTools onClick={this.setCurrentToolIndex}/>
-        <SubTools tool_index={this.state.Current} sub_tool_default_index={this.state.DefaultSubTool}/>
+        <MainTools
+          onClick={this.setCurrentToolIndex}
+          setDefault={this.setDefaultSubToolIndex}
+        />
+        {imageBlock}
+        <UserTools onClick={this.setCurrentToolIndex} />
+        <SubTools
+          tool_index={this.state.Current}
+          sub_tool_default_index={this.state.DefaultSubTool}
+        />
       </React.Fragment>
     );
   }
