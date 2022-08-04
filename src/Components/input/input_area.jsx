@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import "../../Css/input_area.css"
 import { Slider, IconButton } from '@mui/material';
-import { Check } from '@mui/icons-material';
+import { AutoFixHigh } from '@mui/icons-material';
 export class InputArea extends Component {
     state = {  } 
     render() { 
@@ -13,7 +13,7 @@ export class InputArea extends Component {
             component="label"
             onClick={null}
           >
-            <Check className="check"/>
+            <AutoFixHigh className="check"/>
             </IconButton>
             </div>
         );

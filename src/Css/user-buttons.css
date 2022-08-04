@@ -1,7 +1,8 @@
 .donwloadIcon,
 .undoIcon,
 .redoIcon,
-.compareIcon {
+.compareIcon,
+.zoomIcon {
     color: white;
     transform: scale(1.1);
     display: inline;
@@ -14,7 +15,8 @@
 .donwloadIcon:hover,
 .undoIcon:hover,
 .redoIcon:hover,
-.compareIcon:hover {
+.compareIcon:hover,
+.zoomIcon:hover {
     opacity: 1;
 }
 
@@ -62,7 +64,7 @@
     background-color: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(25px);
     position: fixed;
-    left: 85%;
+    left: 80%;
     top: 1%;
     display: inline-block;
     min-height: fit-content;

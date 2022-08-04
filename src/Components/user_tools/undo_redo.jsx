@@ -9,7 +9,7 @@ export class UndoButton extends Component {
 
   };
   UndoOnClickEvent = e => {
-    this.props.onClick(ToolsIndices.UndoTool)
+    this.props.onClick(ToolsIndices.UserTool.UndoTool)
   }
   render() {
     return (
@@ -29,7 +29,7 @@ export class UndoButton extends Component {
 export class RedoButton extends Component {
   state = {};
   UndoOnClickEvent = () => {
-    this.props.onClick(ToolsIndices.RedoTool)
+    this.props.onClick(ToolsIndices.UserTool.RedoTool)
   };
   render() {
     return (

@@ -7,11 +7,13 @@ import {
 import { CompareButton } from "./compare";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../Css/user-buttons.css"
+import { ZoomButton } from "./zoom_tool";
 
 export class UserTools extends Component {
   render() {
     return (
       <div className="user-tools">
+        <ZoomButton onClick={this.props.onClick} />
         <CompareButton onClick={this.props.onClick} />
         <UndoButton onClick={this.props.onClick} />
         <RedoButton onClick={this.props.onClick} />

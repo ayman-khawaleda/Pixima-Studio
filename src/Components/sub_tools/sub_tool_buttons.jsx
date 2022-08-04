@@ -55,8 +55,8 @@ export class SubTools extends Component {
       <SmileTool key={ToolsIndices.SubTools.SmileTool} onClick={this.updateCurrentSubToolsEvent} />,
       <SmoothTool key={ToolsIndices.SubTools.SmoothFaceTool} onClick={this.updateCurrentSubToolsEvent} />,
       <ColorLipsTool key={ToolsIndices.SubTools.ColorLipsTool} onClick={this.updateCurrentSubToolsEvent} />,
-      <ColorEyeTool key={ToolsIndices.SubTools.ColorEyeTool} onClick={this.updateCurrentSubToolsEvent} />,
-      <ResizeEyeTool key={ToolsIndices.SubTools.ResizeEyeTool} onClick={this.updateCurrentSubToolsEvent} />,
+      <ColorEyeTool key={ToolsIndices.SubTools.EyeColorTool} onClick={this.updateCurrentSubToolsEvent} />,
+      <ResizeEyeTool key={ToolsIndices.SubTools.EyeResizeTool} onClick={this.updateCurrentSubToolsEvent} />,
       <NoseResizeTool key={ToolsIndices.SubTools.NoseResizeTool}onClick={this.updateCurrentSubToolsEvent} />,
       <TeethTool key={ToolsIndices.SubTools.WhiteTeethTool}onClick={this.updateCurrentSubToolsEvent} />,
     ];

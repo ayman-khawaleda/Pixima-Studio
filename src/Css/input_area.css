@@ -4,7 +4,7 @@
     border-width: 2px;
     border-color: rgba(0, 0, 0, 0.72);
     border-style: solid;
-    border-radius: 25px;
+    border-radius: 25px 0px 25px 25px;
     position: fixed;
     left: 80%;
     top: 20%;
@@ -28,7 +28,7 @@
     left:46%;
     opacity: 0.8;
     border: 2px solid white;
-    border-radius: 10px;
+    border-radius: 10px 0px 10px 10px;
 }
 #slider {
     color:white;

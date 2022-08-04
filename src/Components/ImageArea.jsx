@@ -1,5 +1,7 @@
+import { Construction } from "@mui/icons-material";
 import React, { Component } from "react";
 import "../Css/image_area.css";
+import { ToolsIndices } from "../ToolsIndices";
 class ImageArea extends Component {
   state = {
     oldestClick: [0, 0],
@@ -55,7 +57,9 @@ class ImageArea extends Component {
     this.GetCoordinates(ee);
   };
   render() {
-    console.log(this.state);
+    if(this.props.currentActiveTool===ToolsIndices.UserTool.ZoomTool){
+      console.log("Zoom Tool Clicked!! ")
+    }
     return (
       <div className="image-area-div">
         <img

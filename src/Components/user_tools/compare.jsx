@@ -7,7 +7,7 @@ export class CompareButton extends Component {
   state = {};
 
   CompareClickEvent = () => {
-    this.props.onClick(ToolsIndices.CompareTool)
+    this.props.onClick(ToolsIndices.UserTool.CompareTool)
   };
 
   render() {
