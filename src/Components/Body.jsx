@@ -9,22 +9,26 @@ import ImageArea from "./ImageArea";
 
 export class Body extends Component {
   state = {
-    Current: 0,
+    CurrentIndex: 0,
     DefaultSubTool: 7,
     hasImage: true,
   };
   setCurrentToolIndex = (index) => {
-    this.setState({ Current: index });
+    this.setState({ CurrentIndex: index });
   };
   setDefaultSubToolIndex = (index) => {
     this.setState({ DefaultSubTool: index });
   };
 
   setHasImage = (hasImage) => {
-    this.setState({ hasImage })
-  }
+    this.setState({ hasImage });
+  };
   render() {
-    const imageBlock = this.state.hasImage ? <ImageArea /> : <UploadArea setHasImage={this.setHasImage}/>;
+    const imageBlock = this.state.hasImage ? (
+      <ImageArea currentActiveTool={this.state.CurrentIndex} />
+    ) : (
+      <UploadArea setHasImage={this.setHasImage} />
+    );
     return (
       <React.Fragment>
         <MainTools
@@ -34,7 +38,7 @@ export class Body extends Component {
         {imageBlock}
         <UserTools onClick={this.setCurrentToolIndex} />
         <SubTools
-          tool_index={this.state.Current}
+          tool_index={this.state.CurrentIndex}
           sub_tool_default_index={this.state.DefaultSubTool}
         />
       </React.Fragment>
