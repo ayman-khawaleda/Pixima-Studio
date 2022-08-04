@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import "../Css/image_area.css";
 class ImageArea extends Component {
   state = {
-    st: 0,
+    oldestClick: [0, 0],
+    lastClick: [0, 0],
   };
 
   FindPosition(oElement) {
@@ -43,8 +44,10 @@ class ImageArea extends Component {
     PosX = PosX - ImgPos[0];
     PosY = PosY - ImgPos[1];
     this.setState({
-      lasxClickX: PosX * (1 / widthRatio),
-      laxkClickY: PosY * (1 / heightRatio),
+      oldestClick: this.state.lastClick,
+      lastClick: [PosX * (1 / widthRatio), PosY * (1 / heightRatio)].map(
+        (num) => Math.trunc(num)
+      ),
     });
   }
 
@@ -52,6 +55,7 @@ class ImageArea extends Component {
     this.GetCoordinates(ee);
   };
   render() {
+    console.log(this.state);
     return (
       <div className="image-area-div">
         <img
