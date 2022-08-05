@@ -15,6 +15,8 @@
     "bootstrap": "^4.1.1",
     "file-loader": "^6.2.0",
     "react": "^18.2.0",
+    "react-compare-image": "^3.1.0",
+    "react-compare-image-slider": "^0.1.15",
     "react-dom": "^18.2.0",
     "react-favicon": "^1.0.1",
     "react-scripts": "5.0.1",

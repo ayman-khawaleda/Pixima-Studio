@@ -10,13 +10,20 @@
     border-radius: 10px;
     text-align: center;
 }
+
 #image-area {
     height: 100%;
     object-fit: contain;
 }
+
 .react-transform-wrapper {
     max-width: 74vw;
     max-height: 85vh;
     border-radius: 10px;
 
+}
+compare-image-slider img{
+    max-width: fit-content;
+    max-height: 84.5vh;
+    border-radius: 0px;
 }

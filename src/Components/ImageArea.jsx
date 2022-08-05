@@ -1,11 +1,18 @@
 import React, { Component } from "react";
-import { TransformComponent, TransformWrapper } from "@pronestor/react-zoom-pan-pinch";
+import {
+  TransformComponent,
+  TransformWrapper,
+} from "@pronestor/react-zoom-pan-pinch";
 import "../Css/image_area.css";
 import { ToolsIndices } from "../ToolsIndices";
+import {ReactCompareImageSlider} from "react-compare-image-slider";
+
 class ImageArea extends Component {
   state = {
     oldestClick: [0, 0],
     lastClick: [0, 0],
+    firstImageUrl: require("../images/man.jpg"),
+    lastImageUrl: require("../images/40.jpg"),
   };
 
   FindPosition(oElement) {
@@ -57,22 +64,32 @@ class ImageArea extends Component {
     this.GetCoordinates(ee);
   };
   render() {
-    let image_block = 0
-    if(this.props.currentActiveTool===ToolsIndices.UserTool.ZoomTool){
+    let image_block = 0;
+    if (this.props.currentActiveTool === ToolsIndices.UserTool.CompareTool) {
       image_block = (
-          <TransformWrapper className>
-            <TransformComponent>
-              <img
-                src={require("../images/man.jpg")}
-                id="image-area"
-                alt="CurrentImage"
-              />
-            </TransformComponent>
-          </TransformWrapper>
+        <ReactCompareImageSlider
+          className="container"
+          leftImage={this.state.firstImageUrl}
+          rightImage={this.state.lastImageUrl}
+        />
       );
-    }
-    else{
-      image_block = <img
+    } else if (
+      this.props.currentActiveTool === ToolsIndices.UserTool.ZoomTool
+    ) {
+      image_block = (
+        <TransformWrapper className>
+          <TransformComponent>
+            <img
+              src={require("../images/man.jpg")}
+              id="image-area"
+              alt="CurrentImage"
+            />
+          </TransformComponent>
+        </TransformWrapper>
+      );
+    } else {
+      image_block = (
+        <img
           src={require("../images/man.jpg")}
           id="image-area"
           alt="CurrentImage"
@@ -80,12 +97,9 @@ class ImageArea extends Component {
             this.OnclickEvent(event);
           }}
         />
+      );
     }
-    return (
-      <div className="image-area-div">
-        {image_block}
-      </div>
-    );
+    return <div className="image-area-div">{image_block}</div>;
   }
 }
 
