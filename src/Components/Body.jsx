@@ -6,7 +6,7 @@ import {
 import { MainTools } from "../Components/main_tools/main_tool_button";
 import { SubTools } from "./sub_tools/sub_tool_buttons.jsx";
 import ImageArea from "./ImageArea";
-
+import "../Css/index.css"
 export class Body extends Component {
   state = {
     CurrentIndex: 0,
