@@ -2,8 +2,8 @@
     background-color: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(25px);
     position: fixed;
-    width: 960px;
-    height: 600px;
+    width: 74vw;
+    height: 85vh;
     left: 5%;
     top: 5%;
     border: 2px solid rgba(0, 0, 0, 0.72);

@@ -1,4 +1,3 @@
-import { Construction } from "@mui/icons-material";
 import React, { Component } from "react";
 import "../Css/image_area.css";
 import { ToolsIndices } from "../ToolsIndices";
@@ -58,7 +57,7 @@ class ImageArea extends Component {
   };
   render() {
     if(this.props.currentActiveTool===ToolsIndices.UserTool.ZoomTool){
-      console.log("Zoom Tool Clicked!! ")
+      console.log("Zoom Tool Clicked!!")
     }
     return (
       <div className="image-area-div">
