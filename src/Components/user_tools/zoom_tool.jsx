@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import IconButton from "@mui/material/IconButton";
-import "../../Css/user-buttons.css"
+import "../../Css/user-buttons.css";
 import { ToolsIndices } from "../../ToolsIndices";
-import { ZoomIn } from "@mui/icons-material"
+import { ZoomIn } from "@mui/icons-material";
 export class ZoomButton extends Component {
   state = {};
 
   ZoomClickEvent = () => {
-    
-    this.props.onClick(ToolsIndices.UserTool.ZoomTool)
+    this.props.onClick(ToolsIndices.UserTool.ZoomTool);
   };
 
   render() {

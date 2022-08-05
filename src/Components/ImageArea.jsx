@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { TransformComponent, TransformWrapper } from "@pronestor/react-zoom-pan-pinch";
 import "../Css/image_area.css";
 import { ToolsIndices } from "../ToolsIndices";
 class ImageArea extends Component {
@@ -56,19 +57,33 @@ class ImageArea extends Component {
     this.GetCoordinates(ee);
   };
   render() {
+    let image_block = 0
     if(this.props.currentActiveTool===ToolsIndices.UserTool.ZoomTool){
-      console.log("Zoom Tool Clicked!!")
+      image_block = (
+          <TransformWrapper className>
+            <TransformComponent>
+              <img
+                src={require("../images/man.jpg")}
+                id="image-area"
+                alt="CurrentImage"
+              />
+            </TransformComponent>
+          </TransformWrapper>
+      );
     }
-    return (
-      <div className="image-area-div">
-        <img
+    else{
+      image_block = <img
           src={require("../images/man.jpg")}
           id="image-area"
-          alt=""
+          alt="CurrentImage"
           onClick={(event) => {
             this.OnclickEvent(event);
           }}
         />
+    }
+    return (
+      <div className="image-area-div">
+        {image_block}
       </div>
     );
   }

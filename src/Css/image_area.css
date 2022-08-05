@@ -14,3 +14,9 @@
     height: 100%;
     object-fit: contain;
 }
+.react-transform-wrapper {
+    max-width: 74vw;
+    max-height: 85vh;
+    border-radius: 10px;
+
+}
