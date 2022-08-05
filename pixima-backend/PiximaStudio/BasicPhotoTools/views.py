@@ -295,7 +295,7 @@ class ChangeColorToolView(RESTView):
                 )
                 imagepreview_path = changecolor_tool.get_preview()
                 mask_path = changecolor_tool.save_mask()
-                ImageObj = ImageModel.objects.get(id=changecolor_tool["id"].value)
+                ImageObj = ImageModel.objects.get(id=changecolor_serializer["id"].value)
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="ChangeColorTool"
                 ).save()

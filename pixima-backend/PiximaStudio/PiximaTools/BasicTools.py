@@ -387,7 +387,7 @@ class ChangeColorTool(BodyTool):
                 X = IntegerField(required=True, min_value=0)
 
             changecolor_serializer = ChangeColorToolSerializer(data=X.data)
-            if changecolor_serializer.is_valid():
+            if not changecolor_serializer.is_valid():
                 raise RequiredValue("X Value Is Invalid")
 
             X = changecolor_serializer["X"].value
