@@ -68,7 +68,6 @@ class ImageArea extends Component {
     if (this.props.currentActiveTool === ToolsIndices.UserTool.CompareTool) {
       image_block = (
         <ReactCompareImageSlider
-          className="container"
           leftImage={this.state.firstImageUrl}
           rightImage={this.state.lastImageUrl}
         />
@@ -77,7 +76,7 @@ class ImageArea extends Component {
       this.props.currentActiveTool === ToolsIndices.UserTool.ZoomTool
     ) {
       image_block = (
-        <TransformWrapper className>
+        <TransformWrapper>
           <TransformComponent>
             <img
               src={require("../images/man.jpg")}
