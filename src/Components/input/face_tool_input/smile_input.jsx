@@ -11,7 +11,7 @@ export class SmileInput extends Component {
   };
 
   SliderOnChange = (e) => {
-    this.setState({ s: e.target.value });
+    this.setState({ factor: e.target.value });
   };
 
   postToServer = (e) => {
