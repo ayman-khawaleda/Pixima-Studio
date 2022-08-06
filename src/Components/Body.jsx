@@ -45,6 +45,7 @@ export class Body extends Component {
   setCurrentImageIndex = (index) => {
     this.setState({ CurrentImageIndex: index });
   };
+
   getImage(url) {
     try {
       if (this.state.firstUpload) {
@@ -52,10 +53,12 @@ export class Body extends Component {
           firstImageUrl: Server + url,
           lastImageUrl: Server + url,
           firstUpload: false,
+          CurrentImageIndex:0
         });
       } else {
         this.setState({
           lastImageUrl: Server + url,
+          CurrentImageIndex:this.state.CurrentImageIndex+1
         });
       }
     } catch (error) {
@@ -95,14 +98,18 @@ export class Body extends Component {
         <UserTools
           onClick={this.setCurrentToolIndex}
           ImageUrl={this.state.lastImageUrl}
+          ImageIndex={this.state.CurrentImageIndex}
+          setImageIndex={this.setCurrentImageIndex}
         />
         <SubTools
           tool_index={this.state.CurrentIndex}
-          sub_tool_default_index={this.state.DefaultSubTool}
           setImageUrl={this.setImageUrl}
           setCurrentImageIndex={this.setCurrentImageIndex}
           oldClick={this.state.oldClick}
           lastClick={this.state.lastClick}
+          hasImage={this.state.HasImage}
+          directoryID={this.state.DirectoryID}
+          ImageIndex={this.state.CurrentImageIndex}
         />
       </React.Fragment>
     );

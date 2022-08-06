@@ -11,28 +11,53 @@
     display: inline;
     min-width: 20vw;
     min-height: 60vh;
-    
+
 }
 
-#slider {
+#saturation-slider {
     color: white;
-    position: fixed;
-    top:10vh;
+    /* position: fixed;*/
+    top: 15vh;
     transform: scale(0.85);
 }
+
 .check {
-    position:fixed;
-    color:white;
+    position: fixed;
+    color: white;
     transform: scale(1.5);
     top: 80%;
-    left:46%;
+    left: 46%;
     opacity: 0.8;
     border: 2px solid white;
     border-radius: 10px 0px 10px 10px;
 }
-#slider {
-    color:white;
-}
-.check:hover{
+
+.check:hover {
     opacity: 1;
+}
+.hue-value{
+    color: white;
+    position: fixed;
+    top: 25vh;
+    left: 8vw;
+}
+.hue-picker {
+    position: fixed;
+    top: 10vh;
+    left: 0vw;
+    transform: scale(0.9);
+}
+.hue-st{
+    color: white;
+    display: inline;
+    position: fixed;
+    top: 5vh;
+    left: 2%;
+}
+.saturation-st{
+    color: white;
+    display: inline;
+    position: fixed;
+    top: 15vh;
+    left: 2%;
 }

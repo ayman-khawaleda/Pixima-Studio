@@ -1,21 +1,30 @@
-import React, { Component } from 'react';
-import "../../Css/input_area.css"
-import { Slider, IconButton } from '@mui/material';
-import { AutoFixHigh } from '@mui/icons-material';
+import React, { Component } from "react";
+import "../../Css/input_area.css";
+import { ToolsIndices } from "../../ToolsIndices";
+import { ColorEyesInput } from "./face_tool_input/color_eye_input";
 export class InputArea extends Component {
-    state = {  } 
-    render() { 
-        return (
-            <div className='input-area'>
-            <Slider defaultValue={0}  color="secondary" valueLabelDisplay="auto" id="slider"/>
-            <IconButton
-            color="primary"
-            component="label"
-            onClick={null}
-          >
-            <AutoFixHigh className="check"/>
-            </IconButton>
-            </div>
-        );
+  state = {};
+
+  SliderOnChange = (e) => {
+    console.log("Slider: ", e.target.value);
+  };
+  FactoryMethod(){
+    if(this.props.tool_index===ToolsIndices.SubTools.EyeColorTool){
+      return (
+        <ColorEyesInput
+          setImageUrl={this.props.setImageUrl}
+          hasImage={this.props.hasImage}
+          directoryID={this.props.directoryID}
+          ImageIndex={this.props.ImageIndex}
+        />
+      );
     }
+  }
+  render() {
+    return (
+      <div className="input-area">
+        {this.FactoryMethod()}
+      </div>
+    );
+  }
 }

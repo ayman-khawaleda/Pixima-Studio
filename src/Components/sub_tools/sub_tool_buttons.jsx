@@ -28,7 +28,7 @@ export class SubTools extends Component {
     ToolsIndices.MainTool.FilterTools,
   ];
   state = {
-    sub_tool_index: 0,
+    // sub_tool_index: 7,
   };
   tools = {};
 
@@ -121,7 +121,7 @@ export class SubTools extends Component {
   }
 
   passPropsToClickableTools(tool) {
-    if (parseInt(tool.key) === ToolsIndices.SubTools.CropTool) {      
+    if (parseInt(tool.key) === ToolsIndices.SubTools.CropTool) {
       return [
         true,
         <CropTool
@@ -176,7 +176,12 @@ export class SubTools extends Component {
         </div>
         <InputArea
           tool_index={this.state.sub_tool_index}
-          default_tool={this.tools.sub_tool_default_index}
+          setImageUrl={this.props.setImageUrl}
+          oldClick={this.props.oldClick}
+          lastClick={this.props.lastClick}
+          hasImage={this.props.hasImage}
+          directoryID={this.props.directoryID}
+          ImageIndex={this.props.ImageIndex}
         />
       </React.Fragment>
     );

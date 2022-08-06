@@ -6,7 +6,7 @@ import {
 } from "./download_upload_buttons";
 import { CompareButton } from "./compare";
 import "bootstrap/dist/css/bootstrap.css";
-import "../../Css/user-buttons.css"
+import "../../Css/user-buttons.css";
 import { ZoomButton } from "./zoom_tool";
 
 export class UserTools extends Component {
@@ -15,9 +15,18 @@ export class UserTools extends Component {
       <div className="user-tools">
         <ZoomButton onClick={this.props.onClick} />
         <CompareButton onClick={this.props.onClick} />
-        <UndoButton onClick={this.props.onClick} />
-        <RedoButton onClick={this.props.onClick} />
-        <DownloadButton url={this.props.ImageUrl}/>
+        <UndoButton
+          onClick={this.props.onClick}
+          ImageIndex={this.props.ImageIndex}
+          setImageIndex={this.props.setImageIndex}
+        />
+        <RedoButton
+          onClick={this.props.onClick}
+          ImageIndex={this.props.ImageIndex}
+          setImageIndex={this.props.setImageIndex}
+          
+        />
+        <DownloadButton url={this.props.ImageUrl} />
       </div>
     );
   }
