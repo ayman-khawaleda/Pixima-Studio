@@ -7,7 +7,7 @@ import { MainTools } from "../Components/main_tools/main_tool_button";
 import { SubTools } from "./sub_tools/sub_tool_buttons.jsx";
 import ImageArea from "./ImageArea";
 import "../Css/index.css";
-import { Server } from "../Config.js"
+import { Server } from "../Config.js";
 export class Body extends Component {
   state = {
     CurrentIndex: 0,
@@ -18,7 +18,9 @@ export class Body extends Component {
     CurrentImageIndex: -1,
     firstImageUrl: "",
     lastImageUrl: "",
-    firstUpload:true,
+    firstUpload: true,
+    oldClick: [0, 0],
+    lastClick: [0, 0],
   };
   setCurrentToolIndex = (index) => {
     this.setState({ CurrentIndex: index });
@@ -45,29 +47,35 @@ export class Body extends Component {
   };
   getImage(url) {
     try {
-        if (this.state.firstUpload) {
-          this.setState({
-            firstImageUrl: Server + url,
-            lastImageUrl: Server + url,
-            firstUpload: false,
-          });
-        } else {
-          this.setState({
-            lastImageUrl: Server + url,
-          });
-        }
+      if (this.state.firstUpload) {
+        this.setState({
+          firstImageUrl: Server + url,
+          lastImageUrl: Server + url,
+          firstUpload: false,
+        });
+      } else {
+        this.setState({
+          lastImageUrl: Server + url,
+        });
+      }
     } catch (error) {
       alert("Error Code During Fetching Data...ImageArea");
     }
   }
-
+  setMouseClicks = (oldClick, lastClick) => {
+    console.log(oldClick,lastClick)
+    this.setState({
+      oldClick, 
+      lastClick,
+    });
+  };
   render() {
     const imageBlock = this.state.HasImage ? (
       <ImageArea
         currentActiveTool={this.state.CurrentIndex}
         firstImageUrl={this.state.firstImageUrl}
         lastImageUrl={this.state.lastImageUrl}
-        CurrentImageIndex={this.state.CurrentImageIndex}
+        setMouseClicks={this.setMouseClicks}
       />
     ) : (
       <UploadArea
@@ -84,12 +92,17 @@ export class Body extends Component {
           setDefault={this.setDefaultSubToolIndex}
         />
         {imageBlock}
-        <UserTools onClick={this.setCurrentToolIndex} ImageUrl={this.state.lastImageUrl}/>
+        <UserTools
+          onClick={this.setCurrentToolIndex}
+          ImageUrl={this.state.lastImageUrl}
+        />
         <SubTools
           tool_index={this.state.CurrentIndex}
           sub_tool_default_index={this.state.DefaultSubTool}
           setImageUrl={this.setImageUrl}
           setCurrentImageIndex={this.setCurrentImageIndex}
+          oldClick={this.state.oldClick}
+          lastClick={this.state.lastClick}
         />
       </React.Fragment>
     );

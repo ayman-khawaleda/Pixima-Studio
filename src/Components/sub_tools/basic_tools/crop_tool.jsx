@@ -7,7 +7,8 @@ export class CropTool extends Component {
   state = {};
   cropToolClickEvent = () => {
     this.props.onClick(ToolsIndices.SubTools.CropTool)
-
+    console.log(this.props)
+    console.log(this.props)
   };
   render() {
     return (

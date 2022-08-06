@@ -60,6 +60,8 @@ class ImageArea extends Component {
 
   OnclickEvent = (e) => {
     this.GetCoordinates(e);
+    const {oldestClick,lastClick} = this.state
+    this.props.setMouseClicks(oldestClick,lastClick);
   };
 
 

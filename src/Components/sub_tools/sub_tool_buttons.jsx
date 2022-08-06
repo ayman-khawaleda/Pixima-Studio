@@ -38,27 +38,65 @@ export class SubTools extends Component {
 
   constructor() {
     super();
-
     const { BasicTools, FaceTools, BodyTools, FilterTools } =
       ToolsIndices.MainTool;
     this.tools.last_tool_index = 0;
     this.tools.sub_tool_index = 7;
     this.tools[BasicTools] = [
-      <FlipTool key={ToolsIndices.SubTools.FlipTool}onClick={this.updateCurrentSubToolsEvent} />,
-      <RotateTool key={ToolsIndices.SubTools.RotateTool} onClick={this.updateCurrentSubToolsEvent} />,
-      <CropTool key={ToolsIndices.SubTools.CropTool} onClick={this.updateCurrentSubToolsEvent} />,
-      <ResizeTool key={ToolsIndices.SubTools.ResizeTool} onClick={this.updateCurrentSubToolsEvent} />,
-      <ContrastTool key={ToolsIndices.SubTools.ContrastTool} onClick={this.updateCurrentSubToolsEvent} />,
-      <SaturationTool key={ToolsIndices.SubTools.SaturationTool} onClick={this.updateCurrentSubToolsEvent} />,
+      <FlipTool
+        key={ToolsIndices.SubTools.FlipTool}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
+      <RotateTool
+        key={ToolsIndices.SubTools.RotateTool}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
+      <CropTool
+        key={ToolsIndices.SubTools.CropTool}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
+      <ResizeTool
+        key={ToolsIndices.SubTools.ResizeTool}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
+      <ContrastTool
+        key={ToolsIndices.SubTools.ContrastTool}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
+      <SaturationTool
+        key={ToolsIndices.SubTools.SaturationTool}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
     ];
     this.tools[FaceTools] = [
-      <SmileTool key={ToolsIndices.SubTools.SmileTool} onClick={this.updateCurrentSubToolsEvent} />,
-      <SmoothTool key={ToolsIndices.SubTools.SmoothFaceTool} onClick={this.updateCurrentSubToolsEvent} />,
-      <ColorLipsTool key={ToolsIndices.SubTools.ColorLipsTool} onClick={this.updateCurrentSubToolsEvent} />,
-      <ColorEyeTool key={ToolsIndices.SubTools.EyeColorTool} onClick={this.updateCurrentSubToolsEvent} />,
-      <ResizeEyeTool key={ToolsIndices.SubTools.EyeResizeTool} onClick={this.updateCurrentSubToolsEvent} />,
-      <NoseResizeTool key={ToolsIndices.SubTools.NoseResizeTool}onClick={this.updateCurrentSubToolsEvent} />,
-      <TeethTool key={ToolsIndices.SubTools.WhiteTeethTool}onClick={this.updateCurrentSubToolsEvent} />,
+      <SmileTool
+        key={ToolsIndices.SubTools.SmileTool}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
+      <SmoothTool
+        key={ToolsIndices.SubTools.SmoothFaceTool}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
+      <ColorLipsTool
+        key={ToolsIndices.SubTools.ColorLipsTool}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
+      <ColorEyeTool
+        key={ToolsIndices.SubTools.EyeColorTool}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
+      <ResizeEyeTool
+        key={ToolsIndices.SubTools.EyeResizeTool}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
+      <NoseResizeTool
+        key={ToolsIndices.SubTools.NoseResizeTool}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
+      <TeethTool
+        key={ToolsIndices.SubTools.WhiteTeethTool}
+        onClick={this.updateCurrentSubToolsEvent}
+      />,
     ];
     this.tools[BodyTools] = [
       <ChangeClotheColor
@@ -82,6 +120,42 @@ export class SubTools extends Component {
     ];
   }
 
+  passPropsToClickableTools(tool) {
+    if (parseInt(tool.key) === ToolsIndices.SubTools.CropTool) {      
+      return [
+        true,
+        <CropTool
+          key={ToolsIndices.SubTools.CropTool}
+          onClick={this.updateCurrentSubToolsEvent}
+          oldClick={this.props.oldClick}
+          lastClick={this.props.lastClick}
+        />,
+      ];
+    }
+    if (parseInt(tool.key) === ToolsIndices.SubTools.CirclesFilter) {
+      return [
+        true,
+        <CircleFilter
+          key={ToolsIndices.SubTools.CirclesFilter}
+          onClick={this.updateCurrentSubToolsEvent}
+          oldClick={this.props.oldClick}
+          lastClick={this.props.lastClick}
+        />,
+      ];
+    }
+    if (parseInt(tool.key) === ToolsIndices.SubTools.ChangeColorTool) {
+      return [
+        true,
+        <ChangeClotheColor
+          key={ToolsIndices.SubTools.ChangeColorTool}
+          onClick={this.updateCurrentSubToolsEvent}
+          oldClick={this.props.oldClick}
+          lastClick={this.props.lastClick}
+        />,
+      ];
+    }
+    return [false, false];
+  }
   render() {
     const { tool_index } = this.props;
     const res = this.toolsIndices.includes(tool_index);
@@ -96,7 +170,8 @@ export class SubTools extends Component {
       <React.Fragment>
         <div className="sub-tools">
           {block.map((tool) => {
-            return tool;
+            const [res, subtool] = this.passPropsToClickableTools(tool);
+            return res ? subtool : tool;
           })}
         </div>
         <InputArea
