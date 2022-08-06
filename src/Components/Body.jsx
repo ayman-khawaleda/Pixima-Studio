@@ -6,28 +6,76 @@ import {
 import { MainTools } from "../Components/main_tools/main_tool_button";
 import { SubTools } from "./sub_tools/sub_tool_buttons.jsx";
 import ImageArea from "./ImageArea";
-import "../Css/index.css"
+import "../Css/index.css";
+import { Server } from "../Config.js"
 export class Body extends Component {
   state = {
     CurrentIndex: 0,
     DefaultSubTool: 7,
-    hasImage: true,
+    HasImage: false,
+    CurrentUrl: "",
+    DirectoryID: "",
+    CurrentImageIndex: -1,
+    firstImageUrl: "",
+    lastImageUrl: "",
+    firstUpload:true,
   };
   setCurrentToolIndex = (index) => {
     this.setState({ CurrentIndex: index });
   };
+
   setDefaultSubToolIndex = (index) => {
     this.setState({ DefaultSubTool: index });
   };
 
-  setHasImage = (hasImage) => {
-    this.setState({ hasImage });
+  setHasImageEvent = (hasImage) => {
+    this.setState({ HasImage: hasImage });
   };
+
+  setImageUrl = (url) => {
+    this.setState({ CurrentUrl: url });
+    this.getImage(url);
+  };
+
+  setDirectoryID = (id) => {
+    this.setState({ DirectoryID: id });
+  };
+  setCurrentImageIndex = (index) => {
+    this.setState({ CurrentImageIndex: index });
+  };
+  getImage(url) {
+    try {
+        if (this.state.firstUpload) {
+          this.setState({
+            firstImageUrl: Server + url,
+            lastImageUrl: Server + url,
+            firstUpload: false,
+          });
+        } else {
+          this.setState({
+            lastImageUrl: Server + url,
+          });
+        }
+    } catch (error) {
+      alert("Error Code During Fetching Data...ImageArea");
+    }
+  }
+
   render() {
-    const imageBlock = this.state.hasImage ? (
-      <ImageArea currentActiveTool={this.state.CurrentIndex} />
+    const imageBlock = this.state.HasImage ? (
+      <ImageArea
+        currentActiveTool={this.state.CurrentIndex}
+        firstImageUrl={this.state.firstImageUrl}
+        lastImageUrl={this.state.lastImageUrl}
+        CurrentImageIndex={this.state.CurrentImageIndex}
+      />
     ) : (
-      <UploadArea setHasImage={this.setHasImage} />
+      <UploadArea
+        setHasImage={this.setHasImageEvent}
+        setImageUrl={this.setImageUrl}
+        setDirectoryID={this.setDirectoryID}
+        setCurrentImageIndex={this.setCurrentImageIndex}
+      />
     );
     return (
       <React.Fragment>
@@ -36,10 +84,12 @@ export class Body extends Component {
           setDefault={this.setDefaultSubToolIndex}
         />
         {imageBlock}
-        <UserTools onClick={this.setCurrentToolIndex} />
+        <UserTools onClick={this.setCurrentToolIndex} ImageUrl={this.state.lastImageUrl}/>
         <SubTools
           tool_index={this.state.CurrentIndex}
           sub_tool_default_index={this.state.DefaultSubTool}
+          setImageUrl={this.setImageUrl}
+          setCurrentImageIndex={this.setCurrentImageIndex}
         />
       </React.Fragment>
     );

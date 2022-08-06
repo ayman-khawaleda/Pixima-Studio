@@ -5,14 +5,12 @@ import {
 } from "@pronestor/react-zoom-pan-pinch";
 import "../Css/image_area.css";
 import { ToolsIndices } from "../ToolsIndices";
-import {ReactCompareImageSlider} from "react-compare-image-slider";
+import { ReactCompareImageSlider } from "react-compare-image-slider";
 
 class ImageArea extends Component {
   state = {
     oldestClick: [0, 0],
     lastClick: [0, 0],
-    firstImageUrl: require("../images/man.jpg"),
-    lastImageUrl: require("../images/40.jpg"),
   };
 
   FindPosition(oElement) {
@@ -60,16 +58,18 @@ class ImageArea extends Component {
     });
   }
 
-  OnclickEvent = (ee) => {
-    this.GetCoordinates(ee);
+  OnclickEvent = (e) => {
+    this.GetCoordinates(e);
   };
+
+
   render() {
     let image_block = 0;
     if (this.props.currentActiveTool === ToolsIndices.UserTool.CompareTool) {
       image_block = (
         <ReactCompareImageSlider
-          leftImage={this.state.firstImageUrl}
-          rightImage={this.state.lastImageUrl}
+          leftImage={this.props.firstImageUrl}
+          rightImage={this.props.lastImageUrl}
         />
       );
     } else if (
@@ -79,7 +79,7 @@ class ImageArea extends Component {
         <TransformWrapper>
           <TransformComponent>
             <img
-              src={require("../images/man.jpg")}
+              src={this.props.lastImageUrl}
               id="image-area"
               alt="CurrentImage"
             />
@@ -89,12 +89,10 @@ class ImageArea extends Component {
     } else {
       image_block = (
         <img
-          src={require("../images/man.jpg")}
+          src={this.props.lastImageUrl}
           id="image-area"
           alt="CurrentImage"
-          onClick={(event) => {
-            this.OnclickEvent(event);
-          }}
+          onClick={this.OnclickEvent}
         />
       );
     }

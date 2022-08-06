@@ -17,7 +17,7 @@ export class UserTools extends Component {
         <CompareButton onClick={this.props.onClick} />
         <UndoButton onClick={this.props.onClick} />
         <RedoButton onClick={this.props.onClick} />
-        <DownloadButton />
+        <DownloadButton url={this.props.ImageUrl}/>
       </div>
     );
   }
@@ -25,6 +25,6 @@ export class UserTools extends Component {
 
 export class UploadArea extends Component {
   render() {
-    return <UploadButton />;
+    return <UploadButton {...this.props} />;
   }
 }
