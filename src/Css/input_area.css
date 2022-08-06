@@ -11,7 +11,6 @@
     display: inline;
     min-width: 20vw;
     min-height: 60vh;
-
 }
 
 #saturation-slider {
@@ -35,29 +34,57 @@
 .check:hover {
     opacity: 1;
 }
-.hue-value{
+
+.hue-value {
     color: white;
     position: fixed;
     top: 25vh;
     left: 8vw;
 }
+
 .hue-picker {
     position: fixed;
     top: 10vh;
     left: 0vw;
     transform: scale(0.9);
 }
-.hue-st{
+
+.hue-st {
     color: white;
     display: inline;
     position: fixed;
     top: 5vh;
     left: 2%;
 }
-.saturation-st{
+
+.saturation-st {
     color: white;
     display: inline;
     position: fixed;
     top: 15vh;
     left: 2%;
+}
+
+.factor-st {
+    color: white;
+    display: inline;
+    position: fixed;
+    top: 5vh;
+    left: 2%;
+}
+
+#factor-slider {
+    color: white;
+    display: inline;
+    position: fixed;
+    transform: scale(0.85);
+    top: 10vh;
+    left: 2%;
+}
+
+.factor-value{
+    color: white;
+    position: fixed;
+    top: 15vh;
+    left: 8vw;
 }
