@@ -21,7 +21,7 @@ export class ColorEyesInput extends Component {
   postToServer = (e) => {
     if (!this.props.hasImage) {
       alert("Image Required");
-      // return
+      return
     }
     const id = this.props.directoryID;
     const color = [parseInt(this.state.h / 2)];
