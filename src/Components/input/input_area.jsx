@@ -3,6 +3,7 @@ import "../../Css/input_area.css";
 import { ToolsIndices } from "../../ToolsIndices";
 import { ColorEyesInput } from "./face_tool_input/color_eye_input";
 import { ColorLipsInput } from "./face_tool_input/color_lips_input"
+import { ResizeEyeInput } from "./face_tool_input/resize_eye_input";
 import { SmileInput } from "./face_tool_input/smile_input";
 export class InputArea extends Component {
   state = {};
@@ -10,7 +11,7 @@ export class InputArea extends Component {
   SliderOnChange = (e) => {
     console.log("Slider: ", e.target.value);
   };
-  
+
   FactoryMethod(){
     if(this.props.tool_index===ToolsIndices.SubTools.EyeColorTool){
       return (
@@ -35,6 +36,16 @@ export class InputArea extends Component {
     if (this.props.tool_index === ToolsIndices.SubTools.SmileTool) {
       return (
         <SmileInput
+          setImageUrl={this.props.setImageUrl}
+          hasImage={this.props.hasImage}
+          directoryID={this.props.directoryID}
+          ImageIndex={this.props.ImageIndex}
+        />
+      );
+    }
+    if (this.props.tool_index === ToolsIndices.SubTools.EyeResizeTool) {
+      return (
+        <ResizeEyeInput
           setImageUrl={this.props.setImageUrl}
           hasImage={this.props.hasImage}
           directoryID={this.props.directoryID}

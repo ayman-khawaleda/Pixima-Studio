@@ -88,3 +88,28 @@
     top: 15vh;
     left: 8vw;
 }
+
+
+.radius-st {
+    color: white;
+    display: inline;
+    position: fixed;
+    top: 20vh;
+    left: 2%;
+}
+
+#radius-slider {
+    color: white;
+    display: inline;
+    position: fixed;
+    transform: scale(0.85);
+    top: 25vh;
+    left: 2%;
+}
+
+.radius-value {
+    color: white;
+    position: fixed;
+    top: 30vh;
+    left: 8vw;
+}
