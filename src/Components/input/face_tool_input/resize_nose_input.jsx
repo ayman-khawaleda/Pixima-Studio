@@ -7,7 +7,7 @@ import { Server } from "../../../Config";
 
 export class ResizeNoseInput extends Component {
   state = {
-    factor: 1.1,
+    factor: 0.95,
     radius: 75,
   };
 
@@ -55,7 +55,7 @@ export class ResizeNoseInput extends Component {
       <React.Fragment>
         <p className="factor-st">Factor</p>
         <Slider
-          defaultValue={1.1}
+          defaultValue={0.95}
           color="secondary"
           valueLabelDisplay="auto"
           id="factor-slider"
