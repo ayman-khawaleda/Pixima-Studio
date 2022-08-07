@@ -12,7 +12,9 @@ import { WhiteTeethInput } from "./face_tool_input/white_teeth_input";
 import { ColorToolInput } from "./body_tool_inputs/color_tool_input";
 import { GlitchFilterInput } from "./filters_tool_input/glitch_filter_input";
 import { CirclesFilterInput } from "./filters_tool_input/circles_filter_input";
-import { FlipInput } from "./basic_tool_inputs/flip";
+import { FlipInput } from "./basic_tool_inputs/flip_input";
+import { ContrastInput } from "./basic_tool_inputs/contrast_input";
+import { SaturationInput } from "./basic_tool_inputs/saturation_input";
 export class InputArea extends Component {
   state = {};
 
@@ -131,6 +133,26 @@ export class InputArea extends Component {
     if (this.props.tool_index === ToolsIndices.SubTools.FlipTool) {
       return (
         <FlipInput
+          setImageUrl={this.props.setImageUrl}
+          hasImage={this.props.hasImage}
+          directoryID={this.props.directoryID}
+          ImageIndex={this.props.ImageIndex}
+        />
+      );
+    }
+    if (this.props.tool_index === ToolsIndices.SubTools.ContrastTool) {
+      return (
+        <ContrastInput
+          setImageUrl={this.props.setImageUrl}
+          hasImage={this.props.hasImage}
+          directoryID={this.props.directoryID}
+          ImageIndex={this.props.ImageIndex}
+        />
+      );
+    }
+    if (this.props.tool_index === ToolsIndices.SubTools.SaturationTool) {
+      return (
+        <SaturationInput
           setImageUrl={this.props.setImageUrl}
           hasImage={this.props.hasImage}
           directoryID={this.props.directoryID}
