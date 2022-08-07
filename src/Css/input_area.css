@@ -97,7 +97,7 @@
 
 .radius-st,
 .brightness-st,
-.kernal-st{
+.kernal-st {
     color: white;
     display: inline;
     position: fixed;
@@ -124,7 +124,8 @@
     top: 30vh;
     left: 8vw;
 }
-.step-st{
+
+.step-st {
     color: white;
     display: inline;
     position: fixed;
@@ -132,6 +133,7 @@
     left: 2%;
 
 }
+
 .density-st {
     color: white;
     display: inline;
@@ -149,11 +151,45 @@
     left: 2%;
 }
 
-#density-slider{
+#density-slider {
     color: white;
     display: inline;
     position: fixed;
     transform: scale(0.85);
     top: 30vh;
     left: 2%;
+}
+
+.face-key-st {
+    color: white;
+    display: inline;
+    position: fixed;
+    top: 20vh;
+    left: 2%;
+}
+
+.select-list {
+    position: fixed;
+    top: 15vh;
+    left: 25%;
+    width: 10vw;
+    transform: scale(0.9);
+}
+
+.circle-radius-st {
+    color: white;
+    display: inline;
+    position: fixed;
+    top: 5vh;
+    left: 2%;
+}
+
+#circle-radius-slider {
+    color: white;
+    display: inline;
+    position: fixed;
+    transform: scale(0.85);
+    top: 10vh;
+    left: 2%;
+
 }

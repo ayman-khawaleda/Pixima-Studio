@@ -3,19 +3,20 @@ import "../../Css/input_area.css";
 import { ToolsIndices } from "../../ToolsIndices";
 import { ColorHairInput } from "./body_tool_inputs/hair_input";
 import { ColorEyesInput } from "./face_tool_input/color_eye_input";
-import { ColorLipsInput } from "./face_tool_input/color_lips_input"
+import { ColorLipsInput } from "./face_tool_input/color_lips_input";
 import { ResizeEyeInput } from "./face_tool_input/resize_eye_input";
 import { ResizeNoseInput } from "./face_tool_input/resize_nose_input";
 import { SmileInput } from "./face_tool_input/smile_input";
 import { SmoothFaceInput } from "./face_tool_input/smooth_face_input";
 import { WhiteTeethInput } from "./face_tool_input/white_teeth_input";
-import { ColorToolInput } from "./body_tool_inputs/color_tool_input" 
+import { ColorToolInput } from "./body_tool_inputs/color_tool_input";
 import { GlitchFilterInput } from "./filters_tool_input/glitch_filter_input";
+import { CirclesFilterInput } from "./filters_tool_input/circles_filter_input";
 export class InputArea extends Component {
   state = {};
 
-  FactoryMethod(){
-    if(this.props.tool_index===ToolsIndices.SubTools.EyeColorTool){
+  FactoryMethod() {
+    if (this.props.tool_index === ToolsIndices.SubTools.EyeColorTool) {
       return (
         <ColorEyesInput
           setImageUrl={this.props.setImageUrl}
@@ -116,12 +117,18 @@ export class InputArea extends Component {
         />
       );
     }
+    if (this.props.tool_index === ToolsIndices.SubTools.CirclesFilter) {
+      return (
+        <CirclesFilterInput
+          setImageUrl={this.props.setImageUrl}
+          hasImage={this.props.hasImage}
+          directoryID={this.props.directoryID}
+          ImageIndex={this.props.ImageIndex}
+        />
+      );
+    }
   }
   render() {
-    return (
-      <div className="input-area">
-        {this.FactoryMethod()}
-      </div>
-    );
+    return <div className="input-area">{this.FactoryMethod()}</div>;
   }
 }
