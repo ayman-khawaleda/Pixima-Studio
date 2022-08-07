@@ -85,7 +85,7 @@ class Tool(ABC):
         if "quality" in kwargs.keys():
             quality = kwargs["quality"]
         else:
-            quality = 90
+            quality = 100
         try:
             sub_path = os.path.join(MEDIA_ROOT, "Images", str(self.directory_id))
             if not os.path.exists(sub_path):
