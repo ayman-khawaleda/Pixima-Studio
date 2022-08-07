@@ -10,6 +10,7 @@ import { SmileInput } from "./face_tool_input/smile_input";
 import { SmoothFaceInput } from "./face_tool_input/smooth_face_input";
 import { WhiteTeethInput } from "./face_tool_input/white_teeth_input";
 import { ColorToolInput } from "./body_tool_inputs/color_tool_input" 
+import { GlitchFilterInput } from "./filters_tool_input/glitch_filter_input";
 export class InputArea extends Component {
   state = {};
 
@@ -102,6 +103,16 @@ export class InputArea extends Component {
           directoryID={this.props.directoryID}
           ImageIndex={this.props.ImageIndex}
           lastMouseClick={this.props.lastClick}
+        />
+      );
+    }
+    if (this.props.tool_index === ToolsIndices.SubTools.GlitchFilter) {
+      return (
+        <GlitchFilterInput
+          setImageUrl={this.props.setImageUrl}
+          hasImage={this.props.hasImage}
+          directoryID={this.props.directoryID}
+          ImageIndex={this.props.ImageIndex}
         />
       );
     }
