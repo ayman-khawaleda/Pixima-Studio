@@ -98,8 +98,10 @@ export class Body extends Component {
         <UserTools
           onClick={this.setCurrentToolIndex}
           ImageUrl={this.state.lastImageUrl}
+          setImageUrl={this.setImageUrl}
           ImageIndex={this.state.CurrentImageIndex}
           setImageIndex={this.setCurrentImageIndex}
+          DirectoryID={this.state.DirectoryID}
         />
         <SubTools
           tool_index={this.state.CurrentIndex}

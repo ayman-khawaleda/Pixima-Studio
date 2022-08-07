@@ -19,6 +19,8 @@ export class UserTools extends Component {
           onClick={this.props.onClick}
           ImageIndex={this.props.ImageIndex}
           setImageIndex={this.props.setImageIndex}
+          setImageUrl={this.props.setImageUrl}
+          DirectoryID={this.props.DirectoryID}
         />
         <RedoButton
           onClick={this.props.onClick}

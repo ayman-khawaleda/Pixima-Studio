@@ -1,27 +1,37 @@
 import React, { Component } from "react";
 import IconButton from "@mui/material/IconButton";
 import { Redo, Undo } from "@mui/icons-material";
-import "../../Css/user-buttons.css"
+import "../../Css/user-buttons.css";
 import { ToolsIndices } from "../../ToolsIndices";
-
+import axios from "axios";
+import { Server } from "../../Config";
 export class UndoButton extends Component {
-  state = {
-
+  state = {};
+  UndoOnClickEvent = (e) => {
+    this.props.onClick(ToolsIndices.UserTool.UndoTool);
+    const formdata = new FormData();
+    formdata.append("id", this.props.DirectoryID);
+    axios
+      .delete(Server + "/api-images", {
+        data: formdata,
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((res) => {
+        if (res.data.code === 200) {
+          this.props.setImageUrl(res.data.Image)
+        }
+      })
+      .catch((e) => console.log(e));
   };
-  UndoOnClickEvent = e => {
-    this.props.onClick(ToolsIndices.UserTool.UndoTool)
-  }
   render() {
     return (
-      
-        <IconButton
-          color="primary"
-          component="label"
-          onClick={this.UndoOnClickEvent}
-        >
-          <Undo className="undoIcon"/>
-        </IconButton>
-      
+      <IconButton
+        color="primary"
+        component="label"
+        onClick={this.UndoOnClickEvent}
+      >
+        <Undo className="undoIcon" />
+      </IconButton>
     );
   }
 }
@@ -29,7 +39,7 @@ export class UndoButton extends Component {
 export class RedoButton extends Component {
   state = {};
   UndoOnClickEvent = () => {
-    this.props.onClick(ToolsIndices.UserTool.RedoTool)
+    this.props.onClick(ToolsIndices.UserTool.RedoTool);
   };
   render() {
     return (
