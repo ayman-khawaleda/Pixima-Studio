@@ -15,7 +15,6 @@ export class CirclesFilterInput extends Component {
     this.setState({ FaceKey: e.value });
   };
   radiusSliderOnChange = (e) => {
-    console.log(e)
     this.setState({ radius: e.target.value });
   };
 
@@ -31,7 +30,7 @@ export class CirclesFilterInput extends Component {
     dataform.append("id", id);
     dataform.append("FaceKey", FaceKey);
     dataform.append("Radius", radius);
-    dataform.append("ImageIndex", 0);
+    // dataform.append("ImageIndex", 0);
     axios
       .post(Server + EndPoints.CirclesFilterToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
