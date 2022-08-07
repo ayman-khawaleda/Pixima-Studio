@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from PiximaStudio.settings import MEDIA_ROOT, MEDIA_URL
+from PiximaStudio.settings import MEDIA_ROOT, MEDIA_URL, PROJECT_DIR
 from skimage.io import imsave, imread
 from PIL import Image
 from uuid import uuid4
@@ -7,9 +7,11 @@ from . import Exceptions
 from Core.models import ImageOperationsModel
 from PiximaTools.Exceptions import ImageNotSaved
 import os
-import cv2 
+import cv2
 import math
 import numpy as np
+
+
 class Tool(ABC):
     @classmethod
     @abstractmethod
@@ -52,8 +54,13 @@ class Tool(ABC):
         return self
 
     def add_image_index(self, index):
-        if index ==-1:
-            index = ImageOperationsModel.objects.filter(image=str(self.directory_id)).count()
+        if index == -1:
+            # index = ImageOperationsModel.objects.filter(image=str(self.directory_id)).count()
+            path = os.path.join(
+                PROJECT_DIR, MEDIA_ROOT, "Images", str(self.directory_id)
+            )
+            index = len(os.listdir(path)) - 1
+            index = 0 if index < 0 else index
         self.image_index = index
         return self
 
@@ -157,7 +164,8 @@ class Tool(ABC):
         y_px = min(math.floor(normalized_y * image_height), image_height - 1)
         return x_px, y_px
 
-class BodyTool(Tool,ABC):
+
+class BodyTool(Tool, ABC):
     @classmethod
     @abstractmethod
     def apply(self, *args, **kwargs):
