@@ -20,3 +20,6 @@ class GetImageSerializer(Serializer):
         instance.id = validated_data.get("id", instance.id)
         instance.save()
         return instance
+
+class DeleteImageSerializer(Serializer):
+    id = UUIDField(format="hex_verbose")
