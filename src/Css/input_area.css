@@ -65,7 +65,8 @@
     left: 2%;
 }
 
-.factor-st {
+.factor-st,
+.teeth-saturation-st {
     color: white;
     display: inline;
     position: fixed;
@@ -73,7 +74,8 @@
     left: 2%;
 }
 
-#factor-slider {
+#factor-slider,
+#teeth-saturation-slider {
     color: white;
     display: inline;
     position: fixed;
@@ -82,7 +84,7 @@
     left: 2%;
 }
 
-.factor-value{
+.factor-value,.teeth-saturation-value{
     color: white;
     position: fixed;
     top: 15vh;
@@ -90,7 +92,8 @@
 }
 
 
-.radius-st {
+.radius-st,
+.brightness-st {
     color: white;
     display: inline;
     position: fixed;
@@ -98,7 +101,8 @@
     left: 2%;
 }
 
-#radius-slider {
+#radius-slider,
+#brightness-slider {
     color: white;
     display: inline;
     position: fixed;
@@ -107,7 +111,8 @@
     left: 2%;
 }
 
-.radius-value {
+.radius-value,
+.brightness-value {
     color: white;
     position: fixed;
     top: 30vh;
