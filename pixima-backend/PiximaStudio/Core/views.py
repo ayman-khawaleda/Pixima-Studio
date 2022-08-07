@@ -35,9 +35,58 @@ class UploadImage(RESTView):
         return self.bad_request(image_serializer.errors)
 
 
-class GetImagesDirectoryId(RESTView):
+class ImagesDirectoryId(RESTView):
 
     parser_classes = [MultiPartParser, FormParser]
+
+    def delete(self, request, format=None):
+        delete_serializer = serializers.DeleteImageSerializer(data=request.data)
+
+        if delete_serializer.is_valid():
+            path = os.path.join(
+                PROJECT_DIR, MEDIA_ROOT, "Images", delete_serializer["id"].value
+            )
+            if os.path.exists(path):
+                ImagesPaths = [
+                    (int(x.split(".")[0]), x.split(".")[1]) for x in os.listdir(path)
+                ]
+                ImagesPaths = sorted(ImagesPaths, key=lambda x: x[0])
+                ImagesPaths = [str(num) + "." + suffix for num, suffix in ImagesPaths]
+                if len(ImagesPaths) == 1:
+                    return self.ok_request(
+                        {
+                            "id": str(delete_serializer["id"].value),
+                            "Image": os.path.join(
+                                MEDIA_URL,
+                                "Images",
+                                delete_serializer["id"].value,
+                                ImagesPaths[0],
+                            ),
+                        }
+                    )
+                else:
+                    removed_image_path = os.path.join(
+                        PROJECT_DIR,
+                        MEDIA_ROOT,
+                        "Images",
+                        delete_serializer["id"].value,
+                        ImagesPaths[-1],
+                    )
+                    image_path = os.path.join(
+                        MEDIA_URL,
+                        "Images",
+                        delete_serializer["id"].value,
+                        ImagesPaths[-2],
+                    )
+                    os.remove(removed_image_path)
+                    return self.ok_request(
+                        {
+                            "id": str(delete_serializer["id"].value),
+                            "Image": image_path,
+                        },
+                    )
+            else:
+                return self.bad_request({"id": ["NOT FOUND"]})
 
     def get(self, request, format=None):
         id_serializer = serializers.GetImageSerializer(data=request.query_params)
