@@ -4,7 +4,7 @@ import { Slider, IconButton } from "@mui/material";
 import { AutoFixHigh } from "@mui/icons-material";
 import Hue from "@uiw/react-color-hue";
 import axios from "axios";
-import { Server } from "../../../Config";
+import { Server, EndPoints } from "../../../Config";
 
 export class ColorLipsInput extends Component {
   state = {
@@ -33,7 +33,7 @@ export class ColorLipsInput extends Component {
     dataform.append("Color", color);
     dataform.append("Saturation", saturation);
     axios
-      .post(Server + "/api-colorlips_tool", dataform, {
+      .post(Server + EndPoints.ColorLipsToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })
       .then((respones) => {

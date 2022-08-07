@@ -3,7 +3,7 @@ import "../../../Css/input_area.css";
 import { Slider, IconButton } from "@mui/material";
 import { AutoFixHigh } from "@mui/icons-material";
 import axios from "axios";
-import { Server } from "../../../Config";
+import { Server, EndPoints } from "../../../Config";
 
 export class SmileInput extends Component {
   state = {
@@ -26,7 +26,7 @@ export class SmileInput extends Component {
     dataform.append("id", id);
     dataform.append("Factor", factor);
     axios
-      .post(Server + "/api-smile_tool", dataform, {
+      .post(Server + EndPoints.SmileToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })
       .then((respones) => {

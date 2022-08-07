@@ -6,13 +6,10 @@ import { ColorLipsInput } from "./face_tool_input/color_lips_input"
 import { ResizeEyeInput } from "./face_tool_input/resize_eye_input";
 import { ResizeNoseInput } from "./face_tool_input/resize_nose_input";
 import { SmileInput } from "./face_tool_input/smile_input";
+import { SmoothFaceInput } from "./face_tool_input/smooth_face_input";
 import { WhiteTeethInput } from "./face_tool_input/white_teeth_input";
 export class InputArea extends Component {
   state = {};
-
-  SliderOnChange = (e) => {
-    console.log("Slider: ", e.target.value);
-  };
 
   FactoryMethod(){
     if(this.props.tool_index===ToolsIndices.SubTools.EyeColorTool){
@@ -68,6 +65,16 @@ export class InputArea extends Component {
     if (this.props.tool_index === ToolsIndices.SubTools.WhiteTeethTool) {
       return (
         <WhiteTeethInput
+          setImageUrl={this.props.setImageUrl}
+          hasImage={this.props.hasImage}
+          directoryID={this.props.directoryID}
+          ImageIndex={this.props.ImageIndex}
+        />
+      );
+    }
+    if (this.props.tool_index === ToolsIndices.SubTools.SmoothFaceTool) {
+      return (
+        <SmoothFaceInput
           setImageUrl={this.props.setImageUrl}
           hasImage={this.props.hasImage}
           directoryID={this.props.directoryID}

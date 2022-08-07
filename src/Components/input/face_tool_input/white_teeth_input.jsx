@@ -3,7 +3,7 @@ import "../../../Css/input_area.css";
 import { Slider, IconButton } from "@mui/material";
 import { AutoFixHigh } from "@mui/icons-material";
 import axios from "axios";
-import { Server } from "../../../Config";
+import { Server,EndPoints } from "../../../Config";
 
 export class WhiteTeethInput extends Component {
   state = {
@@ -31,7 +31,7 @@ export class WhiteTeethInput extends Component {
     dataform.append("Saturation", saturation);
     dataform.append("Brightness", brightness);
     axios
-      .post(Server + "/api-whiteteeth_tool", dataform, {
+      .post(Server + EndPoints.WhiteTeethToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })
       .then((respones) => {

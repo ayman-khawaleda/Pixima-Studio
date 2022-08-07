@@ -4,7 +4,7 @@ import { Slider, IconButton } from "@mui/material";
 import { AutoFixHigh } from "@mui/icons-material";
 import Hue from "@uiw/react-color-hue";
 import axios from "axios";
-import { Server } from "../../../Config";
+import { Server, EndPoints } from "../../../Config";
 export class ColorEyesInput extends Component {
   state = {
     h: 0,
@@ -21,7 +21,7 @@ export class ColorEyesInput extends Component {
   postToServer = (e) => {
     if (!this.props.hasImage) {
       alert("Image Required");
-      return
+      return;
     }
     const id = this.props.directoryID;
     const color = [parseInt(this.state.h / 2)];
@@ -32,18 +32,17 @@ export class ColorEyesInput extends Component {
     dataform.append("Color", color);
     dataform.append("Saturation", saturation);
     axios
-      .post(Server + "/api-coloreyes_tool", dataform, {
+      .post(Server + EndPoints.ColorEyesToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })
       .then((respones) => {
-        if (respones.data.code ===200){
-        const image_url = respones.data.Image
-        // const image_preview = respones.data.ImagePreview
-        // const image_mask = respones.data.Mask
-        this.props.setImageUrl(image_url);
-      }
-        else{
-          console.log(respones)
+        if (respones.data.code === 200) {
+          const image_url = respones.data.Image;
+          // const image_preview = respones.data.ImagePreview
+          // const image_mask = respones.data.Mask
+          this.props.setImageUrl(image_url);
+        } else {
+          console.log(respones);
         }
       })
       .catch((error) => {

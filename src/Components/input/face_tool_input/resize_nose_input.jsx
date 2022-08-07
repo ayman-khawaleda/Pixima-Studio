@@ -3,7 +3,7 @@ import "../../../Css/input_area.css";
 import { Slider, IconButton } from "@mui/material";
 import { AutoFixHigh } from "@mui/icons-material";
 import axios from "axios";
-import { Server } from "../../../Config";
+import { Server, EndPoints } from "../../../Config";
 
 export class ResizeNoseInput extends Component {
   state = {
@@ -31,8 +31,8 @@ export class ResizeNoseInput extends Component {
     dataform.append("Factor", factor);
     dataform.append("Radius", radius);
     axios
-      .post(Server + "/api-resizenose_tool", dataform, {
-        "Content-Type": "multipart/form-data",
+    .post(Server + EndPoints.ResizeNoseToolEndPoint, dataform, {
+    "Content-Type": "multipart/form-data",
       })
       .then((respones) => {
         if (respones.data.code === 200) {

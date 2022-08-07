@@ -93,7 +93,8 @@
 
 
 .radius-st,
-.brightness-st {
+.brightness-st,
+.kernal-st {
     color: white;
     display: inline;
     position: fixed;
@@ -102,7 +103,8 @@
 }
 
 #radius-slider,
-#brightness-slider {
+#brightness-slider,
+#kernal-slider {
     color: white;
     display: inline;
     position: fixed;
@@ -112,7 +114,8 @@
 }
 
 .radius-value,
-.brightness-value {
+.brightness-value,
+.kernal-value {
     color: white;
     position: fixed;
     top: 30vh;

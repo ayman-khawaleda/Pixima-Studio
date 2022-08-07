@@ -3,19 +3,19 @@ import "../../../Css/input_area.css";
 import { Slider, IconButton } from "@mui/material";
 import { AutoFixHigh } from "@mui/icons-material";
 import axios from "axios";
-import { Server, EndPoints } from "../../../Config";
+import { Server , EndPoints} from "../../../Config";
 
-export class ResizeEyeInput extends Component {
+export class SmoothFaceInput extends Component {
   state = {
-    factor: 1.1,
-    radius: 75,
+    kernal: 5,
+    factor: 50,
   };
 
-  SliderOnChange = (e) => {
-    this.setState({ factor: e.target.value });
+  kernalSliderOnChange = (e) => {
+    this.setState({ kernal: e.target.value });
   };
-  radiusSliderOnChange = (e) => {
-    this.setState({ radius: e.target.value });
+  factorSliderOnChange = (e) => {
+    this.setState({ factor: e.target.value });
   };
 
   postToServer = (e) => {
@@ -24,14 +24,15 @@ export class ResizeEyeInput extends Component {
       return;
     }
     const id = this.props.directoryID;
-    const {radius,factor} = this.state;
+    const { kernal, factor } = this.state;
     // const ImageIndex = this.props.ImageIndex
     const dataform = new FormData();
     dataform.append("id", id);
-    dataform.append("Factor", factor);
-    dataform.append("Radius",radius);
+    dataform.append("SigmaX", factor);
+    dataform.append("SigmaY", factor);
+    dataform.append("Kernal", kernal);
     axios
-      .post(Server + EndPoints.ResizeEyesToolEndPoint, dataform, {
+      .post(Server + EndPoints.SmoothFaceToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })
       .then((respones) => {
@@ -55,27 +56,29 @@ export class ResizeEyeInput extends Component {
       <React.Fragment>
         <p className="factor-st">Factor</p>
         <Slider
-          defaultValue={1.1}
+          defaultValue={50}
           color="secondary"
           valueLabelDisplay="auto"
           id="factor-slider"
-          min={0.75}
-          max={2}
-          step={0.01}
-          onChange={this.SliderOnChange}
+          min={0}
+          max={150}
+          onChange={this.factorSliderOnChange}
         />
-        <p className="factor-value">Factor:{this.state.factor}</p>
-        <p className="radius-st">Radius</p>
+        <p className="factor-value">
+          Factor:{this.state.factor}
+        </p>
+        <p className="kernal-st">Kernal</p>
         <Slider
-          defaultValue={75}
+          defaultValue={5}
           color="secondary"
           valueLabelDisplay="auto"
-          id="radius-slider"
-          min={50}
-          max={200}
-          onChange={this.radiusSliderOnChange}
+          id="kernal-slider"
+          min={3}
+          max={31}
+          step={2}
+          onChange={this.kernalSliderOnChange}
         />
-        <p className="radius-value">Radius:{this.state.radius}</p>
+        <p className="kernal-value">Kernal:{this.state.kernal}</p>
         <IconButton
           color="primary"
           component="label"
