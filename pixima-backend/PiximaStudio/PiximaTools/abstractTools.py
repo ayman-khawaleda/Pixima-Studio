@@ -55,12 +55,17 @@ class Tool(ABC):
 
     def add_image_index(self, index):
         if index == -1:
-            # index = ImageOperationsModel.objects.filter(image=str(self.directory_id)).count()
             path = os.path.join(
                 PROJECT_DIR, MEDIA_ROOT, "Images", str(self.directory_id)
             )
-            index = len(os.listdir(path)) - 1
-            index = 0 if index < 0 else index
+            ImagesPath = os.listdir(path)
+            ImageOrderPath = []
+            for path in ImagesPath:
+                sub_path = path.split(f"{os.path.sep}")[-1]
+                number = sub_path.split(".")[0]
+                ImageOrderPath.append((int(number),path))
+            ImageOrderPath = sorted(ImageOrderPath,key=lambda x:x[0])
+            index = ImageOrderPath[-1][0]
         self.image_index = index
         return self
 
@@ -97,7 +102,7 @@ class Tool(ABC):
             sub_path = os.path.join(MEDIA_ROOT, "Images", str(self.directory_id))
             if not os.path.exists(sub_path):
                 os.mkdir(sub_path)
-            self.lastidx = len(os.listdir(sub_path))
+            self.lastidx = ImageOperationsModel.objects.filter(image=str(self.directory_id)).count()+1
             full_path = os.path.join(sub_path, f"{self.lastidx}.jpg")
             imsave(full_path, self.Image, quality=quality)
             image_path = os.path.join(
