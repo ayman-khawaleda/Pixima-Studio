@@ -15,6 +15,7 @@ import { CirclesFilterInput } from "./filters_tool_input/circles_filter_input";
 import { FlipInput } from "./basic_tool_inputs/flip_input";
 import { ContrastInput } from "./basic_tool_inputs/contrast_input";
 import { SaturationInput } from "./basic_tool_inputs/saturation_input";
+import { RotateInput } from "./basic_tool_inputs/rotate_input";
 export class InputArea extends Component {
   state = {};
 
@@ -153,6 +154,15 @@ export class InputArea extends Component {
     if (this.props.tool_index === ToolsIndices.SubTools.SaturationTool) {
       return (
         <SaturationInput
+          setImageUrl={this.props.setImageUrl}
+          hasImage={this.props.hasImage}
+          directoryID={this.props.directoryID}
+          ImageIndex={this.props.ImageIndex}
+        />
+      );
+    }if (this.props.tool_index === ToolsIndices.SubTools.RotateTool) {
+      return (
+        <RotateInput
           setImageUrl={this.props.setImageUrl}
           hasImage={this.props.hasImage}
           directoryID={this.props.directoryID}

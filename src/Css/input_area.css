@@ -68,7 +68,8 @@
 .factor-st,
 .teeth-saturation-st,
 .shift-st,
-.contrast-st {
+.contrast-st,
+.rotate-st {
     color: white;
     display: inline;
     position: fixed;
@@ -79,7 +80,8 @@
 #factor-slider,
 #teeth-saturation-slider,
 #shift-slider,
-#contrast-slider {
+#contrast-slider,
+#rotate-slider {
     color: white;
     display: inline;
     position: fixed;
