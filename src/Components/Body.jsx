@@ -66,7 +66,7 @@ export class Body extends Component {
     }
   }
   setMouseClicks = (oldClick, lastClick) => {
-    console.log(oldClick,lastClick)
+    // console.log(oldClick,lastClick)
     this.setState({
       oldClick, 
       lastClick,
