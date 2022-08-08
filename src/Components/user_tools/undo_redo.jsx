@@ -8,7 +8,7 @@ import { Server } from "../../Config";
 export class UndoButton extends Component {
   state = {};
   UndoOnClickEvent = async (e) => {
-    // this.props.onClick(ToolsIndices.UserTool.UndoTool);
+    this.props.onClick(ToolsIndices.UserTool.UndoTool);
     const formdata = new FormData();
     formdata.append("id", this.props.DirectoryID);
     await axios

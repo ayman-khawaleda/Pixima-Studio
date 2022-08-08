@@ -53,12 +53,10 @@ export class Body extends Component {
           firstImageUrl: Server + url,
           lastImageUrl: Server + url,
           firstUpload: false,
-          CurrentImageIndex:0
         });
       } else {
         this.setState({
           lastImageUrl: Server + url,
-          CurrentImageIndex:this.state.CurrentImageIndex+1
         });
       }
     } catch (error) {

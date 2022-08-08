@@ -11,10 +11,10 @@ export class ResizeInput extends Component {
     newHeight: 0,
   };
   widthOnChange = (e) => {
-    this.setState({ newWidth: e.target.value });
+    this.setState({ newHeight: e.target.value });
   };
   heightOnChange = (e) => {
-    this.setState({ newHeight: e.target.value });
+    this.setState({ newWidth: e.target.value });
   };
 
   postToServer = async (e) => {

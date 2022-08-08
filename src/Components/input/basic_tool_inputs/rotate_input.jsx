@@ -8,11 +8,12 @@ import Select from "react-select";
 
 export class RotateInput extends Component {
   state = {
-    angle: 50,
+    angle: 90,
     mode: "constant",
   };
 
   angleOnChange = (e) => {
+    console.log("Angle: ",e.target.value);
     this.setState({ angle: e.target.value });
   };
   modeOnChange = (e) => {
@@ -61,13 +62,12 @@ export class RotateInput extends Component {
       <React.Fragment>
         <p className="rotate-st">Rotate: </p>
         <Slider
-          defaultValue={90}
           color="secondary"
           valueLabelDisplay="auto"
           id="rotate-slider"
           min={0}
           max={360}
-          onChange={this.SliderOnChange}
+          onChange={this.angleOnChange}
         />
         <Select
           placeholder={"E-Modes"}
