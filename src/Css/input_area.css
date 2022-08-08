@@ -187,6 +187,13 @@
     top: 5vh;
     left: 2%;
 }
+.ratio-select-list{
+    position: fixed;
+    top: 5vh;
+    left: 25%;
+    width: 10vw;
+    transform: scale(0.95);
+}
 
 #circle-radius-slider {
     color: white;

@@ -17,6 +17,7 @@ import { ContrastInput } from "./basic_tool_inputs/contrast_input";
 import { SaturationInput } from "./basic_tool_inputs/saturation_input";
 import { RotateInput } from "./basic_tool_inputs/rotate_input";
 import { ResizeInput } from "./basic_tool_inputs/resize_input";
+import { CropInput } from "./basic_tool_inputs/crop_input";
 export class InputArea extends Component {
   state = {};
 
@@ -179,6 +180,18 @@ export class InputArea extends Component {
           hasImage={this.props.hasImage}
           directoryID={this.props.directoryID}
           ImageIndex={this.props.ImageIndex}
+        />
+      );
+    }
+    if (this.props.tool_index === ToolsIndices.SubTools.CropTool) {
+      return (
+        <CropInput
+          setImageUrl={this.props.setImageUrl}
+          hasImage={this.props.hasImage}
+          directoryID={this.props.directoryID}
+          ImageIndex={this.props.ImageIndex}
+          secondLastMouseClick={this.props.oldClick}
+          lastMouseClick={this.props.lastClick}
         />
       );
     }
