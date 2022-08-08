@@ -16,6 +16,7 @@ import { FlipInput } from "./basic_tool_inputs/flip_input";
 import { ContrastInput } from "./basic_tool_inputs/contrast_input";
 import { SaturationInput } from "./basic_tool_inputs/saturation_input";
 import { RotateInput } from "./basic_tool_inputs/rotate_input";
+import { ResizeInput } from "./basic_tool_inputs/resize_input";
 export class InputArea extends Component {
   state = {};
 
@@ -160,9 +161,20 @@ export class InputArea extends Component {
           ImageIndex={this.props.ImageIndex}
         />
       );
-    }if (this.props.tool_index === ToolsIndices.SubTools.RotateTool) {
+    }
+    if (this.props.tool_index === ToolsIndices.SubTools.RotateTool) {
       return (
         <RotateInput
+          setImageUrl={this.props.setImageUrl}
+          hasImage={this.props.hasImage}
+          directoryID={this.props.directoryID}
+          ImageIndex={this.props.ImageIndex}
+        />
+      );
+    }
+    if (this.props.tool_index === ToolsIndices.SubTools.ResizeTool) {
+      return (
+        <ResizeInput
           setImageUrl={this.props.setImageUrl}
           hasImage={this.props.hasImage}
           directoryID={this.props.directoryID}

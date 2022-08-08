@@ -14,7 +14,7 @@ export class SmileInput extends Component {
     this.setState({ factor: e.target.value });
   };
 
-  postToServer = (e) => {
+  postToServer = async (e) => {
     if (!this.props.hasImage) {
       alert("Image Required");
       return;
@@ -25,7 +25,7 @@ export class SmileInput extends Component {
     const dataform = new FormData();
     dataform.append("id", id);
     dataform.append("Factor", factor);
-    axios
+    await axios
       .post(Server + EndPoints.SmileToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })

@@ -19,7 +19,7 @@ export class ColorLipsInput extends Component {
     this.setState({ ...new_hue });
   };
 
-  postToServer = (e) => {
+  postToServer = async (e) => {
     if (!this.props.hasImage) {
       alert("Image Required");
       return
@@ -32,7 +32,7 @@ export class ColorLipsInput extends Component {
     dataform.append("id", id);
     dataform.append("Color", color);
     dataform.append("Saturation", saturation);
-    axios
+    await axios
       .post(Server + EndPoints.ColorLipsToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })

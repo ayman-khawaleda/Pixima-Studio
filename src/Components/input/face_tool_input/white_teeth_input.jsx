@@ -18,7 +18,7 @@ export class WhiteTeethInput extends Component {
     this.setState({ brightness: e.target.value });
   };
 
-  postToServer = (e) => {
+  postToServer = async (e) => {
     if (!this.props.hasImage) {
       alert("Image Required");
       return;
@@ -30,7 +30,7 @@ export class WhiteTeethInput extends Component {
     dataform.append("id", id);
     dataform.append("Saturation", saturation);
     dataform.append("Brightness", brightness);
-    axios
+    await axios
       .post(Server + EndPoints.WhiteTeethToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })

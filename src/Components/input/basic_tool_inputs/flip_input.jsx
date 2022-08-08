@@ -14,7 +14,7 @@ export class FlipInput extends Component {
     this.setState({ dir: e.value });
   };
 
-  postToServer = (e) => {
+  postToServer = async (e) => {
     if (!this.props.hasImage) {
       alert("Image Required");
       return;
@@ -25,7 +25,7 @@ export class FlipInput extends Component {
     const dataform = new FormData();
     dataform.append("id", id);
     dataform.append("Direction", dir);
-    axios
+    await axios
       .post(Server + EndPoints.FlipToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })

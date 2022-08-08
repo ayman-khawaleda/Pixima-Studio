@@ -19,7 +19,7 @@ export class RotateInput extends Component {
     this.setState({ mode: e.value });
   };
 
-  postToServer = (e) => {
+  postToServer = async (e) => {
     if (!this.props.hasImage) {
       alert("Image Required");
       return;
@@ -31,7 +31,7 @@ export class RotateInput extends Component {
     dataform.append("id", id);
     dataform.append("Angle", angle);
     dataform.append("AreaMode", mode);
-    axios
+    await axios
       .post(Server + EndPoints.RotateToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })

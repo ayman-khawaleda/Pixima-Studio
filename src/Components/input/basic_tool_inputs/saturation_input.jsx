@@ -13,7 +13,7 @@ export class SaturationInput extends Component {
     this.setState({ saturation: e.target.value });
   };
 
-  postToServer = (e) => {
+  postToServer = async (e) => {
     if (!this.props.hasImage) {
       alert("Image Required");
       return;
@@ -24,7 +24,7 @@ export class SaturationInput extends Component {
     const dataform = new FormData();
     dataform.append("id", id);
     dataform.append("Saturation", saturation);
-    axios
+    await axios
       .post(Server + EndPoints.SaturationToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })

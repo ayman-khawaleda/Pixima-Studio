@@ -204,3 +204,17 @@
     top: 20vh;
     left: 2%;
 }
+#width-text{
+    color: black;
+    background-color: rgba(255,255,255, 1);
+    position: fixed;
+    top: 5vh;
+    left: 20%;
+}
+#height-text{
+    color: black;
+    background-color: rgba(255, 255, 255, 1);
+    position: fixed;
+    top: 15vh;
+    left: 20%;
+}

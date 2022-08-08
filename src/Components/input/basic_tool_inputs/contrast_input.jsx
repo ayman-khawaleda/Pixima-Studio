@@ -18,7 +18,7 @@ export class ContrastInput extends Component {
     this.setState({ brightness: e.target.value });
   };
 
-  postToServer = (e) => {
+  postToServer = async (e) => {
     if (!this.props.hasImage) {
       alert("Image Required");
       return;
@@ -30,7 +30,7 @@ export class ContrastInput extends Component {
     dataform.append("id", id);
     dataform.append("Contrast", contrast);
     dataform.append("Brightness", brightness);
-    axios
+    await axios
       .post(Server + EndPoints.ContrastToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })

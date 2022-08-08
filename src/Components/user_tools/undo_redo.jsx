@@ -7,11 +7,11 @@ import axios from "axios";
 import { Server } from "../../Config";
 export class UndoButton extends Component {
   state = {};
-  UndoOnClickEvent = (e) => {
-    this.props.onClick(ToolsIndices.UserTool.UndoTool);
+  UndoOnClickEvent = async (e) => {
+    // this.props.onClick(ToolsIndices.UserTool.UndoTool);
     const formdata = new FormData();
     formdata.append("id", this.props.DirectoryID);
-    axios
+    await axios
       .delete(Server + "/api-images", {
         data: formdata,
         headers: { "Content-Type": "multipart/form-data" },

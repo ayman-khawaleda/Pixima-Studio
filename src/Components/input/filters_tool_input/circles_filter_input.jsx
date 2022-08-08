@@ -18,7 +18,7 @@ export class CirclesFilterInput extends Component {
     this.setState({ radius: e.target.value });
   };
 
-  postToServer = (e) => {
+  postToServer = async (e) => {
     if (!this.props.hasImage) {
       alert("Image Required");
       return;
@@ -31,7 +31,7 @@ export class CirclesFilterInput extends Component {
     dataform.append("FaceKey", FaceKey);
     dataform.append("Radius", radius);
     // dataform.append("ImageIndex", 0);
-    axios
+    await axios
       .post(Server + EndPoints.CirclesFilterToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })

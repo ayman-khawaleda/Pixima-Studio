@@ -18,7 +18,7 @@ export class ResizeEyeInput extends Component {
     this.setState({ radius: e.target.value });
   };
 
-  postToServer = (e) => {
+  postToServer = async (e) => {
     if (!this.props.hasImage) {
       alert("Image Required");
       return;
@@ -30,7 +30,7 @@ export class ResizeEyeInput extends Component {
     dataform.append("id", id);
     dataform.append("Factor", factor);
     dataform.append("Radius",radius);
-    axios
+    await axios
       .post(Server + EndPoints.ResizeEyesToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })

@@ -23,7 +23,7 @@ export class GlitchFilterInput extends Component {
     this.setState({ density: e.target.value });
   };
 
-  postToServer = (e) => {
+  postToServer = async (e) => {
     if (!this.props.hasImage) {
       alert("Image Required");
       return;
@@ -37,7 +37,7 @@ export class GlitchFilterInput extends Component {
     dataform.append("Shift", shift);
     dataform.append("Density",density)
     // dataform.append("ImageIndex", 0);
-    axios
+    await axios
       .post(Server + EndPoints.GlitchFilterToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })

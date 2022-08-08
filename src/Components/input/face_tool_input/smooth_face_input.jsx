@@ -18,7 +18,7 @@ export class SmoothFaceInput extends Component {
     this.setState({ factor: e.target.value });
   };
 
-  postToServer = (e) => {
+  postToServer = async (e) => {
     if (!this.props.hasImage) {
       alert("Image Required");
       return;
@@ -31,7 +31,7 @@ export class SmoothFaceInput extends Component {
     dataform.append("SigmaX", factor);
     dataform.append("SigmaY", factor);
     dataform.append("Kernal", kernal);
-    axios
+    await axios
       .post(Server + EndPoints.SmoothFaceToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })

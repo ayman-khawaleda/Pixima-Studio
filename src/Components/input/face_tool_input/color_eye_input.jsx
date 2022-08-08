@@ -18,7 +18,7 @@ export class ColorEyesInput extends Component {
     this.setState({ ...new_hue });
   };
 
-  postToServer = (e) => {
+  postToServer = async (e) => {
     if (!this.props.hasImage) {
       alert("Image Required");
       return;
@@ -31,7 +31,7 @@ export class ColorEyesInput extends Component {
     dataform.append("id", id);
     dataform.append("Color", color);
     dataform.append("Saturation", saturation);
-    axios
+    await axios
       .post(Server + EndPoints.ColorEyesToolEndPoint, dataform, {
         "Content-Type": "multipart/form-data",
       })
