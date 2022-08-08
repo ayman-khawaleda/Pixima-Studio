@@ -1,3 +1,4 @@
+import traceback
 from PiximaStudio.AbstractView import RESTView
 from .serializer import (
     EyesColorSerializer,
@@ -44,13 +45,13 @@ class EyesColorToolView(RESTView):
                 eyescolor_tool.serializer2data(
                     eyescolor_serializer
                 ).read_image().apply()
-                image_path = eyescolor_tool.save_image()
-                imagepreview_path = eyescolor_tool.get_preview()
-                mask_path = eyescolor_tool.save_mask()
                 ImageObj = ImageModel.objects.get(id=eyescolor_serializer["id"].value)
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="EyesColorTool"
                 ).save()
+                image_path = eyescolor_tool.save_image()
+                imagepreview_path = eyescolor_tool.get_preview()
+                mask_path = eyescolor_tool.save_mask()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -87,12 +88,12 @@ class EyesResizeToolView(RESTView):
                 )
             if eyesresize_serializerhandler.handle():
                 eyesresize_tool.serializer2data(eyesresize_serializer).read_image()()
-                image_path = eyesresize_tool.save_image()
-                imagepreview_path = eyesresize_tool.get_preview()
                 ImageObj = ImageModel.objects.get(id=eyesresize_serializer["id"].value)
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="EyesResizeTool"
                 ).save()
+                image_path = eyesresize_tool.save_image()
+                imagepreview_path = eyesresize_tool.get_preview()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -130,12 +131,12 @@ class NoseResizeToolView(RESTView):
                 noseresize_tool.serializer2data(
                     noseresize_serializer
                 ).read_image().apply()
-                image_path = noseresize_tool.save_image()
-                imagepreview_path = noseresize_tool.get_preview()
                 ImageObj = ImageModel.objects.get(id=noseresize_serializer["id"].value)
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="NoseResizeTool"
                 ).save()
+                image_path = noseresize_tool.save_image()
+                imagepreview_path = noseresize_tool.get_preview()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -175,13 +176,13 @@ class SmoothFaceToolView(RESTView):
                 smoothface_tool.serializer2data(
                     smoothface_serializer
                 ).read_image().apply()
-                image_path = smoothface_tool.save_image()
-                imagepreview_path = smoothface_tool.get_preview()
-                mask_path = smoothface_tool.save_mask()
                 ImageObj = ImageModel.objects.get(id=smoothface_serializer["id"].value)
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="SmoothFaceTool"
                 ).save()
+                image_path = smoothface_tool.save_image()
+                imagepreview_path = smoothface_tool.get_preview()
+                mask_path = smoothface_tool.save_mask()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -220,13 +221,13 @@ class WhiteTeethToolView(RESTView):
                 )
             if whiteteeth_serializerhandler.handle():
                 white_tool.serializer2data(whiteteeth_serializer).read_image().apply()
-                image_path = white_tool.save_image()
-                imagepreview_path = white_tool.get_preview()
-                mask_path = white_tool.save_mask()
                 ImageObj = ImageModel.objects.get(id=whiteteeth_serializer["id"].value)
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="WhiteTeethTool"
                 ).save()
+                image_path = white_tool.save_image()
+                imagepreview_path = white_tool.get_preview()
+                mask_path = white_tool.save_mask()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -265,13 +266,13 @@ class ColorLipsToolView(RESTView):
                 )
             if colorlips_serializerhandler.handle():
                 colorlips_tool.serializer2data(colorlips_serializer).read_image()()
-                image_path = colorlips_tool.save_image()
-                imagepreview_path = colorlips_tool.get_preview()
-                mask_path = colorlips_tool.save_mask()
                 ImageObj = ImageModel.objects.get(id=colorlips_serializer["id"].value)
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="ColorLipsTool"
                 ).save()
+                image_path = colorlips_tool.save_image()
+                imagepreview_path = colorlips_tool.get_preview()
+                mask_path = colorlips_tool.save_mask()
                 return self.ok_request(
                     {
                         "Image": image_path,
@@ -310,13 +311,13 @@ class SmileToolView(RESTView):
                 )
             if smile_serializerhandler.handle():
                 smile_tool.serializer2data(smile_serializer).read_image()()
-                image_path = smile_tool.save_image()
-                imagepreview_path = smile_tool.get_preview()
-                mask_path = smile_tool.save_mask()
                 ImageObj = ImageModel.objects.get(id=smile_serializer["id"].value)
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="SmileTool"
                 ).save()
+                image_path = smile_tool.save_image()
+                imagepreview_path = smile_tool.get_preview()
+                mask_path = smile_tool.save_mask()
                 return self.ok_request(
                     {
                         "Image": image_path,

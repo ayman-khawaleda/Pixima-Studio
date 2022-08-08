@@ -23,16 +23,13 @@ class GlitchFilterView(RESTView):
                     }
                 )
             if filter_handler.handle():
-                image_path = (
-                    glitch_filter.serializer2data(glicth_serializer)
-                    .read_image()()
-                    .save_image()
-                )
-                imagepreview_path = glitch_filter.get_preview()
+                glitch_filter.serializer2data(glicth_serializer).read_image()()
+                image_path = glitch_filter.save_image()
                 ImageObj = ImageModel.objects.get(id=glicth_serializer["id"].value)
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="GlitchFilter"
                 ).save()
+                imagepreview_path = glitch_filter.get_preview()
 
                 return self.ok_request({
                         "Image": image_path,
@@ -66,12 +63,12 @@ class CircleFilterView(RESTView):
                 circles_filter.serializer2data(
                     serializer=circles_serializer
                 ).read_image().apply()
-                image_path = circles_filter.save_image()
-                imagepreview_path = circles_filter.get_preview()
                 ImageObj = ImageModel.objects.get(id=circles_serializer["id"].value)
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="CircleFilter"
                 ).save()
+                image_path = circles_filter.save_image()
+                imagepreview_path = circles_filter.get_preview()
                 return self.ok_request({
                         "Image": image_path,
                         "ImagePreview": imagepreview_path,

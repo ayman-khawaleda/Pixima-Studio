@@ -26,13 +26,13 @@ class ColorHairToolView(RESTView):
                 )
             if colorhair_serializerhandler.handle():
                 hair_tool.serializer2data(colorhair_serializer).read_image().apply()
-                image_path = hair_tool.save_image()
-                imagepreview_path = hair_tool.get_preview()
-                mask_path = hair_tool.save_mask()
                 ImageObj = ImageModel.objects.get(id=colorhair_serializer["id"].value)
                 ImageOperationsModel.objects.create(
                     image=ImageObj, operation_name="ColorHairTool"
                 ).save()
+                image_path = hair_tool.save_image()
+                imagepreview_path = hair_tool.get_preview()
+                mask_path = hair_tool.save_mask()
                 return self.ok_request(
                     {
                         "Image": image_path,
