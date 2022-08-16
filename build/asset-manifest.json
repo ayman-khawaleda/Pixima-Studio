@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/static/css/main.6496be4e.css",
-    "main.js": "/static/js/main.8ea78461.js",
+    "main.js": "/static/js/main.0fc0dff6.js",
     "static/media/teeth.png": "/static/media/teeth.39bf554f40870444c1a2.png",
     "static/media/PiximaLogo-Small.png": "/static/media/PiximaLogo-Small.3c2346ad5c67ad4eed7b.png",
     "static/media/tshirt.png": "/static/media/tshirt.a00e29282833e1cdc27d.png",
     "static/media/saturation.png": "/static/media/saturation.5e12241cf35ed8563ef0.png",
     "index.html": "/index.html",
     "main.6496be4e.css.map": "/static/css/main.6496be4e.css.map",
-    "main.8ea78461.js.map": "/static/js/main.8ea78461.js.map"
+    "main.0fc0dff6.js.map": "/static/js/main.0fc0dff6.js.map"
   },
   "entrypoints": [
     "static/css/main.6496be4e.css",
-    "static/js/main.8ea78461.js"
+    "static/js/main.0fc0dff6.js"
   ]
 }
