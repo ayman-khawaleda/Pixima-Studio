@@ -1,0 +1,26 @@
+.smile-tool,
+.smooth-tool,
+.color-lips-tool,
+.teeth-tool,
+.nose-resize-tool,
+.eye-resize-tool,
+.eye-color-tool,
+.lips-tool {
+    color: white;
+    transform: scale(1.2);
+    display: block;
+    opacity: 0.7;
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.smile-tool:hover,
+.smooth-tool:hover,
+.color-lips-tool:hover,
+.teeth-tool:hover,
+.nose-tool:hover
+.eye-color-tool:hover,
+.eye-resize-tool:hover,
+.lips-tool:hover     {
+    opacity: 1;
+}

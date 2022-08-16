@@ -5,7 +5,7 @@
 *.pyc
 __pycache__
 db.sqlite3
-media
+*media
 *env
 *Config.py
 DNN_Models
@@ -165,3 +165,4 @@ GitHub.sublime-settings
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+Config.js

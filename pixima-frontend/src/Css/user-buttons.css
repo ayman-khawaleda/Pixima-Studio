@@ -1,0 +1,74 @@
+.donwloadIcon,
+.undoIcon,
+.redoIcon,
+.compareIcon,
+.zoomIcon {
+    color: white;
+    transform: scale(1.1);
+    display: inline;
+    opacity: 0.7;
+    margin-left:4px;
+    margin-right:4px;
+}
+
+
+.donwloadIcon:hover,
+.undoIcon:hover,
+.redoIcon:hover,
+.compareIcon:hover,
+.zoomIcon:hover {
+    opacity: 1;
+}
+
+
+.uploadIcon {
+    position: relative;
+    top: 15%;
+    color: white;
+    transform: scale(2);
+}
+
+.upload-area {
+    opacity: 0.85;
+    position: fixed;
+    left: 35%;
+    top: 35%;
+    width: 400px;
+    height: 200px;
+    background-color: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(25px);
+    background-position: center;
+    border: 2px solid rgba(0, 0, 0, 0.72);
+    border-radius: 25px;
+}
+
+.upload-btn {
+    position: fixed;
+    left: 0%;
+    top: 0%;
+}
+
+.upload-area:hover {
+    opacity: 1;
+}
+
+.upload-st {
+    color: white;
+    position: relative;
+    top: 55%;
+    font-size: large;
+    -webkit-text-stroke: 0.25px rgba(255, 255, 255, 1);
+}
+
+.user-tools {
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(25px);
+    position: fixed;
+    left: 80%;
+    top: 1%;
+    display: inline-block;
+    min-height: fit-content;
+    min-width: fit-content;
+    border: 2px solid rgba(0, 0, 0, 0.72);
+    border-radius: 25px;
+}

@@ -1,0 +1,15 @@
+.sub-tools {
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(25px);
+    border-width: 2px;
+    border-color: rgba(0, 0, 0, 0.72);
+    border-style: solid;
+    border-radius: 25px;
+    position: fixed;
+    left: 28%;
+    top: 92%;
+    display: inline-block;
+    min-width: fit-content;
+    min-height: fit-content;
+}
+

@@ -1,0 +1,227 @@
+.input-area {
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(25px);
+    border-width: 2px;
+    border-color: rgba(0, 0, 0, 0.72);
+    border-style: solid;
+    border-radius: 25px 0px 25px 25px;
+    position: fixed;
+    left: 79.5vw;
+    top: 20vh;
+    display: inline;
+    min-width: 20vw;
+    min-height: 60vh;
+}
+
+#saturation-slider {
+    color: white;
+    /* position: fixed;*/
+    top: 15vh;
+    transform: scale(0.85);
+}
+
+.check {
+    position: fixed;
+    color: white;
+    transform: scale(1.5);
+    top: 80%;
+    left: 46%;
+    opacity: 0.8;
+    border: 2px solid white;
+    border-radius: 10px 0px 10px 10px;
+}
+
+.check:hover {
+    opacity: 1;
+}
+
+.hue-value {
+    color: white;
+    position: fixed;
+    top: 25vh;
+    left: 8vw;
+}
+
+.hue-picker {
+    position: fixed;
+    top: 10vh;
+    left: 0vw;
+    transform: scale(0.9);
+}
+
+.hue-st {
+    color: white;
+    display: inline;
+    position: fixed;
+    top: 5vh;
+    left: 2%;
+}
+
+.saturation-st {
+    color: white;
+    display: inline;
+    position: fixed;
+    top: 15vh;
+    left: 2%;
+}
+
+.factor-st,
+.teeth-saturation-st,
+.shift-st,
+.contrast-st,
+.rotate-st {
+    color: white;
+    display: inline;
+    position: fixed;
+    top: 5vh;
+    left: 2%;
+}
+
+#factor-slider,
+#teeth-saturation-slider,
+#shift-slider,
+#contrast-slider,
+#rotate-slider {
+    color: white;
+    display: inline;
+    position: fixed;
+    transform: scale(0.85);
+    top: 10vh;
+    left: 2%;
+}
+
+.factor-value,
+.teeth-saturation-value {
+    color: white;
+    position: fixed;
+    top: 15vh;
+    left: 8vw;
+}
+
+
+.radius-st,
+.brightness-st,
+.kernal-st {
+    color: white;
+    display: inline;
+    position: fixed;
+    top: 20vh;
+    left: 2%;
+}
+
+#radius-slider,
+#brightness-slider,
+#kernal-slider {
+    color: white;
+    display: inline;
+    position: fixed;
+    transform: scale(0.85);
+    top: 25vh;
+    left: 2%;
+}
+
+.radius-value,
+.brightness-value,
+.kernal-value {
+    color: white;
+    position: fixed;
+    top: 30vh;
+    left: 8vw;
+}
+
+.step-st {
+    color: white;
+    display: inline;
+    position: fixed;
+    top: 15vh;
+    left: 2%;
+
+}
+
+.density-st {
+    color: white;
+    display: inline;
+    position: fixed;
+    top: 25vh;
+    left: 2%;
+}
+
+#step-slider {
+    color: white;
+    display: inline;
+    position: fixed;
+    transform: scale(0.85);
+    top: 20vh;
+    left: 2%;
+}
+
+#density-slider {
+    color: white;
+    display: inline;
+    position: fixed;
+    transform: scale(0.85);
+    top: 30vh;
+    left: 2%;
+}
+
+.face-key-st {
+    color: white;
+    display: inline;
+    position: fixed;
+    top: 20vh;
+    left: 2%;
+}
+
+.select-list {
+    position: fixed;
+    top: 15vh;
+    left: 25%;
+    width: 10vw;
+    transform: scale(0.9);
+}
+
+.circle-radius-st {
+    color: white;
+    display: inline;
+    position: fixed;
+    top: 5vh;
+    left: 2%;
+}
+.ratio-select-list{
+    position: fixed;
+    top: 5vh;
+    left: 25%;
+    width: 10vw;
+    transform: scale(0.95);
+}
+
+#circle-radius-slider {
+    color: white;
+    display: inline;
+    position: fixed;
+    transform: scale(0.85);
+    top: 10vh;
+    left: 2%;
+}
+#saturation-tool-slider {
+    color: white;
+    display: inline;
+    position: fixed;
+    transform: scale(0.85);
+    top: 20vh;
+    left: 2%;
+}
+#width-text{
+    color: black;
+    background-color: rgba(255,255,255, 1);
+    position: fixed;
+    top: 5vh;
+    left: 20%;
+}
+#height-text{
+    color: black;
+    background-color: rgba(255, 255, 255, 1);
+    position: fixed;
+    top: 15vh;
+    left: 20%;
+}
